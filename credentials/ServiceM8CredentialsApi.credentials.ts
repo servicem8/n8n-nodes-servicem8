@@ -5,25 +5,14 @@ import {
 	INodeProperties,
 } from 'n8n-workflow';
 
-export class ExampleCredentialsApi implements ICredentialType {
-	name = 'exampleCredentialsApi';
-	displayName = 'Example Credentials API';
-
-	documentationUrl = 'https://your-docs-url';
-
+export class ServiceM8CredentialsApi implements ICredentialType {
+	name = 'serviceM8CredentialsApi';
+	displayName = 'ServiceM8 Credentials API';
+	documentationUrl = 'https://developer.servicem8.com/docs/authentication';
 	properties: INodeProperties[] = [
-		// The credentials to get from user and save encrypted.
-		// Properties can be defined exactly in the same way
-		// as node properties.
 		{
-			displayName: 'User Name',
-			name: 'username',
-			type: 'string',
-			default: '',
-		},
-		{
-			displayName: 'Password',
-			name: 'password',
+			displayName: 'Api Key',
+			name: 'apiKey',
 			type: 'string',
 			typeOptions: {
 				password: true,
@@ -38,9 +27,8 @@ export class ExampleCredentialsApi implements ICredentialType {
 	authenticate: IAuthenticateGeneric = {
 		type: 'generic',
 		properties: {
-			auth: {
-				username: '={{ $credentials.username }}',
-				password: '={{ $credentials.password }}',
+			headers: {
+				"X-API-Key": '={{ $credentials.apiKey }}',
 			},
 			qs: {
 				// Send this as part of the query string
@@ -52,7 +40,7 @@ export class ExampleCredentialsApi implements ICredentialType {
 	// The block below tells how this credential can be tested
 	test: ICredentialTestRequest = {
 		request: {
-			baseURL: 'https://example.com/',
+			baseURL: 'https://api.servicem8.com/api_1.0/taxrate.json',
 			url: '',
 		},
 	};
