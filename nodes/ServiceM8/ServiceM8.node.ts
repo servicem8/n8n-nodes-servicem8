@@ -6,15 +6,15 @@ import type {
 } from 'n8n-workflow';
 import { NodeConnectionType, NodeOperationError } from 'n8n-workflow';
 
-export class ExampleNode implements INodeType {
+export class ServiceM8 implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'Example Node',
-		name: 'exampleNode',
+		displayName: 'ServiceM8',
+		name: 'serviceM8',
 		group: ['transform'],
 		version: 1,
-		description: 'Basic Example Node',
+		description: 'ServiceM8 Node',
 		defaults: {
-			name: 'Example Node',
+			name: 'ServiceM8',
 		},
 		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],
