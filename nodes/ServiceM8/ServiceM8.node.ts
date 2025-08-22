@@ -18,6 +18,7 @@ export class ServiceM8 implements INodeType {
 		group: ['transform'],
 		version: 1,
 		description: 'ServiceM8 Node',
+		icon: 'file:ServiceM8Icon.svg',
 		defaults: {
 			name: 'ServiceM8',
 		},
