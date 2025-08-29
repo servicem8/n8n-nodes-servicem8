@@ -1,4 +1,5 @@
 import type {
+	IDataObject,
 	IExecuteFunctions,
 	INodeExecutionData,
 	INodeType,
@@ -10,6 +11,7 @@ import { clientDescription } from './Client/ClientDescription';
 import { jobDescription } from './Job/JobDescription';
 import { emailDescription } from './Email/EmailDescription';
 import { smsDescription } from './Sms/SmsDescription';
+import { getAllData, getEndpoint,getUrlParams } from './GenericFunctions';
 
 export class ServiceM8 implements INodeType {
 	description: INodeTypeDescription = {
@@ -74,17 +76,37 @@ export class ServiceM8 implements INodeType {
 		let item: INodeExecutionData;
 		let resource = this.getNodeParameter('resource', 0, '') as string;
 		let operation = this.getNodeParameter('operation', 0, '') as string;
+		let responseData;
+		let returnData: IDataObject[] = [];
 
 		// Iterates over all input items and add the key "myString" with the
 		// value the parameter "myString" resolves to.
 		// (This could be a different value for each item in case it contains an expression)
 		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
 			try {
-				
 				item = items[itemIndex];
 
 				item.json.resource = resource;
 				item.json.operation = operation;
+
+				let endpoint = await getEndpoint.call(this,resource,operation);
+				const urlParams:string[] = await getUrlParams.call(this,resource,operation);
+				
+				for (const param of urlParams) {
+					const tempParam = this.getNodeParameter(param, itemIndex, '') as string;
+					endpoint = endpoint.replace('{'+param+'}',tempParam.trim());
+				}
+				
+				if(operation === 'getAll'){
+					responseData = await getAllData.call(this, endpoint);
+					returnData = returnData.concat(responseData);
+				}
+				if(operation === 'get'){
+
+					responseData = await getAllData.call(this, endpoint);
+					returnData = returnData.concat(responseData);
+				}
+
 			} catch (error) {
 				// This node should never fail but we want to showcase how
 				// to handle errors.
@@ -105,6 +127,6 @@ export class ServiceM8 implements INodeType {
 			}
 		}
 
-		return [items];
+		return [this.helpers.returnJsonArray(returnData)];
 	}
 }

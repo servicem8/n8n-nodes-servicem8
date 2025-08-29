@@ -9,7 +9,11 @@ export const clientDescription: INodeProperties[] = [
 			{
 				name: 'Get',
 				value: 'get',
-			}
+			},
+			{
+				name: 'Get All',
+				value: 'getAll',
+			},
 		],
 		displayOptions: {
 			show: {
@@ -18,21 +22,16 @@ export const clientDescription: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Search',
-		name: 'operation',
-		type: 'options',
-		default: 'get',
-		options: [
-			{
-				name: 'Get',
-				value: 'get',
-			}
-		],
+		displayName: 'UUID',
+		name: 'uuid',
+		type: 'string',
+		default: ' ',
 		displayOptions: {
 			show: {
-				resource: ['client',],
+				resource: ['client'],
 				operation: ['get'],
 			},
 		},
 	},
+	
 ]

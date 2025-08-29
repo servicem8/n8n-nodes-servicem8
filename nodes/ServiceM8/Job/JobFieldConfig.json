@@ -1,0 +1,225 @@
+{
+    "name":"Job",
+    "getAll":{
+        "url":"https://api.servicem8.com/api_1.0/job.json",
+        "urlParams":[]
+    },
+    "get":{
+        "url":"https://api.servicem8.com/api_1.0/job/{uuid}.json",
+        "urlParams":[
+            "uuid"
+        ]
+    },
+    "fields":[
+        {
+            "field": "created_by_staff_uuid",
+            "required": false,
+            "type": "uuid"
+        },
+        {
+            "field": "date",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "company_uuid",
+            "required": false,
+            "type": "uuid"
+        },
+        {
+            "field": "billing_address",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "status",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "field": "lng",
+            "required": false,
+            "type": "float"
+        },
+        {
+            "field": "lat",
+            "required": false,
+            "type": "float"
+        },
+        {
+            "field": "category_uuid",
+            "required": false,
+            "type": "uuid"
+        },
+        {
+            "field": "geo_is_valid",
+            "required": false,
+            "type": "integer"
+        },
+        {
+            "field": "purchase_order_number",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "invoice_sent",
+            "required": false,
+            "type": "integer"
+        },
+        {
+            "field": "invoice_sent_stamp",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "geo_country",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "geo_postcode",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "geo_state",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "geo_city",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "geo_street",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "geo_number",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "queue_uuid",
+            "required": false,
+            "type": "uuid"
+        },
+        {
+            "field": "queue_expiry_date",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "queue_assigned_staff_uuid",
+            "required": false,
+            "type": "uuid"
+        },
+        {
+            "field": "badges",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "quote_date",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "quote_sent",
+            "required": false,
+            "type": "integer"
+        },
+        {
+            "field": "quote_sent_stamp",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "work_order_date",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "uuid",
+            "required": false,
+            "type": "uuid"
+        },
+        {
+            "field": "active",
+            "required": false,
+            "type": "integer"
+        },
+        {
+            "field": "edit_date",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "job_address",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "job_description",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "work_done_description",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "generated_job_id",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "total_invoice_amount",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "payment_processed",
+            "required": false,
+            "type": "integer"
+        },
+        {
+            "field": "payment_processed_stamp",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "payment_received",
+            "required": false,
+            "type": "integer"
+        },
+        {
+            "field": "payment_received_stamp",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "completion_date",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "completion_actioned_by_uuid",
+            "required": false,
+            "type": "uuid"
+        },
+        {
+            "field": "unsuccessful_date",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "field": "job_is_scheduled_until_stamp",
+            "required": false,
+            "type": "string"
+        }
+    ]
+}

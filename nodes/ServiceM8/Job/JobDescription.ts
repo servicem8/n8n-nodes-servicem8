@@ -28,6 +28,10 @@ export const jobDescription: INodeProperties[] = [
 				value: 'get',
 			},
 			{
+				name: 'Get All',
+				value: 'getAll',
+			},
+			{
 				name: 'Update',
 				value: 'update',
 			},
@@ -39,6 +43,18 @@ export const jobDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['job'],
+			},
+		},
+	},
+	{
+		displayName: 'UUID',
+		name: 'uuid',
+		type: 'string',
+		default: ' ',
+		displayOptions: {
+			show: {
+				resource: ['job'],
+				operation: ['get'],
 			},
 		},
 	},

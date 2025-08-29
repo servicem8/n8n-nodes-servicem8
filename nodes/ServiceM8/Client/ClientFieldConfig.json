@@ -1,7 +1,16 @@
-[
+
     {
         "name":"Client",
-        "uri":"https://api.servicem8.com/api_1.0/company.json",
+        "getAll":{
+            "url":"https://api.servicem8.com/api_1.0/company.json",
+            "urlParams":[]
+        },
+        "get":{
+            "url":"https://api.servicem8.com/api_1.0/company/{uuid}.json",
+            "urlParams":[
+                "uuid"
+            ]
+        },
         "fields":[
             {
                 "field":"name",
@@ -100,4 +109,3 @@
             }
         ]
     }
-]
