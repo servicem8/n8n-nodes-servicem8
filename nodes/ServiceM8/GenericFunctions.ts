@@ -18,6 +18,7 @@ export async function serviceM8ApiRequest(
 	endpoint: string,
 	query: IDataObject = {},
 	body: any = {},
+	headers: any = {},
 ): Promise<any> {
 	
 
@@ -28,10 +29,14 @@ export async function serviceM8ApiRequest(
 		body,
 		qs: query,
 		uri: endpoint,
+		headers,
 		json: true,
 		resolveWithFullResponse: true,
 	};
 
+	if (!Object.keys(headers as IDataObject).length) {
+		delete options.headers;
+	}
 	if (!Object.keys(body as IDataObject).length) {
 		delete options.body;
 	}

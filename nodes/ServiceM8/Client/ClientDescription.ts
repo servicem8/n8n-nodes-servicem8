@@ -6,7 +6,7 @@ export const clientDescription: INodeProperties[] = [
 		displayName: 'Operation',
 		name: 'operation',
 		type: 'options',
-		default: 'get',
+		default: 'getMany',
 		options: [
 			{
 				name: 'Get',

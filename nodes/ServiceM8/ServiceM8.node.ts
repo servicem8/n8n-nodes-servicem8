@@ -170,6 +170,25 @@ export class ServiceM8 implements INodeType {
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
 					returnData = returnData.concat(responseData.body);
 				}
+				if(operation === 'sendEmail'){
+					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
+					let body = fields;
+					let headers = {};
+					endpoint = 'https://api.servicem8.com/platform_service_email';
+					if(body['x-impersonate-uuid']){
+						headers = {'x-impersonate-uuid':body['x-impersonate-uuid'] };
+						delete body['x-impersonate-uuid'];
+					}
+					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body,headers);
+					returnData = returnData.concat(responseData.body);
+				}
+				if(operation === 'sendSms'){
+					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
+					let body = fields;
+					endpoint = 'https://api.servicem8.com/platform_service_sms';
+					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
+					returnData = returnData.concat(responseData.body);
+				}
 				if(operation === 'delete'){
 					responseData = await serviceM8ApiRequest.call(this,'DELETE',endpoint);
 					returnData = returnData.concat(responseData.body);

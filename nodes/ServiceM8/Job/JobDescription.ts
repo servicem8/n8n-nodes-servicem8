@@ -5,7 +5,7 @@ export const jobDescription: INodeProperties[] = [
 		displayName: 'Operation',
 		name: 'operation',
 		type: 'options',
-		default: 'get',
+		default: 'getMany',
 		options: [
 			{
 				name: 'Add Note To Job',
