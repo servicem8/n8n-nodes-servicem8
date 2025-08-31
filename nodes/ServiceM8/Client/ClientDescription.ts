@@ -1,4 +1,6 @@
 import { INodeProperties } from 'n8n-workflow';
+import { ClientCreateObject } from './ClientObjects';
+
 export const clientDescription: INodeProperties[] = [
     {
 		displayName: 'Operation',
@@ -11,8 +13,8 @@ export const clientDescription: INodeProperties[] = [
 				value: 'get',
 			},
 			{
-				name: 'Get All',
-				value: 'getAll',
+				name: 'Get Many',
+				value: 'getMany',
 			},
 		],
 		displayOptions: {
@@ -33,5 +35,22 @@ export const clientDescription: INodeProperties[] = [
 			},
 		},
 	},
+	{
+		displayName: 'Fields',
+		name: 'fields',
+		type: 'collection',
+		default: {
+			"name":""
+		},
+		options: ClientCreateObject,
+		displayOptions: {
+			show: {
+				resource: ['client'],
+				operation: ['create'],
+			},
+		},
+	}
+	
 	
 ]
+

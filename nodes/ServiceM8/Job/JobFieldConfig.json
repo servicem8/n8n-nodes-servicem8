@@ -1,6 +1,6 @@
 {
     "name":"Job",
-    "getAll":{
+    "getMany":{
         "url":"https://api.servicem8.com/api_1.0/job.json",
         "urlParams":[]
     },
@@ -10,215 +10,273 @@
             "uuid"
         ]
     },
+    "create":{
+        "url":"https://api.servicem8.com/api_1.0/job.json",
+        "urlParams":[]
+    },
+    "update":{
+        "url":"https://api.servicem8.com/api_1.0/job/{uuid}.json",
+        "urlParams":[
+            "uuid"
+        ]
+    },
+    "delete":{
+        "url":"https://api.servicem8.com/api_1.0/job/{uuid}.json",
+        "urlParams":[
+            "uuid"
+        ]
+    },
     "fields":[
         {
             "field": "created_by_staff_uuid",
             "required": false,
+            "filter":true,
             "type": "uuid"
         },
         {
             "field": "date",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "company_uuid",
             "required": false,
+            "filter":true,
             "type": "uuid"
         },
         {
             "field": "billing_address",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "status",
             "required": true,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "lng",
             "required": false,
+            "filter":true,
             "type": "float"
         },
         {
             "field": "lat",
             "required": false,
+            "filter":true,
             "type": "float"
         },
         {
             "field": "category_uuid",
             "required": false,
+            "filter":true,
             "type": "uuid"
         },
         {
             "field": "geo_is_valid",
             "required": false,
+            "filter":true,
             "type": "integer"
         },
         {
             "field": "purchase_order_number",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "invoice_sent",
             "required": false,
+            "filter":true,
             "type": "integer"
         },
         {
             "field": "invoice_sent_stamp",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "geo_country",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "geo_postcode",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "geo_state",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "geo_city",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "geo_street",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "geo_number",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "queue_uuid",
             "required": false,
+            "filter":true,
             "type": "uuid"
         },
         {
             "field": "queue_expiry_date",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "queue_assigned_staff_uuid",
             "required": false,
+            "filter":true,
             "type": "uuid"
         },
         {
             "field": "badges",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "quote_date",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "quote_sent",
             "required": false,
+            "filter":true,
             "type": "integer"
         },
         {
             "field": "quote_sent_stamp",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "work_order_date",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "uuid",
             "required": false,
+            "filter":true,
             "type": "uuid"
         },
         {
             "field": "active",
             "required": false,
+            "filter":true,
             "type": "integer"
         },
         {
             "field": "edit_date",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "job_address",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "job_description",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "work_done_description",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "generated_job_id",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "total_invoice_amount",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "payment_processed",
             "required": false,
+            "filter":true,
             "type": "integer"
         },
         {
             "field": "payment_processed_stamp",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "payment_received",
             "required": false,
+            "filter":true,
             "type": "integer"
         },
         {
             "field": "payment_received_stamp",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "completion_date",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "completion_actioned_by_uuid",
             "required": false,
+            "filter":true,
             "type": "uuid"
         },
         {
             "field": "unsuccessful_date",
             "required": false,
+            "filter":true,
             "type": "string"
         },
         {
             "field": "job_is_scheduled_until_stamp",
             "required": false,
+            "filter":true,
             "type": "string"
         }
     ]

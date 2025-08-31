@@ -10,6 +10,7 @@ import type {
 
 import clientConfig from "./Client/ClientFieldConfig.json";
 import jobConfig from "./Job/JobFieldConfig.json";
+import { fieldConfig } from './types';
 
 export async function serviceM8ApiRequest(
 	this: IExecuteFunctions | IWebhookFunctions | IHookFunctions | ILoadOptionsFunctions,
@@ -105,3 +106,72 @@ export async function getUrlParams(
 
 }
 
+export async function getFields(
+	this: IExecuteFunctions | IWebhookFunctions | IHookFunctions | ILoadOptionsFunctions,
+	resource: string,
+	):Promise<IDataObject[]>{
+		switch(resource){
+			case 'job':
+				return jobConfig['fields' as keyof typeof jobConfig] as IDataObject[];
+			case 'client':
+				return clientConfig['fields' as keyof typeof clientConfig] as IDataObject[];
+			default:
+				return [];
+		}
+
+}
+
+export async function processFilters(
+	this: IExecuteFunctions | IWebhookFunctions | IHookFunctions | ILoadOptionsFunctions,
+	resource: string,
+	filters: IDataObject[],
+):Promise<string>{
+	let filterString:string = '';
+	let filterArray:string[] = [];
+
+	if(filters?.length>0){
+		const fieldsConfig = await getFields.call(this,resource);
+		for (const filter of filters) {
+			const fieldType = fieldsConfig.find(x=>x.field === filter.field)?.type ?? 'string';
+			if(fieldType === 'integer' || fieldType === 'float'){
+				filterArray.push(filter.field + ' ' + filter.operator + ' ' + filter.value);
+			}
+			else{
+				filterArray.push(filter.field + ' ' + filter.operator + " '" + filter.value + "'");
+			}
+		}
+		filterString = filterArray.join(' and ');
+	}
+	
+	return filterString;
+}
+
+export async function processBody(
+	this: IExecuteFunctions | IWebhookFunctions | IHookFunctions | ILoadOptionsFunctions,
+	resource: string,
+	fields: IDataObject[],
+):Promise<IDataObject>{
+	let body:IDataObject = {};
+
+	if(fields?.length>0){
+		const fieldsConfig = await getFields.call(this,resource);
+		for (const field of fields) {
+			const fieldType = fieldsConfig.find(x=>x.field === field.field)?.type ?? 'string';
+			const fieldName = field.field as string;
+			let fieldValue;
+			if(fieldType === 'integer' || fieldType === 'float'){
+				fieldValue = field.value as number;
+			}
+			else{
+				fieldValue = field.value as string;
+			}
+			body[fieldName] = fieldValue;
+		}
+
+	}
+	
+	return body;
+}
+
+export const toOptionsFromFieldConfig = (items:fieldConfig[]) =>
+	items.map((x) => ({name:x.field, value:x.field}));

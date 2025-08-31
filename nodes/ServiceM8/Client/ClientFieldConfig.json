@@ -1,7 +1,7 @@
 
     {
         "name":"Client",
-        "getAll":{
+        "getMany":{
             "url":"https://api.servicem8.com/api_1.0/company.json",
             "urlParams":[]
         },
@@ -11,100 +11,129 @@
                 "uuid"
             ]
         },
+        "create":{
+            "url":"https://api.servicem8.com/api_1.0/company.json",
+            "urlParams":[]
+        },
+        "update":{
+            "url":"https://api.servicem8.com/api_1.0/company/{uuid}.json",
+            "urlParams":[
+                "uuid"
+            ]
+        },
         "fields":[
             {
                 "field":"name",
                 "required":true,
+                "filter":true,
                 "type":"string"
             },
             {
                 "field":"abn_number",
-                "required":true,
+                "required":false,
+                "filter":true,
                 "type":"string"
             },
             {
                 "field":"address",
-                "required":true,
+                "required":false,
+                "filter":true,
                 "type":"string"
             },
             {
                 "field":"billing_address",
-                "required":true,
+                "required":false,
+                "filter":true,
                 "type":"string"
             },
             {
                 "field":"parent_company_uuid",
-                "required":true,
+                "required":false,
+                "filter":true,
                 "type":"string"
             },
             {
                 "field":"uuid",
-                "required":true,
+                "required":false,
+                "filter":true,
                 "type":"string"
             },
             {
                 "field":"active",
-                "required":true,
+                "required":false,
+                "filter":true,
                 "type":"integer"
             },
             {
                 "field":"website",
-                "required":true,
+                "required":false,
+                "filter":true,
                 "type":"string"
             },
             {
                 "field":"is_individual",
-                "required":true,
-                "type":"string"
+                "required":false,
+                "filter":true,
+                "type":"integer"
             },
             {
                 "field":"address_street",
-                "required":true,
+                "required":false,
+                "filter":true,
                 "type":"string"
             },
             {
                 "field":"address_city",
-                "required":true,
+                "required":false,
+                "filter":true,
                 "type":"string"
             },
             {
                 "field":"address_state",
-                "required":true,
+                "required":false,
+                "filter":true,
                 "type":"string"
             },
             {
                 "field":"address_postcode",
-                "required":true,
+                "required":false,
+                "filter":true,
                 "type":"string"
             },
             {
                 "field":"address_country",
-                "required":true,
+                "required":false,
+                "filter":true,
                 "type":"string"
             },
             {
                 "field":"fax_number",
-                "required":true,
+                "required":false,
+                "filter":true,
                 "type":"string"
             },
             {
                 "field":"badges",
-                "required":true,
+                "required":false,
+                "filter":true,
                 "type":"string"
             },
             {
                 "field":"tax_rate_uuid",
-                "required":true,
+                "required":false,
+                "filter":true,
                 "type":"string"
             },
             {
                 "field":"billing_attention",
-                "required":true,
+                "required":false,
+                "filter":true,
                 "type":"string"
             },
             {
                 "field":"payment_terms",
-                "required":true,
+                "required":false,
+                "filter":true,
                 "type":"string"
             }
         ]
