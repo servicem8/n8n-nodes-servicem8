@@ -6,11 +6,13 @@ export const smsDescription: INodeProperties[] = [
 		displayName: 'Operation',
 		name: 'operation',
 		type: 'options',
+		noDataExpression: true,
 		default: 'sendSMS',
 		options: [
 			{
 				name: 'Send SMS',
 				value: 'sendSMS',
+				action: 'Send SMS a sms',
 			},
 		],
 		displayOptions: {

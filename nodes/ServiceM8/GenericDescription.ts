@@ -18,18 +18,18 @@ export const genericDescription: INodeProperties[] = [
 		},
 		options:[
 			{
-				displayName: "filter",
+				displayName: 'Filter',
 				name: 'filter',
 				values:[
 					{
-						displayName: 'Field Name',
+						displayName: 'Field Name or ID',
 						name: 'field',
 						type: 'options',
 						typeOptions: {
 							loadOptionsMethod: 'getFilterFields',
 						},
 						default: '',
-						description: 'Field name to filter.',
+						description: 'Field name to filter. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 					},
 					{
 						displayName: 'Operator',
@@ -37,15 +37,15 @@ export const genericDescription: INodeProperties[] = [
 						type: 'options',
 						options: [
 							{
-								name: 'Equal to',
+								name: 'Equal To',
 								value: 'eq',
 							},
 							{
-								name: 'Not equal',
+								name: 'Not Equal',
 								value: 'ne',
 							},
 							{
-								name: 'Greater than',
+								name: 'Greater Than',
 								value: 'gt',
 							},
 							{
@@ -89,14 +89,14 @@ export const genericDescription: INodeProperties[] = [
 				name: 'field',
 				values:[
 					{
-						displayName: 'Field Name',
+						displayName: 'Field Name or ID',
 						name: 'field',
 						type: 'options',
 						typeOptions: {
 							loadOptionsMethod: 'getFields',
 						},
 						default: '',
-						description: 'Field name to update.',
+						description: 'Field name to update. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 					},
 					{
 						displayName: 'Value',

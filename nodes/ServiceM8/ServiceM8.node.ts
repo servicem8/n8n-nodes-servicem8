@@ -22,6 +22,7 @@ export class ServiceM8 implements INodeType {
 		name: 'serviceM8',
 		group: ['transform'],
 		version: 1,
+		subtitle: '={{ $parameter["operation"] + ": " + $parameter["resource"] }}',
 		description: 'ServiceM8 Node',
 		icon: 'file:ServiceM8Icon.svg',
 		defaults: {

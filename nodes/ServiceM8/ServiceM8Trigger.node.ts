@@ -47,7 +47,7 @@ export class ServiceM8Trigger implements INodeType {
 				displayName: 'Event',
 				name: 'event',
 				type: 'options',
-				default: 'company.created',
+				default: undefined,
 				options: [
 					{
 						"name": "New customer added",

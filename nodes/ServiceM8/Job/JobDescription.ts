@@ -5,39 +5,48 @@ export const jobDescription: INodeProperties[] = [
 		displayName: 'Operation',
 		name: 'operation',
 		type: 'options',
+		noDataExpression: true,
 		default: 'getMany',
 		options: [
 			{
 				name: 'Add Note To Job',
 				value: 'addNoteToJob',
+				action: 'Add note to job a job',
 			},
 			{
 				name: 'Create',
 				value: 'create',
+				action: 'Create a job',
 			},
 			{
 				name: 'Create From Template',
 				value: 'createFromTemplate',
+				action: 'Create from template a job',
 			},
 			{
 				name: 'Delete',
 				value: 'delete',
+				action: 'Delete a job',
 			},
 			{
 				name: 'Get',
 				value: 'get',
+				action: 'Get a job',
 			},
 			{
 				name: 'Get Many',
 				value: 'getMany',
+				action: 'Get many a job',
 			},
 			{
 				name: 'Update',
 				value: 'update',
+				action: 'Update a job',
 			},
 			{
 				name: 'Send Job To Queue',
 				value: 'sendJobToQueue',
+				action: 'Send job to queue a job',
 			},
 		],
 		displayOptions: {
@@ -59,9 +68,10 @@ export const jobDescription: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Job Template ID Or Name',
+		displayName: 'Job Template ID Or Name or ID',
 		name: 'jobTemplateUUID',
 		type: 'options',
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 		default: '',
 		typeOptions:{
 			loadOptionsMethod: 'getJobTemplates',

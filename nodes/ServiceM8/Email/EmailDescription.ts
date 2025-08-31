@@ -6,11 +6,13 @@ export const emailDescription: INodeProperties[] = [
 		displayName: 'Operation',
 		name: 'operation',
 		type: 'options',
+		noDataExpression: true,
 		default: 'sendEmail',
 		options: [
 			{
 				name: 'Send Email',
 				value: 'sendEmail',
+				action: 'Send email an email',
 			},
 		],
 		displayOptions: {
