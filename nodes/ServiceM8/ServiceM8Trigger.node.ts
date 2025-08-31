@@ -50,130 +50,130 @@ export class ServiceM8Trigger implements INodeType {
 				default: 'company.created',
 				options: [
 					{
+						name: 'Badge Added to Job',
+						value: "job.badge_added",
+						description: 'To get notified if a Badge added to job'
+					},
+					{
+						name: 'Badge Removed From Job',
+						value: "job.badge_removed",
+						description: 'To get notified if a Badge removed from job'
+					},
+					{
+						name: 'Customer Accepted the Quote',
+						value: "job.quote_accepted",
+						description: 'To get notified if a Customer accepted the quote'
+					},
+					{
+						name: 'Customer Details Updated',
+						value: "company.updated",
+						description: 'To get notified if a Customer details updated'
+					},
+					{
+						name: 'Customer Review Submitted',
+						value: "job.review_received",
+						description: 'To get notified if a Customer review submitted'
+					},
+					{
+						name: 'Form Response Submitted',
+						value: "form.response_created",
+						description: 'To get notified if a Form response submitted'
+					},
+					{
+						name: 'Full Payment Received for Invoice',
+						value: "job.invoice_paid",
+						description: 'To get notified if a Full payment received for invoice'
+					},
+					{
+						name: 'Invoice Sent to Customer',
+						value: "job.invoice_sent",
+						description: 'To get notified if a Invoice sent to customer'
+					},
+					{
+						name: 'Job Added to Queue',
+						value: "job.queued",
+						description: 'To get notified if a Job added to queue'
+					},
+					{
+						name: 'Job Details Modified',
+						value: "job.updated",
+						description: 'To get notified if a Job details modified'
+					},
+					{
+						name: 'Job Marked as Completed',
+						value: "job.completed",
+						description: 'To get notified if a Job marked as completed'
+					},
+					{
+						name: 'Job Status Changed',
+						value: "job.status_changed",
+						description: 'To get notified if a Job status changed'
+					},
+					{
 						name: 'New Customer Added',
 						value: "company.created",
 						description: 'To get notified if a New customer added'
 					},
 					{
-						"name": "Customer details updated",
-						"value": "company.updated",
-						"description": "to get notified if a Customer details updated"
+						name: 'New Job Created in the System',
+						value: "job.created",
+						description: 'To get notified if a New job created in the system'
 					},
 					{
-						"name": "Form response submitted",
-						"value": "form.response_created",
-						"description": "to get notified if a Form response submitted"
+						name: 'New Message Received in Inbox',
+						value: "inbox.message_received",
+						description: 'To get notified if a New message received in inbox'
 					},
 					{
-						"name": "New message received in inbox",
-						"value": "inbox.message_received",
-						"description": "to get notified if a New message received in inbox"
+						name: 'Note Added to Job',
+						value: "job.note_added",
+						description: 'To get notified if a Note added to job'
 					},
 					{
-						"name": "Badge added to job",
-						"value": "job.badge_added",
-						"description": "to get notified if a Badge added to job"
+						name: 'Photo Attached to Job',
+						value: "job.photo_added",
+						description: 'To get notified if a Photo attached to job'
 					},
 					{
-						"name": "Badge removed from job",
-						"value": "job.badge_removed",
-						"description": "to get notified if a Badge removed from job"
+						name: 'Proposal Sent to Customer',
+						value: "proposal.sent",
+						description: 'To get notified if a Proposal sent to customer'
 					},
 					{
-						"name": "Staff member arrived at job site",
-						"value": "job.checked_in",
-						"description": "to get notified if a Staff member arrived at job site"
+						name: 'Proposal Viewed by Customer',
+						value: "proposal.viewed",
+						description: 'To get notified if a Proposal viewed by customer'
 					},
 					{
-						"name": "Staff member left job site",
-						"value": "job.checked_out",
-						"description": "to get notified if a Staff member left job site"
+						name: 'Quote Sent to Customer',
+						value: "job.quote_sent",
+						description: 'To get notified if a Quote sent to customer'
 					},
 					{
-						"name": "Job marked as completed",
-						"value": "job.completed",
-						"description": "to get notified if a Job marked as completed"
+						name: 'Staff Member Arrived at Job Site',
+						value: "job.checked_in",
+						description: 'To get notified if a Staff member arrived at job site'
 					},
 					{
-						"name": "New job created in the system",
-						"value": "job.created",
-						"description": "to get notified if a New job created in the system"
+						name: 'Staff Member Ended Shift',
+						value: "staff.clocked_off",
+						description: 'To get notified if a Staff member ended shift'
 					},
 					{
-						"name": "Full payment received for invoice",
-						"value": "job.invoice_paid",
-						"description": "to get notified if a Full payment received for invoice"
+						name: 'Staff Member Left Job Site',
+						value: "job.checked_out",
+						description: 'To get notified if a Staff member left job site'
 					},
 					{
-						"name": "Invoice sent to customer",
-						"value": "job.invoice_sent",
-						"description": "to get notified if a Invoice sent to customer"
+						name: 'Staff Member Started Shift',
+						value: "staff.clocked_on",
+						description: 'To get notified if a Staff member started shift'
 					},
 					{
-						"name": "Note added to job",
-						"value": "job.note_added",
-						"description": "to get notified if a Note added to job"
+						name: 'Video Attached to Job',
+						value: "job.video_added",
+						description: 'To get notified if a Video attached to job'
 					},
-					{
-						"name": "Photo attached to job",
-						"value": "job.photo_added",
-						"description": "to get notified if a Photo attached to job"
-					},
-					{
-						"name": "Job added to queue",
-						"value": "job.queued",
-						"description": "to get notified if a Job added to queue"
-					},
-					{
-						"name": "Customer accepted the quote",
-						"value": "job.quote_accepted",
-						"description": "to get notified if a Customer accepted the quote"
-					},
-					{
-						"name": "Quote sent to customer",
-						"value": "job.quote_sent",
-						"description": "to get notified if a Quote sent to customer"
-					},
-					{
-						"name": "Customer review submitted",
-						"value": "job.review_received",
-						"description": "to get notified if a Customer review submitted"
-					},
-					{
-						"name": "Job status changed",
-						"value": "job.status_changed",
-						"description": "to get notified if a Job status changed"
-					},
-					{
-						"name": "Job details modified",
-						"value": "job.updated",
-						"description": "to get notified if a Job details modified"
-					},
-					{
-						"name": "Video attached to job",
-						"value": "job.video_added",
-						"description": "to get notified if a Video attached to job"
-					},
-					{
-						"name": "Proposal sent to customer",
-						"value": "proposal.sent",
-						"description": "to get notified if a Proposal sent to customer"
-					},
-					{
-						"name": "Proposal viewed by customer",
-						"value": "proposal.viewed",
-						"description": "to get notified if a Proposal viewed by customer"
-					},
-					{
-						"name": "Staff member ended shift",
-						"value": "staff.clocked_off",
-						"description": "to get notified if a Staff member ended shift"
-					},
-					{
-						"name": "Staff member started shift",
-						"value": "staff.clocked_on",
-						"description": "to get notified if a Staff member started shift"
-					}
 				]
 			},
 

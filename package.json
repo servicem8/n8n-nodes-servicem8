@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-servicem8",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Trigger Node + Normal node for ServiceM8",
   "keywords": [
     "n8n-community-node-package"
@@ -36,7 +36,8 @@
       "dist/credentials/ServiceM8CredentialsApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/ServiceM8/ServiceM8.node.js"
+      "dist/nodes/ServiceM8/ServiceM8.node.js",
+      "dist/nodes/ServiceM8/ServiceM8Trigger.node.js"
     ]
   },
   "devDependencies": {
