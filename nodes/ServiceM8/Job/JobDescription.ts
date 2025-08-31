@@ -39,14 +39,14 @@ export const jobDescription: INodeProperties[] = [
 				action: 'Get many a job',
 			},
 			{
-				name: 'Update',
-				value: 'update',
-				action: 'Update a job',
-			},
-			{
 				name: 'Send Job To Queue',
 				value: 'sendJobToQueue',
 				action: 'Send job to queue a job',
+			},
+			{
+				name: 'Update',
+				value: 'update',
+				action: 'Update a job',
 			},
 		],
 		displayOptions: {
