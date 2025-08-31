@@ -30,6 +30,21 @@ export const JobCreateFromTemplateObject: INodeProperties[] = [
     },
 ];
 
+export const JobAddNoteObject: INodeProperties[] = [
+    {
+        "name": "note",
+        "displayName": "Note",
+        "type": "string",
+        "default": ""
+    },
+    {
+        "name": "related_object_uuid",
+        "displayName": "Job UUID",
+        "type": "string",
+        "default": ""
+    },
+];
+
 export const JobCreateObject: INodeProperties[] = [
   {
     "name": "created_by_staff_uuid",

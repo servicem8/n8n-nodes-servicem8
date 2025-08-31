@@ -162,11 +162,18 @@ export class ServiceM8 implements INodeType {
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
 					returnData = returnData.concat(responseData.body);
 				}
+				if(operation === 'addNoteToJob'){
+					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
+					let body = fields;
+					body.related_object = 'job';
+					body.active = 1;
+					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
+					returnData = returnData.concat(responseData.body);
+				}
 				if(operation === 'delete'){
 					responseData = await serviceM8ApiRequest.call(this,'DELETE',endpoint);
 					returnData = returnData.concat(responseData.body);
 				}
-
 			} catch (error) {
 				// This node should never fail but we want to showcase how
 				// to handle errors.

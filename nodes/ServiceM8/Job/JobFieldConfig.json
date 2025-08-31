@@ -32,6 +32,10 @@
             "jobTemplateUUID"
         ]
     },
+    "addNoteToJob":{
+        "url":"https://api.servicem8.com/api_1.0/note.json",
+        "urlParams":[]
+    },
     "fields":[
         {
             "field": "created_by_staff_uuid",

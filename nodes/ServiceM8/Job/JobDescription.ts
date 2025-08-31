@@ -1,5 +1,5 @@
 import { INodeProperties } from 'n8n-workflow';
-import { JobCreateFromTemplateObject, JobCreateObject } from './JobObjects';
+import { JobAddNoteObject, JobCreateFromTemplateObject, JobCreateObject } from './JobObjects';
 export const jobDescription: INodeProperties[] = [
     {
 		displayName: 'Operation',
@@ -148,6 +148,22 @@ export const jobDescription: INodeProperties[] = [
 				show: {
 					resource: ['job'],
 					operation: ['createFromTemplate'],
+				},
+			},
+		},
+		{
+			displayName: 'Fields',
+			name: 'fields',
+			type: 'collection',
+			default: {
+				"note":"",
+				"related_object_uuid":"",
+			},
+			options: JobAddNoteObject,
+			displayOptions: {
+				show: {
+					resource: ['job'],
+					operation: ['addNoteToJob'],
 				},
 			},
 		}
