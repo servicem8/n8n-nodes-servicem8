@@ -1,5 +1,35 @@
 import { INodeProperties } from "n8n-workflow";
 
+export const JobCreateFromTemplateObject: INodeProperties[] = [
+    {
+        "name": "job_description",
+        "displayName": "job_description",
+        "type": "string",
+        "default": ""
+    },
+    {
+        "name": "job_address",
+        "displayName": "Job Address",
+        "type": "string",
+        "description":"Street address for the job",
+        "default": ""
+    },
+    {
+        "name": "company_uuid",
+        "displayName": "Company UUID",
+        "type": "string",
+        "description":"UUID of the company/client. Cannot be used together with Company Name.",
+        "default": ""
+    },
+    {
+        "name": "company_name",
+        "displayName": "Company/Client Name",
+        "type": "string",
+        "description":"Name of the company/client. If a company with this name exists, it will be used. Otherwise, a new company will be created. Cannot be used together with Company UUID.",
+        "default": ""
+    },
+];
+
 export const JobCreateObject: INodeProperties[] = [
   {
     "name": "created_by_staff_uuid",

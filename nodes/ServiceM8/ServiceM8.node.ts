@@ -13,7 +13,7 @@ import { jobDescription } from './Job/JobDescription';
 import { emailDescription } from './Email/EmailDescription';
 import { smsDescription } from './Sms/SmsDescription';
 import { getAllData, getEndpoint,getFields,getUrlParams, processBody, processFilters, serviceM8ApiRequest, toOptionsFromFieldConfig } from './GenericFunctions';
-import { fieldConfig } from './types';
+import { fieldConfig, jobTemplate } from './types';
 import { genericDescription } from './GenericDescription';
 
 export class ServiceM8 implements INodeType {
@@ -84,6 +84,12 @@ export class ServiceM8 implements INodeType {
 				const fieldOptions = toOptionsFromFieldConfig.call(this,fields);
 				return fieldOptions;
 			},
+			async getJobTemplates(this:ILoadOptionsFunctions){
+				const endpoint = 'https://api.servicem8.com/api_1.0/jobtemplate.json';
+				const responseData = await serviceM8ApiRequest.call(this,'POST',endpoint);
+				const jobTemplates = responseData.body as jobTemplate[] ?? [];
+				return jobTemplates.map((x)=>({name: x.name, value:x.uuid}));
+			}
 		}
 	}
 
@@ -144,6 +150,15 @@ export class ServiceM8 implements INodeType {
 				if(operation === 'create'){
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
 					let body = fields;
+					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
+					returnData = returnData.concat(responseData.body);
+				}
+				if(operation === 'createFromTemplate'){
+					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
+					let body = fields;
+					if(body.company_name && body.company_uuid){
+						delete body.company_name;
+					}
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
 					returnData = returnData.concat(responseData.body);
 				}

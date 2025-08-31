@@ -9,3 +9,10 @@ export type fieldConfig = {
     filter:bool;
     type:string;
 }
+
+export type jobTemplate = {
+    uuid: string;
+    active: bool;
+    edit_date: string;
+    name: string;
+}

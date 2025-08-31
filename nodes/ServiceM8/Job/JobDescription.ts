@@ -1,5 +1,5 @@
 import { INodeProperties } from 'n8n-workflow';
-import { JobCreateObject } from './JobObjects';
+import { JobCreateFromTemplateObject, JobCreateObject } from './JobObjects';
 export const jobDescription: INodeProperties[] = [
     {
 		displayName: 'Operation',
@@ -54,7 +54,22 @@ export const jobDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['job'],
-				operation: ['get','update'],
+				operation: ['get','update','delete'],
+			},
+		},
+	},
+	{
+		displayName: 'Job Template ID Or Name',
+		name: 'jobTemplateUUID',
+		type: 'options',
+		default: '',
+		typeOptions:{
+			loadOptionsMethod: 'getJobTemplates',
+		},
+		displayOptions: {
+			show: {
+				resource: ['job'],
+				operation: ['createFromTemplate'],
 			},
 		},
 	},
@@ -116,6 +131,23 @@ export const jobDescription: INodeProperties[] = [
 				show: {
 					resource: ['job'],
 					operation: ['create'],
+				},
+			},
+		},
+		{
+			displayName: 'Fields',
+			name: 'fields',
+			type: 'collection',
+			default: {
+				"job_description":"",
+				"company_uuid":"",
+				"job_address":"",
+			},
+			options: JobCreateFromTemplateObject,
+			displayOptions: {
+				show: {
+					resource: ['job'],
+					operation: ['createFromTemplate'],
 				},
 			},
 		}

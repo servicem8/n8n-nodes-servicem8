@@ -26,6 +26,12 @@
             "uuid"
         ]
     },
+    "createFromTemplate":{
+        "url":"https://api.servicem8.com/api_1.0/jobtemplate/{jobTemplateUUID}/job.json",
+        "urlParams":[
+            "jobTemplateUUID"
+        ]
+    },
     "fields":[
         {
             "field": "created_by_staff_uuid",
