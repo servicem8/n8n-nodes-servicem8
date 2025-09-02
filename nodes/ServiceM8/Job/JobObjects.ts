@@ -30,6 +30,26 @@ export const JobCreateFromTemplateObject: INodeProperties[] = [
     },
 ];
 
+export const JobSendToQueueObject: INodeProperties[] = [
+    
+  {
+        "name": "queue_uuid",
+        "displayName": "Job Queue ID Or Name",
+        "type": "options",
+        "default": "",
+        typeOptions:{
+          loadOptionsMethod: 'getJobQueues',
+        },
+    },
+    {
+        "name": "queue_expiry_date",
+        "displayName": "Queue Expiry Date",
+        "type": "string",
+        "description":"Expiry date of the Queue.",
+        "default": ""
+    },
+];
+
 export const JobAddNoteObject: INodeProperties[] = [
     {
         "name": "note",

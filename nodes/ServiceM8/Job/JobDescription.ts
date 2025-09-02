@@ -1,5 +1,5 @@
 import { INodeProperties } from 'n8n-workflow';
-import { JobAddNoteObject, JobCreateFromTemplateObject, JobCreateObject } from './JobObjects';
+import { JobAddNoteObject, JobCreateFromTemplateObject, JobCreateObject, JobSendToQueueObject } from './JobObjects';
 export const jobDescription: INodeProperties[] = [
     {
 		displayName: 'Operation',
@@ -63,12 +63,12 @@ export const jobDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['job'],
-				operation: ['get','update','delete'],
+				operation: ['get','update','delete','sendJobToQueue'],
 			},
 		},
 	},
 	{
-		displayName: 'Job Template ID Or Name or ID',
+		displayName: 'Job Template Name or ID',
 		name: 'jobTemplateUUID',
 		type: 'options',
 		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
@@ -174,6 +174,22 @@ export const jobDescription: INodeProperties[] = [
 				show: {
 					resource: ['job'],
 					operation: ['addNoteToJob'],
+				},
+			},
+		},
+		{
+			displayName: 'Fields',
+			name: 'fields',
+			type: 'collection',
+			default: {
+				"queue_uuid":"",
+				"queue_expiry_date":"",
+			},
+			options: JobSendToQueueObject,
+			displayOptions: {
+				show: {
+					resource: ['job'],
+					operation: ['sendJobToQueue'],
 				},
 			},
 		}

@@ -13,7 +13,7 @@ import { jobDescription } from './Job/JobDescription';
 import { emailDescription } from './Email/EmailDescription';
 import { smsDescription } from './Sms/SmsDescription';
 import { getAllData, getEndpoint,getFields,getUrlParams, processBody, processFilters, serviceM8ApiRequest, toOptionsFromFieldConfig } from './GenericFunctions';
-import { fieldConfig, jobTemplate } from './types';
+import { fieldConfig, jobQueue, jobTemplate } from './types';
 import { genericDescription } from './GenericDescription';
 
 export class ServiceM8 implements INodeType {
@@ -90,6 +90,12 @@ export class ServiceM8 implements INodeType {
 				const responseData = await serviceM8ApiRequest.call(this,'GET',endpoint);
 				const jobTemplates = responseData.body as jobTemplate[] ?? [];
 				return jobTemplates.map((x)=>({name: x.name, value:x.uuid}));
+			},
+			async getJobQueues(this:ILoadOptionsFunctions){
+				const endpoint = 'https://api.servicem8.com/api_1.0/queue.json';
+				const responseData = await serviceM8ApiRequest.call(this,'GET',endpoint);
+				const jobQueues = responseData.body as jobQueue[] ?? [];
+				return jobQueues.map((x)=>({name: x.name, value:x.uuid}));
 			}
 		}
 	}
@@ -168,6 +174,12 @@ export class ServiceM8 implements INodeType {
 					let body = fields;
 					body.related_object = 'job';
 					body.active = 1;
+					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
+					returnData = returnData.concat(responseData.body);
+				}
+				if(operation === 'sendJobToQueue'){
+					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
+					let body = fields;
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
 					returnData = returnData.concat(responseData.body);
 				}

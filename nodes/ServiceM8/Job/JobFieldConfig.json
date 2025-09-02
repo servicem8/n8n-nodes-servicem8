@@ -36,6 +36,12 @@
         "url":"https://api.servicem8.com/api_1.0/note.json",
         "urlParams":[]
     },
+    "sendJobToQueue":{
+        "url":"https://api.servicem8.com/api_1.0/job/{uuid}.json",
+        "urlParams":[
+            "uuid"
+        ]
+    },
     "fields":[
         {
             "field": "created_by_staff_uuid",

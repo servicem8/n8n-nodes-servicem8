@@ -40,11 +40,10 @@ export async function serviceM8ApiRequest(
 	if (!Object.keys(body as IDataObject).length) {
 		delete options.body;
 	}
-
 	if (!Object.keys(query).length) {
 		delete options.qs;
 	}
-	this.logger.info(JSON.stringify(options));
+
 	return await this.helpers.requestWithAuthentication.call(this, credentialType, options);
 }
 
@@ -71,7 +70,7 @@ export async function getAllData(
 			
 
 		} while ((limit === 0 || returnData.length < limit) && query.cursor !== '0');
-		//this.logger.info(JSON.stringify(returnData));
+
 		return returnData;
 }
 

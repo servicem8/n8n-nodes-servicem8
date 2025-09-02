@@ -16,3 +16,10 @@ export type jobTemplate = {
     edit_date: string;
     name: string;
 }
+
+export type jobQueue = {
+    uuid: string;
+    active: bool;
+    edit_date: string;
+    name: string;
+}
