@@ -87,7 +87,7 @@ export class ServiceM8 implements INodeType {
 			},
 			async getJobTemplates(this:ILoadOptionsFunctions){
 				const endpoint = 'https://api.servicem8.com/api_1.0/jobtemplate.json';
-				const responseData = await serviceM8ApiRequest.call(this,'POST',endpoint);
+				const responseData = await serviceM8ApiRequest.call(this,'GET',endpoint);
 				const jobTemplates = responseData.body as jobTemplate[] ?? [];
 				return jobTemplates.map((x)=>({name: x.name, value:x.uuid}));
 			}
