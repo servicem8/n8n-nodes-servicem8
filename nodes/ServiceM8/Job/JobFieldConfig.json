@@ -79,32 +79,11 @@
             "displayName":"Status"
         },
         {
-            "field": "lng",
-            "required": false,
-            "filter":true,
-            "type": "float",
-            "displayName":"Lng"
-        },
-        {
-            "field": "lat",
-            "required": false,
-            "filter":true,
-            "type": "float",
-            "displayName":"Lat"
-        },
-        {
             "field": "category_uuid",
             "required": false,
             "filter":true,
             "type": "uuid",
             "displayName":"Category UUID"
-        },
-        {
-            "field": "geo_is_valid",
-            "required": false,
-            "filter":true,
-            "type": "integer",
-            "displayName":"Geo Is valid"
         },
         {
             "field": "purchase_order_number",
@@ -119,55 +98,6 @@
             "filter":true,
             "type": "integer",
             "displayName":"Invoice Sent"
-        },
-        {
-            "field": "invoice_sent_stamp",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Invoice Sent Stamp"
-        },
-        {
-            "field": "geo_country",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Geo Country"
-        },
-        {
-            "field": "geo_postcode",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Geo Postcode"
-        },
-        {
-            "field": "geo_state",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Geo State"
-        },
-        {
-            "field": "geo_city",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Geo City"
-        },
-        {
-            "field": "geo_street",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Geo Street"
-        },
-        {
-            "field": "geo_number",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Geo Number"
         },
         {
             "field": "queue_uuid",
@@ -210,13 +140,6 @@
             "filter":true,
             "type": "integer",
             "displayName":"Quote Sent"
-        },
-        {
-            "field": "quote_sent_stamp",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Quote Sent Stamp"
         },
         {
             "field": "work_order_date",
@@ -268,32 +191,11 @@
             "displayName":"Work Done Description"
         },
         {
-            "field": "generated_job_id",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"generated Job ID"
-        },
-        {
-            "field": "total_invoice_amount",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Total Invoice Amount"
-        },
-        {
             "field": "payment_processed",
             "required": false,
             "filter":true,
             "type": "integer",
             "displayName":"Payment Processed"
-        },
-        {
-            "field": "payment_processed_stamp",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Payment Processed Stamp"
         },
         {
             "field": "payment_received",
@@ -303,13 +205,6 @@
             "displayName":"Payment Received"
         },
         {
-            "field": "payment_received_stamp",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Payment Received Stamp"
-        },
-        {
             "field": "completion_date",
             "required": false,
             "filter":true,
@@ -317,25 +212,11 @@
             "displayName":"Completion Date"
         },
         {
-            "field": "completion_actioned_by_uuid",
-            "required": false,
-            "filter":true,
-            "type": "uuid",
-            "displayName":"Completion Actioned By UUID"
-        },
-        {
             "field": "unsuccessful_date",
             "required": false,
             "filter":true,
             "type": "string",
             "displayName":"Unsuccessful Date"
-        },
-        {
-            "field": "job_is_scheduled_until_stamp",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Job Is Scheduled Until Stamp"
         }
     ]
 }
