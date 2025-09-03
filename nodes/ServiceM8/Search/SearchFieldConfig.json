@@ -1,0 +1,12 @@
+{
+    "globalSearch": {
+        "url":"https://api.servicem8.com/api_1.0/search.json",
+        "urlParams":[]
+    },
+    "objectSearch": {
+        "url":"https://api.servicem8.com/api_1.0/search/{objectType}.json",
+        "urlParams":[
+            "objectType"
+        ]
+    }
+}

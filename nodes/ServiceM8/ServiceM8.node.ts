@@ -15,6 +15,7 @@ import { smsDescription } from './Sms/SmsDescription';
 import { getAllData, getEndpoint,getFields,getUrlParams, processBody, processFilters, serviceM8ApiRequest, toOptionsFromFieldConfig } from './GenericFunctions';
 import { fieldConfig, jobQueue, jobTemplate } from './types';
 import { genericDescription } from './GenericDescription';
+import { searchDescription } from './Search/SearchDescription';
 
 export class ServiceM8 implements INodeType {
 	description: INodeTypeDescription = {
@@ -57,6 +58,10 @@ export class ServiceM8 implements INodeType {
 						value: 'email',
 					},
 					{
+						name: 'Search',
+						value: 'search',
+					},
+					{
 						name: 'SMS',
 						value: 'sms',
 					},
@@ -68,6 +73,7 @@ export class ServiceM8 implements INodeType {
 			...emailDescription,
 			...smsDescription,
 			...genericDescription,
+			...searchDescription,
 		],
 	};
 	methods = {
@@ -204,6 +210,19 @@ export class ServiceM8 implements INodeType {
 				}
 				if(operation === 'delete'){
 					responseData = await serviceM8ApiRequest.call(this,'DELETE',endpoint);
+					returnData = returnData.concat(responseData.body);
+				}
+				if(operation === 'objectSearch' || operation === 'globalSearch'){
+					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
+					if(!fields?.q){
+						throw new NodeOperationError(this.getNode(), 'No search query was provided.');
+					}
+					qs = fields;
+					if(operation === 'objectSearch'){
+						delete qs.objectType;
+					}
+					responseData = await serviceM8ApiRequest.call(this,'GET',endpoint,qs);
+
 					returnData = returnData.concat(responseData.body);
 				}
 			} catch (error) {

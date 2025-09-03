@@ -10,6 +10,7 @@ import type {
 
 import clientConfig from "./Client/ClientFieldConfig.json";
 import jobConfig from "./Job/JobFieldConfig.json";
+import searchConfig from "./Search/SearchFieldConfig.json";
 import { fieldConfig } from './types';
 
 export async function serviceM8ApiRequest(
@@ -43,7 +44,7 @@ export async function serviceM8ApiRequest(
 	if (!Object.keys(query).length) {
 		delete options.qs;
 	}
-
+	this.logger.info(JSON.stringify(options));
 	return await this.helpers.requestWithAuthentication.call(this, credentialType, options);
 }
 
@@ -77,7 +78,7 @@ export async function getAllData(
 export async function getEndpoint(
 	this: IExecuteFunctions | IWebhookFunctions | IHookFunctions | ILoadOptionsFunctions,
 	resource: string,
-	operation: string){
+	operation: string):Promise<string>{
 		let operationConfig;
 		switch(resource){
 			case 'job':
@@ -86,6 +87,9 @@ export async function getEndpoint(
 			case 'client':
 				operationConfig = clientConfig[operation as keyof typeof clientConfig];
 				return operationConfig['url' as keyof typeof operationConfig];
+			case 'search':
+				operationConfig = searchConfig[operation as keyof typeof searchConfig];
+				return operationConfig['url' as keyof typeof operationConfig] as string;
 			default:
 				return '';
 		}
@@ -104,6 +108,9 @@ export async function getUrlParams(
 			case 'client':
 				operationConfig = clientConfig[operation as keyof typeof clientConfig];
 				return operationConfig['urlParams' as keyof typeof operationConfig];
+			case 'search':
+				operationConfig = searchConfig[operation as keyof typeof searchConfig];
+				return operationConfig['urlParams' as keyof typeof operationConfig] as string[];
 			default:
 				return [];
 		}

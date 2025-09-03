@@ -63,6 +63,18 @@ export const JobAddNoteObject: INodeProperties[] = [
         "type": "string",
         "default": ""
     },
+    {
+        "name": "action_required",
+        "displayName": "Action Required",
+        "type": "string",
+        "default": ""
+    },
+    {
+        "name": "action_completed_by_staff_uuid",
+        "displayName": "Action Completed By Staff UUID",
+        "type": "string",
+        "default": "",
+    },
 ];
 
 export const JobCreateObject: INodeProperties[] = [
