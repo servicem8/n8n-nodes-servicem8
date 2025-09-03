@@ -50,12 +50,12 @@ export class ServiceM8 implements INodeType {
 						value: 'client',
 					},
 					{
-						name: 'Job',
-						value: 'job',
-					},
-					{
 						name: 'Email',
 						value: 'email',
+					},
+					{
+						name: 'Job',
+						value: 'job',
 					},
 					{
 						name: 'Search',

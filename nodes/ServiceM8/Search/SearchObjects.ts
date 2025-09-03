@@ -9,12 +9,12 @@ export const SearchFieldsObject: INodeProperties[] = [
     },
     {
         displayName: 'Limit',
-        description: 'Maximum number of results to return (max 100)',
+        description: 'Max number of results to return',
         name: 'limit',
         type: 'number',
         default: 50,
         typeOptions:{
-            maxValue:100,
+
             minValue:1,
         }
     },

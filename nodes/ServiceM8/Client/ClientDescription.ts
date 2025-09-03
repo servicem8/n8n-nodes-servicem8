@@ -17,7 +17,7 @@ export const clientDescription: INodeProperties[] = [
 			{
 				name: 'Get Many',
 				value: 'getMany',
-				action: 'Get many Clients',
+				action: 'Get many clients',
 			},
 		],
 		displayOptions: {
