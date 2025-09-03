@@ -8,6 +8,7 @@ export type fieldConfig = {
 	required:bool;
     filter:bool;
     type:string;
+    displayName:string;
 }
 
 export type jobTemplate = {

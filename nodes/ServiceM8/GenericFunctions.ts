@@ -185,4 +185,4 @@ export async function processBody(
 }
 
 export const toOptionsFromFieldConfig = (items:fieldConfig[]) =>
-	items.map((x) => ({name:x.field, value:x.field}));
+	items.map((x) => ({name:x.displayName, value:x.field}));

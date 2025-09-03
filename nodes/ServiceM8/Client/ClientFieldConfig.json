@@ -26,115 +26,134 @@
                 "field":"name",
                 "required":true,
                 "filter":true,
-                "type":"string"
+                "type":"string",
+                "displayName":"Name"
             },
             {
                 "field":"abn_number",
                 "required":false,
                 "filter":true,
-                "type":"string"
+                "type":"string",
+                "displayName":"ABN Number"
             },
             {
                 "field":"address",
                 "required":false,
                 "filter":true,
-                "type":"string"
+                "type":"string",
+                "displayName":"Address"
             },
             {
                 "field":"billing_address",
                 "required":false,
                 "filter":true,
-                "type":"string"
+                "type":"string",
+                "displayName":"Billing Address"
             },
             {
                 "field":"parent_company_uuid",
                 "required":false,
                 "filter":true,
-                "type":"string"
+                "type":"string",
+                "displayName":"Parent Company UUID"
             },
             {
                 "field":"uuid",
                 "required":false,
                 "filter":true,
-                "type":"string"
+                "type":"string",
+                "displayName":"UUID"
             },
             {
                 "field":"active",
                 "required":false,
                 "filter":true,
-                "type":"integer"
+                "type":"integer",
+                "displayName":"Active"
             },
             {
                 "field":"website",
                 "required":false,
                 "filter":true,
-                "type":"string"
+                "type":"string",
+                "displayName":"Website"
             },
             {
                 "field":"is_individual",
                 "required":false,
                 "filter":true,
-                "type":"integer"
+                "type":"integer",
+                "displayName":"Is Individual"
             },
             {
                 "field":"address_street",
                 "required":false,
                 "filter":true,
-                "type":"string"
+                "type":"string",
+                "displayName":"Address Street"
             },
             {
                 "field":"address_city",
                 "required":false,
                 "filter":true,
-                "type":"string"
+                "type":"string",
+                "displayName":"Address City"
             },
             {
                 "field":"address_state",
                 "required":false,
                 "filter":true,
-                "type":"string"
+                "type":"string",
+                "displayName":"Address State"
             },
             {
                 "field":"address_postcode",
                 "required":false,
                 "filter":true,
-                "type":"string"
+                "type":"string",
+                "displayName":"Address Postcode"
             },
             {
                 "field":"address_country",
                 "required":false,
                 "filter":true,
-                "type":"string"
+                "type":"string",
+                "displayName":"Address Country"
             },
             {
                 "field":"fax_number",
                 "required":false,
                 "filter":true,
-                "type":"string"
+                "type":"string",
+                "displayName":"Fax Number"
             },
             {
                 "field":"badges",
                 "required":false,
                 "filter":true,
-                "type":"string"
+                "type":"string",
+                "displayName":"Badges"
             },
             {
                 "field":"tax_rate_uuid",
                 "required":false,
                 "filter":true,
-                "type":"string"
+                "type":"string",
+                "displayName":"Tax Rate UUID"
             },
             {
                 "field":"billing_attention",
                 "required":false,
                 "filter":true,
-                "type":"string"
+                "type":"string",
+                "displayName":"Billing Attention"
             },
             {
                 "field":"payment_terms",
                 "required":false,
                 "filter":true,
-                "type":"string"
+                "type":"string",
+                "displayName":"Payment Terms"
             }
         ]
     }
