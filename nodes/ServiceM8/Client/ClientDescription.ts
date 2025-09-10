@@ -12,12 +12,12 @@ export const clientDescription: INodeProperties[] = [
 			{
 				name: 'Get',
 				value: 'get',
-				action: 'Get Customer Details',
+				action: 'Get customer details',
 			},
 			{
 				name: 'Get Many',
 				value: 'getMany',
-				action: 'Get Multiple Clients',
+				action: 'Get multiple clients',
 			},
 		],
 		displayOptions: {

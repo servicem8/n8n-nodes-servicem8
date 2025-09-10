@@ -11,17 +11,17 @@ export const jobDescription: INodeProperties[] = [
 			{
 				name: 'Add Note To Job',
 				value: 'addNoteToJob',
-				action: 'Add Job Note',
+				action: 'Add job note',
 			},
 			{
 				name: 'Create',
 				value: 'create',
-				action: 'Create new Job',
+				action: 'Create new job',
 			},
 			{
 				name: 'Create From Template',
 				value: 'createFromTemplate',
-				action: 'Create Job From Template',
+				action: 'Create job from template',
 			},
 			{
 				name: 'Delete',
@@ -31,22 +31,22 @@ export const jobDescription: INodeProperties[] = [
 			{
 				name: 'Get',
 				value: 'get',
-				action: 'Get Job Details',
+				action: 'Get job details',
 			},
 			{
 				name: 'Get Many',
 				value: 'getMany',
-				action: 'Get Multiple Jobs',
+				action: 'Get multiple jobs',
 			},
 			{
 				name: 'Send Job To Queue',
 				value: 'sendJobToQueue',
-				action: 'Queue Job',
+				action: 'Queue job',
 			},
 			{
 				name: 'Update',
 				value: 'update',
-				action: 'Update Job Details',
+				action: 'Update job details',
 			},
 		],
 		displayOptions: {

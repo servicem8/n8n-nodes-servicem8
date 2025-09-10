@@ -12,7 +12,7 @@ export const emailDescription: INodeProperties[] = [
 			{
 				name: 'Send Email',
 				value: 'sendEmail',
-				action: 'Send Email',
+				action: 'Send email',
 			},
 		],
 		displayOptions: {
