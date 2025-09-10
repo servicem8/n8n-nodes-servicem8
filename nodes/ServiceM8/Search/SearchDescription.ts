@@ -13,12 +13,12 @@ export const searchDescription: INodeProperties[] = [
 			{
 				name: 'Global Search',
 				value: 'globalSearch',
-				action: 'Search across multiple object types',
+				action: 'Search Everything',
 			},
 			{
 				name: 'Search',
 				value: 'objectSearch',
-				action: 'Search within a specific object type',
+				action: 'Search Specific Type',
 			},
 		],
 		displayOptions: {

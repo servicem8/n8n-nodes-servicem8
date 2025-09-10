@@ -12,7 +12,7 @@ export const smsDescription: INodeProperties[] = [
 			{
 				name: 'Send SMS',
 				value: 'sendSMS',
-				action: 'Send SMS a sms',
+				action: 'Send Text Message',
 			},
 		],
 		displayOptions: {

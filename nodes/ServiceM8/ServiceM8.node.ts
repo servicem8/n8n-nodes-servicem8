@@ -201,7 +201,7 @@ export class ServiceM8 implements INodeType {
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body,headers);
 					returnData = returnData.concat(responseData.body);
 				}
-				if(operation === 'sendSms'){
+				if(operation === 'sendSMS'){
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
 					let body = fields;
 					endpoint = 'https://api.servicem8.com/platform_service_sms';
