@@ -44,7 +44,7 @@ export async function serviceM8ApiRequest(
 	if (!Object.keys(query).length) {
 		delete options.qs;
 	}
-	this.logger.info(JSON.stringify(options));
+
 	return await this.helpers.requestWithAuthentication.call(this, credentialType, options);
 }
 
@@ -60,7 +60,7 @@ export async function getAllData(
 
 		do {
 			responseData = await serviceM8ApiRequest.call(this,'GET', endpoint,query);
-			//this.logger.info(JSON.stringify(responseData));
+	
 			returnData = returnData.concat(responseData.body);
 			if(responseData?.headers?.['x-next-cursor']){
 				query.cursor = responseData?.headers['x-next-cursor'];

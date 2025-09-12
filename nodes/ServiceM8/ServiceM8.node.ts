@@ -134,7 +134,11 @@ export class ServiceM8 implements INodeType {
 				const urlParams:string[] = await getUrlParams.call(this,resource,operation);
 				
 				for (const param of urlParams) {
-					const tempParam = this.getNodeParameter(param, itemIndex, '') as string;
+					let tempParam = this.getNodeParameter(param, itemIndex, '') as string;
+					if(!tempParam){
+						let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
+						tempParam = fields[param] as string;
+					}
 					endpoint = endpoint.replace('{'+param+'}',tempParam.trim());
 				}
 				
