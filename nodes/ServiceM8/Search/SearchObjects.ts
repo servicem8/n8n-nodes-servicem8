@@ -55,7 +55,6 @@ export const SearchFieldsObject: INodeProperties[] = [
         default: 50,
         typeOptions:{
             minValue:1,
-            maxValue:100
         }
     },   
 ];
@@ -75,7 +74,6 @@ export const GlobalSearchFieldsObject: INodeProperties[] = [
         default: 50,
         typeOptions:{
             minValue:1,
-            maxValue:50
         }
     },
     
