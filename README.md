@@ -104,7 +104,7 @@ For detailed usage examples and field mapping information, refer to the ServiceM
 
 * [n8n community nodes documentation](https://docs.n8n.io/integrations/community-nodes)
 * [ServiceM8 API Documentation](https://developer.servicem8.com/docs)
-* [ServiceM8 Developer Forum](https://developer.servicem8.com/forum)
+* [ServiceM8 Developer Forum](https://developer.servicem8.com/discuss)
 * [GitHub Issues](https://github.com/servicem8/n8n-nodes-servicem8/issues)
 
 ## Version history
