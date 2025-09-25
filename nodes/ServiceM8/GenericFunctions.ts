@@ -5,7 +5,7 @@ import type {
 	IHookFunctions,
 	IWebhookFunctions,
 	IHttpRequestMethods,
-	IRequestOptions,
+	IHttpRequestOptions,
 } from 'n8n-workflow';
 
 import clientConfig from "./Client/ClientFieldConfig.json";
@@ -25,14 +25,14 @@ export async function serviceM8ApiRequest(
 
 	let credentialType = 'serviceM8CredentialsApi';
 	
-	const options: IRequestOptions = {
+	const options: IHttpRequestOptions = {
 		method,
 		body,
 		qs: query,
-		uri: endpoint,
+		url: endpoint,
 		headers,
 		json: true,
-		resolveWithFullResponse: true,
+		returnFullResponse: true,
 	};
 
 	if (!Object.keys(headers as IDataObject).length) {
@@ -45,7 +45,7 @@ export async function serviceM8ApiRequest(
 		delete options.qs;
 	}
 
-	return await this.helpers.requestWithAuthentication.call(this, credentialType, options);
+	return await this.helpers.httpRequestWithAuthentication.call(this, credentialType, options);
 }
 
 export async function getAllData(
