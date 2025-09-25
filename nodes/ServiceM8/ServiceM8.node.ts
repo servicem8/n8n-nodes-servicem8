@@ -117,8 +117,31 @@ export class ServiceM8 implements INodeType {
 		let resource = this.getNodeParameter('resource', 0, '') as string;
 		let operation = this.getNodeParameter('operation', 0, '') as string;
 		let responseData;
-		let returnData: IDataObject[] = [];
-		let qs:IDataObject = {}
+		const returnItems: INodeExecutionData[] = [];
+		const pushToReturnItems = (data: unknown, index: number) => {
+			if (data === null || data === undefined) {
+				return;
+			}
+			const pushSingle = (value: unknown) => {
+				const json =
+					typeof value === 'object' && value !== null && !Array.isArray(value)
+						? (value as IDataObject)
+						: ({ value } as IDataObject);
+				returnItems.push({
+					json,
+					pairedItem: { item: index },
+				});
+			};
+
+			if (Array.isArray(data)) {
+				for (const entry of data) {
+					pushSingle(entry);
+				}
+				return;
+			}
+
+			pushSingle(data);
+		};
 
 		// Iterates over all input items and add the key "myString" with the
 		// value the parameter "myString" resolves to.
@@ -129,6 +152,8 @@ export class ServiceM8 implements INodeType {
 
 				item.json.resource = resource;
 				item.json.operation = operation;
+
+				let qs: IDataObject = {};
 
 				let endpoint = await getEndpoint.call(this,resource,operation);
 				const urlParams:string[] = await getUrlParams.call(this,resource,operation);
@@ -149,11 +174,11 @@ export class ServiceM8 implements INodeType {
 						qs['$filter'] = filtersString;
 					}
 					responseData = await getAllData.call(this, endpoint,qs);
-					returnData = returnData.concat(responseData);
+					pushToReturnItems(responseData, itemIndex);
 				}
 				if(operation === 'get'){
 					responseData = await getAllData.call(this, endpoint);
-					returnData = returnData.concat(responseData);
+					pushToReturnItems(responseData, itemIndex);
 				}
 				if(operation === 'update'){
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
@@ -162,13 +187,13 @@ export class ServiceM8 implements INodeType {
 						throw new NodeOperationError(this.getNode(), 'No fields to update were added');
 					}
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
-					returnData = returnData.concat(responseData.body);
+					pushToReturnItems(responseData.body, itemIndex);
 				}
 				if(operation === 'create'){
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
 					let body = fields;
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
-					returnData = returnData.concat(responseData.body);
+					pushToReturnItems(responseData.body, itemIndex);
 				}
 				if(operation === 'createFromTemplate'){
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
@@ -177,7 +202,7 @@ export class ServiceM8 implements INodeType {
 						delete body.company_name;
 					}
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
-					returnData = returnData.concat(responseData.body);
+					pushToReturnItems(responseData.body, itemIndex);
 				}
 				if(operation === 'addNoteToJob'){
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
@@ -185,13 +210,13 @@ export class ServiceM8 implements INodeType {
 					body.related_object = 'job';
 					body.active = 1;
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
-					returnData = returnData.concat(responseData.body);
+					pushToReturnItems(responseData.body, itemIndex);
 				}
 				if(operation === 'sendJobToQueue'){
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
 					let body = fields;
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
-					returnData = returnData.concat(responseData.body);
+					pushToReturnItems(responseData.body, itemIndex);
 				}
 				if(operation === 'sendEmail'){
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
@@ -203,37 +228,40 @@ export class ServiceM8 implements INodeType {
 						delete body['x-impersonate-uuid'];
 					}
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body,headers);
-					returnData = returnData.concat(responseData.body);
+					pushToReturnItems(responseData.body, itemIndex);
 				}
 				if(operation === 'sendSMS'){
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
 					let body = fields;
 					endpoint = 'https://api.servicem8.com/platform_service_sms';
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
-					returnData = returnData.concat(responseData.body);
+					pushToReturnItems(responseData.body, itemIndex);
 				}
 				if(operation === 'delete'){
 					responseData = await serviceM8ApiRequest.call(this,'DELETE',endpoint);
-					returnData = returnData.concat(responseData.body);
+					pushToReturnItems(responseData.body, itemIndex);
 				}
 				if(operation === 'objectSearch' || operation === 'globalSearch'){
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
 					if(!fields?.q){
 						throw new NodeOperationError(this.getNode(), 'No search query was provided.');
 					}
-					qs = fields;
+					qs = { ...fields };
 					if(operation === 'objectSearch'){
 						delete qs.objectType;
 					}
 					responseData = await serviceM8ApiRequest.call(this,'GET',endpoint,qs);
 
-					returnData = returnData.concat(responseData.body);
+					pushToReturnItems(responseData.body, itemIndex);
 				}
 			} catch (error) {
 				// This node should never fail but we want to showcase how
 				// to handle errors.
 				if (this.continueOnFail()) {
-					items.push({ json: this.getInputData(itemIndex)[0].json, error, pairedItem: itemIndex });
+					returnItems.push({
+						json: { error: error instanceof Error ? error.message : error },
+						pairedItem: { item: itemIndex },
+					});
 				} else {
 					// Adding `itemIndex` allows other workflows to handle this error
 					if (error.context) {
@@ -249,6 +277,6 @@ export class ServiceM8 implements INodeType {
 			}
 		}
 
-		return [this.helpers.returnJsonArray(returnData)];
+		return [returnItems];
 	}
 }
