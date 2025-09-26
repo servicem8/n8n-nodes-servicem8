@@ -30,10 +30,6 @@ export class ServiceM8CredentialsApi implements ICredentialType {
 			headers: {
 				"X-API-Key": '={{ $credentials.apiKey }}',
 			},
-			qs: {
-				// Send this as part of the query string
-				n8n: 'rocks',
-			},
 		},
 	};
 

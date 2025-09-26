@@ -5,22 +5,22 @@ export type Option = {
 
 export type fieldConfig = {
     field:string;
-	required:bool;
-    filter:bool;
+	required:boolean;
+    filter:boolean;
     type:string;
     displayName:string;
 }
 
 export type jobTemplate = {
     uuid: string;
-    active: bool;
+    active: boolean;
     edit_date: string;
     name: string;
 }
 
 export type jobQueue = {
     uuid: string;
-    active: bool;
+    active: boolean;
     edit_date: string;
     name: string;
 }

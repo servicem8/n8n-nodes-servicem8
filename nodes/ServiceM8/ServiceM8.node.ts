@@ -6,7 +6,7 @@ import type {
 	INodeType,
 	INodeTypeDescription,
 } from 'n8n-workflow';
-import { NodeConnectionType, NodeOperationError } from 'n8n-workflow';
+import { NodeConnectionType, NodeOperationError, NodeApiError } from 'n8n-workflow';
 
 import { clientDescription } from './Client/ClientDescription';
 import { jobDescription } from './Job/JobDescription';
@@ -269,6 +269,12 @@ export class ServiceM8 implements INodeType {
 						// only append the itemIndex
 						error.context.itemIndex = itemIndex;
 						throw error;
+					}
+					// Use NodeApiError for API-related errors, NodeOperationError for others
+					if (error.response) {
+						throw new NodeApiError(this.getNode(), error, {
+							itemIndex,
+						});
 					}
 					throw new NodeOperationError(this.getNode(), error, {
 						itemIndex,
