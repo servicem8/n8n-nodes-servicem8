@@ -252,7 +252,7 @@ export class ServiceM8 implements INodeType {
 					const fields = this.getNodeParameter('fields', itemIndex, {}) as Partial<InboxMessageFields>;
 					const body: IDataObject = {};
 					endpoint = 'https://api.servicem8.com/api_1.0/inboxmessage.json';
-					const requiredFields = ['subject', 'message_text'];
+					const requiredFields = ['subject', 'message_text'] as const;
 					for (const key of requiredFields) {
 						const rawValue = fields[key];
 						const value = typeof rawValue === 'string' ? rawValue.trim() : rawValue;
@@ -262,7 +262,7 @@ export class ServiceM8 implements INodeType {
 						body[key] = value;
 					}
 
-					const optionalKeys = ['from_name', 'from_email', 'regarding_company_uuid'];
+					const optionalKeys = ['from_name', 'from_email', 'regarding_company_uuid'] as const;
 					for (const key of optionalKeys) {
 						const rawValue = fields[key];
 						if (typeof rawValue === 'string') {
