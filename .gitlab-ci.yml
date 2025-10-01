@@ -1,0 +1,30 @@
+#
+# ServiceM8 CI Template
+# 
+
+workflow:
+  auto_cancel:
+    on_new_commit: interruptible
+    on_job_failure: all
+
+# Defines the stages in the Gitlab-CI Pipeline
+stages:
+  - test
+
+default:
+  interruptible: true
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+
+# eslint_formatter_sync
+test:
+  stage: test
+  image: 376167692487.dkr.ecr.ap-southeast-2.amazonaws.com/docker-hub/library/node:18-alpine
+  tags:
+    - arm64
+  script:
+    - npm run build
+    - npm run lint
