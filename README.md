@@ -37,6 +37,9 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 ### Email
 - **Send Email** - Send email
 
+### Inbox
+- **Create Inbox Message** - Create inbox message
+
 ### SMS
 - **Send SMS** - Send text message
 
@@ -108,6 +111,9 @@ For detailed usage examples and field mapping information, refer to the ServiceM
 * [GitHub Issues](https://github.com/servicem8/n8n-nodes-servicem8/issues)
 
 ## Version history
+
+### 0.1.4
+- Added Inbox resource with create message action
 
 ### 0.1.0
 Initial release of the ServiceM8 node with support for:
