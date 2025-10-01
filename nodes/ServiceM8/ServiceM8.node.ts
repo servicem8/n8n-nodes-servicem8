@@ -12,8 +12,9 @@ import { clientDescription } from './Client/ClientDescription';
 import { jobDescription } from './Job/JobDescription';
 import { emailDescription } from './Email/EmailDescription';
 import { smsDescription } from './Sms/SmsDescription';
+import { inboxDescription } from './Inbox/InboxDescription';
 import { getAllData, getEndpoint,getFields,getUrlParams, processBody, processFilters, serviceM8ApiRequest, toOptionsFromFieldConfig } from './GenericFunctions';
-import { fieldConfig, jobQueue, jobTemplate } from './types';
+import { fieldConfig, jobQueue, jobTemplate, InboxMessageFields } from './types';
 import { genericDescription } from './GenericDescription';
 import { searchDescription } from './Search/SearchDescription';
 
@@ -24,7 +25,7 @@ export class ServiceM8 implements INodeType {
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{ $parameter["operation"] + ": " + $parameter["resource"] }}',
-		description: 'ServiceM8 Node',
+		description: 'Automate job, staff & client workflows in your trade service business.',
 		icon: 'file:ServiceM8Icon.svg',
 		defaults: {
 			name: 'ServiceM8',
@@ -54,6 +55,10 @@ export class ServiceM8 implements INodeType {
 						value: 'email',
 					},
 					{
+						name: 'Inbox',
+						value: 'inbox',
+					},
+					{
 						name: 'Job',
 						value: 'job',
 					},
@@ -72,6 +77,7 @@ export class ServiceM8 implements INodeType {
 			...jobDescription,
 			...emailDescription,
 			...smsDescription,
+			...inboxDescription,
 			...genericDescription,
 			...searchDescription,
 		],
@@ -234,6 +240,68 @@ export class ServiceM8 implements INodeType {
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
 					let body = fields;
 					endpoint = 'https://api.servicem8.com/platform_service_sms';
+					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
+					pushToReturnItems(responseData.body, itemIndex);
+				}
+				/**
+				 * Create Inbox Message
+				 * Creates a new inbox message in ServiceM8
+				 * @see https://developer.servicem8.com/reference/inboxmessage
+				 */
+				if(operation === 'createInboxMessage'){
+					const fields = this.getNodeParameter('fields', itemIndex, {}) as Partial<InboxMessageFields>;
+					const body: IDataObject = {};
+					endpoint = 'https://api.servicem8.com/api_1.0/inboxmessage.json';
+					const requiredFields = ['subject', 'message_text'];
+					for (const key of requiredFields) {
+						const rawValue = fields[key];
+						const value = typeof rawValue === 'string' ? rawValue.trim() : rawValue;
+						if (!value) {
+							throw new NodeOperationError(this.getNode(), `"${key}" is required to create an inbox message`, { itemIndex });
+						}
+						body[key] = value;
+					}
+
+					const optionalKeys = ['from_name', 'from_email', 'regarding_company_uuid'];
+					for (const key of optionalKeys) {
+						const rawValue = fields[key];
+						if (typeof rawValue === 'string') {
+							const trimmed = rawValue.trim();
+							if (trimmed !== '') {
+								body[key] = trimmed;
+							}
+						}
+					}
+
+					const jsonDataValue = typeof fields.json_data === 'string' ? fields.json_data.trim() : fields.json_data;
+					if (jsonDataValue) {
+						let parsedJson: IDataObject;
+						if (typeof jsonDataValue === 'string') {
+							try {
+								parsedJson = JSON.parse(jsonDataValue as string) as IDataObject;
+							} catch (error) {
+								throw new NodeOperationError(this.getNode(), 'json_data must be a valid JSON string', { itemIndex });
+							}
+						} else {
+							parsedJson = jsonDataValue as IDataObject;
+						}
+						if (Object.keys(parsedJson ?? {}).length) {
+							body.json_data = parsedJson;
+						}
+					}
+
+					if (fields.jobData && typeof fields.jobData === 'object') {
+						const jobData = { ...(fields.jobData as IDataObject) };
+						for (const key of Object.keys(jobData)) {
+							if (typeof jobData[key] === 'string' && (jobData[key] as string).trim() === '') {
+								delete jobData[key];
+							}
+						}
+						if (Object.keys(jobData).length) {
+							body.jobData = jobData;
+						}
+					}
+
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
 					pushToReturnItems(responseData.body, itemIndex);
 				}
