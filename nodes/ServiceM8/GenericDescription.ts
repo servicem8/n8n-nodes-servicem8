@@ -1,6 +1,19 @@
 import { INodeProperties } from 'n8n-workflow';
 export const genericDescription: INodeProperties[] = [
 {
+		displayName: 'Include Inactive Records',
+		name: 'includeInactive',
+		type: 'boolean',
+		default: false,
+		description: 'Whether to include inactive (deleted) records in the results',
+		displayOptions: {
+			show: {
+				operation: ['getMany'],
+				resource: ['job', 'client'],
+			},
+		},
+	},
+{
 		displayName: 'Filters',
 		name: 'filters',
 		type: 'fixedCollection',

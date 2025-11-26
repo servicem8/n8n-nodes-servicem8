@@ -195,20 +195,31 @@ export class ServiceM8 implements INodeType {
 					endpoint = endpoint.replace('{'+param+'}',tempParam.trim());
 				}
 				
-				if(operation === 'getMany' && resource !== 'inbox'){
+				if(operation === 'getMany' && resource !== 'inbox' && resource !== 'jobBooking'){
 					let filters = this.getNodeParameter('filters', itemIndex, {}) as IDataObject;
 					let filtersString = await processFilters.call(this,resource,filters?.filter as IDataObject[]);
+					const includeInactive = this.getNodeParameter('includeInactive', itemIndex, false) as boolean;
+
+					// Build filter string
+					const filterParts: string[] = [];
 					if(filtersString){
-						qs['$filter'] = filtersString;
+						filterParts.push(filtersString);
 					}
+					if(!includeInactive){
+						filterParts.push("active eq '1'");
+					}
+					if(filterParts.length > 0){
+						qs['$filter'] = filterParts.join(' and ');
+					}
+
 					responseData = await getAllData.call(this, endpoint,qs);
 					pushToReturnItems(responseData, itemIndex);
 				}
-				if(operation === 'get' && resource !== 'inbox'){
+				if(operation === 'get' && resource !== 'inbox' && resource !== 'jobBooking'){
 					responseData = await getAllData.call(this, endpoint);
 					pushToReturnItems(responseData, itemIndex);
 				}
-				if(operation === 'update'){
+				if(operation === 'update' && resource !== 'jobBooking'){
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
 					let body = await processBody.call(this,resource,fields.field as IDataObject[]);
 					if (!Object.keys(body as IDataObject).length) {
@@ -469,7 +480,134 @@ export class ServiceM8 implements INodeType {
 					};
 					pushToReturnItems(result, itemIndex);
 				}
-				if(operation === 'delete'){
+				/**
+				 * Get Job Booking
+				 * Retrieves a single job allocation or job activity by UUID
+				 */
+				if(resource === 'jobBooking' && operation === 'get'){
+					const bookingType = this.getNodeParameter('bookingType', itemIndex, 'fixed') as string;
+					const uuid = this.getNodeParameter('uuid', itemIndex, '') as string;
+
+					if(!uuid){
+						throw new NodeOperationError(this.getNode(), 'Booking UUID is required', { itemIndex });
+					}
+
+					if(bookingType === 'flexible'){
+						endpoint = `https://api.servicem8.com/api_1.0/joballocation/${uuid.trim()}.json`;
+					} else {
+						endpoint = `https://api.servicem8.com/api_1.0/jobactivity/${uuid.trim()}.json`;
+					}
+
+					responseData = await serviceM8ApiRequest.call(this, 'GET', endpoint);
+					pushToReturnItems(responseData.body, itemIndex);
+				}
+				/**
+				 * Get Many Job Bookings
+				 * Lists job allocations or job activities
+				 */
+				if(resource === 'jobBooking' && operation === 'getMany'){
+					const bookingType = this.getNodeParameter('bookingType', itemIndex, 'fixed') as string;
+					const filterJobUUID = this.getNodeParameter('filterJobUUID', itemIndex, '') as string;
+					const includeInactive = this.getNodeParameter('includeInactive', itemIndex, false) as boolean;
+
+					const filterParts: string[] = [];
+
+					if(bookingType === 'flexible'){
+						endpoint = 'https://api.servicem8.com/api_1.0/joballocation.json';
+					} else {
+						endpoint = 'https://api.servicem8.com/api_1.0/jobactivity.json';
+						// Fixed bookings must be scheduled activities
+						filterParts.push("activity_was_scheduled eq '1'");
+					}
+
+					if(!includeInactive){
+						filterParts.push("active eq '1'");
+					}
+
+					if(filterJobUUID){
+						filterParts.push(`job_uuid eq '${filterJobUUID.trim()}'`);
+					}
+
+					if(filterParts.length > 0){
+						qs['$filter'] = filterParts.join(' and ');
+					}
+
+					responseData = await getAllData.call(this, endpoint, qs);
+					pushToReturnItems(responseData, itemIndex);
+				}
+				/**
+				 * Update Job Booking
+				 * Updates a job allocation or job activity
+				 */
+				if(resource === 'jobBooking' && operation === 'update'){
+					const bookingType = this.getNodeParameter('bookingType', itemIndex, 'fixed') as string;
+					const uuid = this.getNodeParameter('uuid', itemIndex, '') as string;
+					const updateFields = this.getNodeParameter('updateFields', itemIndex, {}) as IDataObject;
+
+					if(!uuid){
+						throw new NodeOperationError(this.getNode(), 'Booking UUID is required', { itemIndex });
+					}
+
+					const body: IDataObject = {};
+
+					if(bookingType === 'flexible'){
+						endpoint = `https://api.servicem8.com/api_1.0/joballocation/${uuid.trim()}.json`;
+						// Process datetime fields for flexible bookings
+						if(updateFields.allocation_date){
+							body.allocation_date = toServiceM8DateTime(updateFields.allocation_date as string);
+						}
+						if(updateFields.expiry_timestamp){
+							body.expiry_timestamp = toServiceM8DateTime(updateFields.expiry_timestamp as string);
+						}
+						if(updateFields.allocation_window_uuid){
+							body.allocation_window_uuid = updateFields.allocation_window_uuid;
+						}
+						if(updateFields.staff_uuid){
+							body.staff_uuid = updateFields.staff_uuid;
+						}
+					} else {
+						endpoint = `https://api.servicem8.com/api_1.0/jobactivity/${uuid.trim()}.json`;
+						// Process datetime fields for fixed bookings
+						if(updateFields.start_date){
+							body.start_date = toServiceM8DateTime(updateFields.start_date as string);
+						}
+						if(updateFields.end_date){
+							body.end_date = toServiceM8DateTime(updateFields.end_date as string);
+						}
+						if(updateFields.staff_uuid){
+							body.staff_uuid = updateFields.staff_uuid;
+						}
+					}
+
+					if(!Object.keys(body).length){
+						throw new NodeOperationError(this.getNode(), 'No fields to update were provided', { itemIndex });
+					}
+
+					responseData = await serviceM8ApiRequest.call(this, 'POST', endpoint, qs, body);
+					pushToReturnItems(responseData.body, itemIndex);
+				}
+				/**
+				 * Delete Job Booking
+				 * Deletes (soft delete) a job allocation or job activity
+				 */
+				if(resource === 'jobBooking' && operation === 'delete'){
+					const bookingType = this.getNodeParameter('bookingType', itemIndex, 'fixed') as string;
+					const uuid = this.getNodeParameter('uuid', itemIndex, '') as string;
+
+					if(!uuid){
+						throw new NodeOperationError(this.getNode(), 'Booking UUID is required', { itemIndex });
+					}
+
+					if(bookingType === 'flexible'){
+						endpoint = `https://api.servicem8.com/api_1.0/joballocation/${uuid.trim()}.json`;
+					} else {
+						endpoint = `https://api.servicem8.com/api_1.0/jobactivity/${uuid.trim()}.json`;
+					}
+
+					responseData = await serviceM8ApiRequest.call(this, 'DELETE', endpoint);
+					pushToReturnItems(responseData.body, itemIndex);
+				}
+				if(operation === 'delete' && resource !== 'jobBooking'){
 					responseData = await serviceM8ApiRequest.call(this,'DELETE',endpoint);
 					pushToReturnItems(responseData.body, itemIndex);
 				}
