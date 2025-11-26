@@ -188,8 +188,13 @@ export async function processBody(
 export const toOptionsFromFieldConfig = (items:fieldConfig[]) =>
 	items.map((x) => ({name:x.displayName, value:x.field}));
 
+/** ServiceM8 datetime format: "YYYY-MM-DD HH:mm:ss" */
+const SERVICEM8_DATETIME_FORMAT = 'yyyy-MM-dd HH:mm:ss';
+/** Regex to match ServiceM8 datetime format */
+const SERVICEM8_DATETIME_REGEX = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+
 /**
- * Converts an ISO 8601 datetime string to ServiceM8 API format.
+ * Converts various datetime formats to ServiceM8 API format.
  * ServiceM8 expects datetimes in "YYYY-MM-DD HH:mm:ss" format without timezone.
  * The datetime is interpreted as the account's local timezone.
  *
@@ -197,18 +202,60 @@ export const toOptionsFromFieldConfig = (items:fieldConfig[]) =>
  * converting to any other timezone - it simply strips the timezone info.
  * For example, "2025-11-27T09:00:00-05:00" becomes "2025-11-27 09:00:00".
  *
- * @param isoDateTime - ISO 8601 datetime string (e.g., "2025-11-27T09:00:00.000-05:00")
+ * Supported input types:
+ * - Luxon DateTime objects
+ * - JavaScript Date objects
+ * - ISO 8601 strings (e.g., "2025-11-27T09:00:00.000-05:00")
+ * - ServiceM8 format strings (passed through unchanged)
+ * - Empty/null/undefined values (returns empty string)
+ *
+ * @param dateTimeValue - The datetime value to convert
  * @returns ServiceM8 formatted datetime string (e.g., "2025-11-27 09:00:00")
+ * @throws Error if the input is an unsupported type or invalid format
  */
-export function toServiceM8DateTime(isoDateTime: string): string {
-	if (!isoDateTime) {
+export function toServiceM8DateTime(dateTimeValue: unknown): string {
+	// Handle empty values
+	if (dateTimeValue === null || dateTimeValue === undefined || dateTimeValue === '') {
 		return '';
 	}
-	// Parse with Luxon, keeping the original timezone offset
-	// Then format using the local time components (no conversion)
-	const dt = DateTime.fromISO(isoDateTime, { setZone: true });
-	if (!dt.isValid) {
-		return '';
+
+	// Handle Luxon DateTime objects
+	if (DateTime.isDateTime(dateTimeValue)) {
+		if (!dateTimeValue.isValid) {
+			throw new Error(`Invalid Luxon DateTime: ${dateTimeValue.invalidReason}`);
+		}
+		return dateTimeValue.toFormat(SERVICEM8_DATETIME_FORMAT);
 	}
-	return dt.toFormat('yyyy-MM-dd HH:mm:ss');
+
+	// Handle JavaScript Date objects
+	if (dateTimeValue instanceof Date) {
+		if (isNaN(dateTimeValue.getTime())) {
+			throw new Error('Invalid JavaScript Date object');
+		}
+		const dt = DateTime.fromJSDate(dateTimeValue);
+		return dt.toFormat(SERVICEM8_DATETIME_FORMAT);
+	}
+
+	// Handle strings
+	if (typeof dateTimeValue === 'string') {
+		// Already in ServiceM8 format - pass through unchanged
+		if (SERVICEM8_DATETIME_REGEX.test(dateTimeValue)) {
+			return dateTimeValue;
+		}
+
+		// Try to parse as ISO 8601
+		const dt = DateTime.fromISO(dateTimeValue, { setZone: true });
+		if (dt.isValid) {
+			return dt.toFormat(SERVICEM8_DATETIME_FORMAT);
+		}
+
+		// Invalid string format
+		throw new Error(`Invalid datetime string format: "${dateTimeValue}". Expected ISO 8601 format (e.g., "2025-11-27T09:00:00") or ServiceM8 format (e.g., "2025-11-27 09:00:00").`);
+	}
+
+	// Unsupported type
+	const typeDescription = typeof dateTimeValue === 'object'
+		? `object (${dateTimeValue?.constructor?.name || 'unknown'})`
+		: typeof dateTimeValue;
+	throw new Error(`Unsupported datetime type: ${typeDescription}. Expected string, Date, or Luxon DateTime.`);
 }

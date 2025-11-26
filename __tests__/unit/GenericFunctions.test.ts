@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { DateTime } from 'luxon';
 import {
 	toServiceM8DateTime,
 	toOptionsFromFieldConfig,
@@ -10,34 +11,136 @@ import {
 import type { fieldConfig } from '../../nodes/ServiceM8/types';
 
 describe('toServiceM8DateTime', () => {
-	it('converts ISO datetime with timezone to ServiceM8 format', () => {
-		expect(toServiceM8DateTime('2025-11-27T09:00:00.000-05:00')).toBe(
-			'2025-11-27 09:00:00',
-		);
+	describe('ISO string inputs', () => {
+		it('converts ISO datetime with timezone to ServiceM8 format', () => {
+			expect(toServiceM8DateTime('2025-11-27T09:00:00.000-05:00')).toBe(
+				'2025-11-27 09:00:00',
+			);
+		});
+
+		it('converts ISO datetime without milliseconds', () => {
+			expect(toServiceM8DateTime('2025-11-27T14:30:00+10:00')).toBe(
+				'2025-11-27 14:30:00',
+			);
+		});
+
+		it('handles datetime without timezone (assumes local)', () => {
+			const result = toServiceM8DateTime('2025-11-27T09:00:00');
+			// Should still produce a valid format
+			expect(result).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
+		});
+
+		it('converts ISO date-only string', () => {
+			const result = toServiceM8DateTime('2025-11-27');
+			expect(result).toBe('2025-11-27 00:00:00');
+		});
 	});
 
-	it('converts ISO datetime without milliseconds', () => {
-		expect(toServiceM8DateTime('2025-11-27T14:30:00+10:00')).toBe(
-			'2025-11-27 14:30:00',
-		);
+	describe('ServiceM8 format strings (passthrough)', () => {
+		it('passes through string already in ServiceM8 format unchanged', () => {
+			expect(toServiceM8DateTime('2025-11-27 09:00:00')).toBe(
+				'2025-11-27 09:00:00',
+			);
+		});
+
+		it('passes through midnight time unchanged', () => {
+			expect(toServiceM8DateTime('2025-01-01 00:00:00')).toBe(
+				'2025-01-01 00:00:00',
+			);
+		});
 	});
 
-	it('handles datetime without timezone (assumes local)', () => {
-		const result = toServiceM8DateTime('2025-11-27T09:00:00');
-		// Should still produce a valid format
-		expect(result).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
+	describe('Luxon DateTime inputs', () => {
+		it('converts Luxon DateTime to ServiceM8 format', () => {
+			const dt = DateTime.fromISO('2025-11-27T09:30:45');
+			expect(toServiceM8DateTime(dt)).toBe('2025-11-27 09:30:45');
+		});
+
+		it('converts Luxon DateTime with timezone to ServiceM8 format', () => {
+			const dt = DateTime.fromISO('2025-11-27T09:30:45', {
+				zone: 'America/New_York',
+			});
+			expect(toServiceM8DateTime(dt)).toBe('2025-11-27 09:30:45');
+		});
+
+		it('throws for invalid Luxon DateTime', () => {
+			const dt = DateTime.invalid('test invalid');
+			expect(() => toServiceM8DateTime(dt)).toThrow('Invalid Luxon DateTime');
+		});
 	});
 
-	it('returns empty string for empty input', () => {
-		expect(toServiceM8DateTime('')).toBe('');
+	describe('JavaScript Date inputs', () => {
+		it('converts JavaScript Date to ServiceM8 format', () => {
+			// Create a date with specific local time components
+			const date = new Date(2025, 10, 27, 9, 30, 45); // Nov 27, 2025 09:30:45 local
+			const result = toServiceM8DateTime(date);
+			expect(result).toBe('2025-11-27 09:30:45');
+		});
+
+		it('converts JavaScript Date at midnight', () => {
+			const date = new Date(2025, 0, 1, 0, 0, 0); // Jan 1, 2025 00:00:00 local
+			const result = toServiceM8DateTime(date);
+			expect(result).toBe('2025-01-01 00:00:00');
+		});
+
+		it('throws for invalid JavaScript Date', () => {
+			const invalidDate = new Date('invalid');
+			expect(() => toServiceM8DateTime(invalidDate)).toThrow(
+				'Invalid JavaScript Date object',
+			);
+		});
 	});
 
-	it('returns empty string for invalid datetime', () => {
-		expect(toServiceM8DateTime('not-a-date')).toBe('');
+	describe('empty/null/undefined inputs', () => {
+		it('returns empty string for empty string', () => {
+			expect(toServiceM8DateTime('')).toBe('');
+		});
+
+		it('returns empty string for null', () => {
+			expect(toServiceM8DateTime(null)).toBe('');
+		});
+
+		it('returns empty string for undefined', () => {
+			expect(toServiceM8DateTime(undefined)).toBe('');
+		});
 	});
 
-	it('returns empty string for null-like values', () => {
-		expect(toServiceM8DateTime(undefined as unknown as string)).toBe('');
+	describe('invalid inputs', () => {
+		it('throws for invalid datetime string', () => {
+			expect(() => toServiceM8DateTime('not-a-date')).toThrow(
+				'Invalid datetime string format',
+			);
+		});
+
+		it('throws for partial datetime string', () => {
+			expect(() => toServiceM8DateTime('2025-11-27T')).toThrow(
+				'Invalid datetime string format',
+			);
+		});
+
+		it('throws for number input', () => {
+			expect(() => toServiceM8DateTime(1234567890 as unknown)).toThrow(
+				'Unsupported datetime type: number',
+			);
+		});
+
+		it('throws for plain object input', () => {
+			expect(() =>
+				toServiceM8DateTime({ year: 2025 } as unknown),
+			).toThrow('Unsupported datetime type: object');
+		});
+
+		it('throws for array input', () => {
+			expect(() => toServiceM8DateTime([2025, 11, 27] as unknown)).toThrow(
+				'Unsupported datetime type: object (Array)',
+			);
+		});
+
+		it('throws for boolean input', () => {
+			expect(() => toServiceM8DateTime(true as unknown)).toThrow(
+				'Unsupported datetime type: boolean',
+			);
+		});
 	});
 });
 
