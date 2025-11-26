@@ -173,7 +173,7 @@ export class ServiceM8 implements INodeType {
 					endpoint = endpoint.replace('{'+param+'}',tempParam.trim());
 				}
 				
-				if(operation === 'getMany'){
+				if(operation === 'getMany' && resource !== 'inbox'){
 					let filters = this.getNodeParameter('filters', itemIndex, {}) as IDataObject;
 					let filtersString = await processFilters.call(this,resource,filters?.filter as IDataObject[]);
 					if(filtersString){
@@ -182,7 +182,7 @@ export class ServiceM8 implements INodeType {
 					responseData = await getAllData.call(this, endpoint,qs);
 					pushToReturnItems(responseData, itemIndex);
 				}
-				if(operation === 'get'){
+				if(operation === 'get' && resource !== 'inbox'){
 					responseData = await getAllData.call(this, endpoint);
 					pushToReturnItems(responseData, itemIndex);
 				}
@@ -244,11 +244,75 @@ export class ServiceM8 implements INodeType {
 					pushToReturnItems(responseData.body, itemIndex);
 				}
 				/**
+				 * Get Many Inbox Messages
+				 * Lists inbox messages with optional filtering
+				 * @see https://developer.servicem8.com/reference/listinboxmessages
+				 */
+				if(resource === 'inbox' && operation === 'getMany'){
+					endpoint = 'https://api.servicem8.com/api_1.0/inboxmessage.json';
+					const inboxFilter = this.getNodeParameter('inboxFilter', itemIndex, 'all') as string;
+					const inboxSearch = this.getNodeParameter('inboxSearch', itemIndex, '') as string;
+					const limit = this.getNodeParameter('limit', itemIndex, 50) as number;
+
+					qs['limit'] = limit;
+					if(inboxFilter && inboxFilter !== 'all'){
+						qs['filter'] = inboxFilter;
+					}
+					if(inboxSearch){
+						qs['search'] = inboxSearch;
+					}
+
+					responseData = await serviceM8ApiRequest.call(this, 'GET', endpoint, qs);
+					// The API returns { messages: [...], pagination: {...} }
+					const messages = responseData.body?.messages ?? responseData.body ?? [];
+					pushToReturnItems(messages, itemIndex);
+				}
+				/**
+				 * Get Single Inbox Message
+				 * Retrieves detailed information about a specific inbox message
+				 * @see https://developer.servicem8.com/reference/getinboxmessage
+				 */
+				if(resource === 'inbox' && operation === 'get'){
+					const uuid = this.getNodeParameter('uuid', itemIndex, '') as string;
+					if(!uuid){
+						throw new NodeOperationError(this.getNode(), 'UUID is required to get an inbox message', { itemIndex });
+					}
+					endpoint = `https://api.servicem8.com/api_1.0/inboxmessage/${uuid.trim()}.json`;
+					responseData = await serviceM8ApiRequest.call(this, 'GET', endpoint);
+					pushToReturnItems(responseData.body, itemIndex);
+				}
+				/**
+				 * Convert Inbox Message to Job
+				 * Converts an inbox message into a new job, optionally using a job template
+				 * @see https://developer.servicem8.com/reference/convertinboxmessagetojob
+				 */
+				if(resource === 'inbox' && operation === 'convertToJob'){
+					const uuid = this.getNodeParameter('uuid', itemIndex, '') as string;
+					if(!uuid){
+						throw new NodeOperationError(this.getNode(), 'UUID is required to convert an inbox message to job', { itemIndex });
+					}
+					const jobTemplateUUID = this.getNodeParameter('jobTemplateUUID', itemIndex, '') as string;
+					const fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
+
+					endpoint = `https://api.servicem8.com/api_1.0/inboxmessage/${uuid.trim()}/convert-to-job.json`;
+
+					const body: IDataObject = {};
+					if(jobTemplateUUID){
+						body.template_uuid = jobTemplateUUID;
+					}
+					if(fields.note){
+						body.note = fields.note;
+					}
+
+					responseData = await serviceM8ApiRequest.call(this, 'POST', endpoint, qs, body);
+					pushToReturnItems(responseData.body, itemIndex);
+				}
+				/**
 				 * Create Inbox Message
 				 * Creates a new inbox message in ServiceM8
 				 * @see https://developer.servicem8.com/reference/inboxmessage
 				 */
-				if(operation === 'createInboxMessage'){
+				if(resource === 'inbox' && operation === 'createInboxMessage'){
 					const fields = this.getNodeParameter('fields', itemIndex, {}) as Partial<InboxMessageFields>;
 					const body: IDataObject = {};
 					endpoint = 'https://api.servicem8.com/api_1.0/inboxmessage.json';

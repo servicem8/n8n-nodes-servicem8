@@ -99,6 +99,19 @@ export const InboxJobDataFields: INodeProperties[] = [
     },
 ];
 
+export const InboxConvertToJobFields: INodeProperties[] = [
+    {
+        name: 'note',
+        displayName: 'Note',
+        type: 'string',
+        default: '',
+        description: 'Additional notes to include with the created job',
+        typeOptions: {
+            rows: 4,
+        },
+    },
+];
+
 export const InboxMessageFields: INodeProperties[] = [
     {
         "name": "subject",
