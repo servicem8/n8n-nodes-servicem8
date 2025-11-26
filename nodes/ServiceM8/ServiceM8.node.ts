@@ -10,11 +10,12 @@ import { NodeConnectionType, NodeOperationError, NodeApiError } from 'n8n-workfl
 
 import { clientDescription } from './Client/ClientDescription';
 import { jobDescription } from './Job/JobDescription';
+import { jobBookingDescription } from './JobBooking/JobBookingDescription';
 import { emailDescription } from './Email/EmailDescription';
 import { smsDescription } from './Sms/SmsDescription';
 import { inboxDescription } from './Inbox/InboxDescription';
 import { getAllData, getEndpoint,getFields,getUrlParams, processBody, processFilters, serviceM8ApiRequest, toOptionsFromFieldConfig } from './GenericFunctions';
-import { fieldConfig, jobQueue, jobTemplate, InboxMessageFields } from './types';
+import { fieldConfig, jobQueue, jobTemplate, InboxMessageFields, staffMember, allocationWindow } from './types';
 import { genericDescription } from './GenericDescription';
 import { searchDescription } from './Search/SearchDescription';
 
@@ -63,6 +64,10 @@ export class ServiceM8 implements INodeType {
 						value: 'job',
 					},
 					{
+						name: 'Job Booking',
+						value: 'jobBooking',
+					},
+					{
 						name: 'Search',
 						value: 'search',
 					},
@@ -75,6 +80,7 @@ export class ServiceM8 implements INodeType {
 			},
 			...clientDescription,
 			...jobDescription,
+			...jobBookingDescription,
 			...emailDescription,
 			...smsDescription,
 			...inboxDescription,
@@ -108,6 +114,22 @@ export class ServiceM8 implements INodeType {
 				const responseData = await serviceM8ApiRequest.call(this,'GET',endpoint);
 				const jobQueues = responseData.body as jobQueue[] ?? [];
 				return jobQueues.map((x)=>({name: x.name, value:x.uuid}));
+			},
+			async getStaffMembers(this:ILoadOptionsFunctions){
+				const endpoint = 'https://api.servicem8.com/api_1.0/staff.json';
+				const responseData = await serviceM8ApiRequest.call(this,'GET',endpoint);
+				const staffMembers = responseData.body as staffMember[] ?? [];
+				return staffMembers
+					.filter((x) => x.active === 1)
+					.map((x) => ({ name: `${x.first} ${x.last}`.trim(), value: x.uuid }));
+			},
+			async getAllocationWindows(this:ILoadOptionsFunctions){
+				const endpoint = 'https://api.servicem8.com/api_1.0/allocationwindow.json';
+				const responseData = await serviceM8ApiRequest.call(this,'GET',endpoint);
+				const allocationWindows = responseData.body as allocationWindow[] ?? [];
+				return allocationWindows
+					.filter((x) => x.active === 1)
+					.map((x) => ({ name: x.name, value: x.uuid }));
 			}
 		}
 	}
@@ -195,11 +217,15 @@ export class ServiceM8 implements INodeType {
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
 					pushToReturnItems(responseData.body, itemIndex);
 				}
-				if(operation === 'create'){
+				if(operation === 'create' && resource !== 'jobBooking'){
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
 					let body = fields;
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
-					pushToReturnItems(responseData.body, itemIndex);
+					const result = {
+						...responseData.body,
+						uuid: responseData.headers?.['x-record-uuid'],
+					};
+					pushToReturnItems(result, itemIndex);
 				}
 				if(operation === 'createFromTemplate'){
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
@@ -208,7 +234,11 @@ export class ServiceM8 implements INodeType {
 						delete body.company_name;
 					}
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
-					pushToReturnItems(responseData.body, itemIndex);
+					const result = {
+						...responseData.body,
+						uuid: responseData.headers?.['x-record-uuid'],
+					};
+					pushToReturnItems(result, itemIndex);
 				}
 				if(operation === 'addNoteToJob'){
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
@@ -216,7 +246,11 @@ export class ServiceM8 implements INodeType {
 					body.related_object = 'job';
 					body.active = 1;
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
-					pushToReturnItems(responseData.body, itemIndex);
+					const result = {
+						...responseData.body,
+						uuid: responseData.headers?.['x-record-uuid'],
+					};
+					pushToReturnItems(result, itemIndex);
 				}
 				if(operation === 'sendJobToQueue'){
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
@@ -368,6 +402,68 @@ export class ServiceM8 implements INodeType {
 
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
 					pushToReturnItems(responseData.body, itemIndex);
+				}
+				/**
+				 * Create Job Booking
+				 * Creates a job allocation (flexible time) or job activity (fixed time)
+				 * @see https://developer.servicem8.com/reference/createjoballocations
+				 * @see https://developer.servicem8.com/reference/createjobactivities
+				 */
+				if(resource === 'jobBooking' && operation === 'create'){
+					const jobUUID = this.getNodeParameter('jobUUID', itemIndex, '') as string;
+					const bookingType = this.getNodeParameter('bookingType', itemIndex, 'flexible') as string;
+					const staffUUID = this.getNodeParameter('staffUUID', itemIndex, '') as string;
+
+					if(!jobUUID){
+						throw new NodeOperationError(this.getNode(), 'Job UUID is required to create a booking', { itemIndex });
+					}
+					if(!staffUUID){
+						throw new NodeOperationError(this.getNode(), 'Staff Member is required to create a booking', { itemIndex });
+					}
+
+					const body: IDataObject = {
+						job_uuid: jobUUID.trim(),
+						staff_uuid: staffUUID,
+					};
+
+					if(bookingType === 'flexible'){
+						// Job Allocation (flexible time)
+						endpoint = 'https://api.servicem8.com/api_1.0/joballocation.json';
+						const allocationDate = this.getNodeParameter('allocationDate', itemIndex, '') as string;
+						const allocationWindowUUID = this.getNodeParameter('allocationWindowUUID', itemIndex, '') as string;
+
+						if(!allocationDate){
+							throw new NodeOperationError(this.getNode(), 'Allocation Date is required for flexible time bookings', { itemIndex });
+						}
+
+						body.allocation_date = allocationDate;
+						if(allocationWindowUUID){
+							body.allocation_window_uuid = allocationWindowUUID;
+						}
+					} else {
+						// Job Activity (fixed time)
+						endpoint = 'https://api.servicem8.com/api_1.0/jobactivity.json';
+						const startDate = this.getNodeParameter('startDate', itemIndex, '') as string;
+						const endDate = this.getNodeParameter('endDate', itemIndex, '') as string;
+
+						if(!startDate){
+							throw new NodeOperationError(this.getNode(), 'Start Time is required for fixed time bookings', { itemIndex });
+						}
+						if(!endDate){
+							throw new NodeOperationError(this.getNode(), 'End Time is required for fixed time bookings', { itemIndex });
+						}
+
+						body.start_date = startDate;
+						body.end_date = endDate;
+						body.activity_was_scheduled = 1;
+					}
+
+					responseData = await serviceM8ApiRequest.call(this, 'POST', endpoint, qs, body);
+					const result = {
+						...responseData.body,
+						uuid: responseData.headers?.['x-record-uuid'],
+					};
+					pushToReturnItems(result, itemIndex);
 				}
 				if(operation === 'delete'){
 					responseData = await serviceM8ApiRequest.call(this,'DELETE',endpoint);

@@ -25,6 +25,22 @@ export type jobQueue = {
     name: string;
 }
 
+export type staffMember = {
+    uuid: string;
+    active: number;
+    first: string;
+    last: string;
+    email: string;
+}
+
+export type allocationWindow = {
+    uuid: string;
+    active: number;
+    name: string;
+    start_time: number;
+    end_time: number;
+}
+
 export type InboxMessageFields = {
 	subject: string;
 	message_text: string;
