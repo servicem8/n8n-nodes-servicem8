@@ -431,6 +431,7 @@ export class ServiceM8 implements INodeType {
 						endpoint = 'https://api.servicem8.com/api_1.0/joballocation.json';
 						const allocationDate = this.getNodeParameter('allocationDate', itemIndex, '') as string;
 						const allocationWindowUUID = this.getNodeParameter('allocationWindowUUID', itemIndex, '') as string;
+						const expiryTimestamp = this.getNodeParameter('expiryTimestamp', itemIndex, '') as string;
 
 						if(!allocationDate){
 							throw new NodeOperationError(this.getNode(), 'Allocation Date is required for flexible time bookings', { itemIndex });
@@ -439,6 +440,9 @@ export class ServiceM8 implements INodeType {
 						body.allocation_date = allocationDate;
 						if(allocationWindowUUID){
 							body.allocation_window_uuid = allocationWindowUUID;
+						}
+						if(expiryTimestamp){
+							body.expiry_timestamp = expiryTimestamp;
 						}
 					} else {
 						// Job Activity (fixed time)

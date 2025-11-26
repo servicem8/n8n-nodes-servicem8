@@ -83,7 +83,7 @@ export const jobBookingDescription: INodeProperties[] = [
         type: 'dateTime',
         default: '',
         required: true,
-        description: 'The date for the job allocation',
+        description: 'The minimum start date for a job allocation to be completed by a staff member',
         displayOptions: {
             show: {
                 resource: ['jobBooking'],
@@ -101,6 +101,20 @@ export const jobBookingDescription: INodeProperties[] = [
         typeOptions: {
             loadOptionsMethod: 'getAllocationWindows',
         },
+        displayOptions: {
+            show: {
+                resource: ['jobBooking'],
+                operation: ['create'],
+                bookingType: ['flexible'],
+            },
+        },
+    },
+    {
+        displayName: 'Expiry',
+        name: 'expiryTimestamp',
+        type: 'dateTime',
+        default: '',
+        description: 'The timestamp when the job allocation expires',
         displayOptions: {
             show: {
                 resource: ['jobBooking'],
