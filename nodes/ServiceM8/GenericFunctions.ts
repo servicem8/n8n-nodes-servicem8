@@ -7,6 +7,7 @@ import type {
 	IHttpRequestMethods,
 	IHttpRequestOptions,
 } from 'n8n-workflow';
+import { DateTime } from 'luxon';
 
 import clientConfig from "./Client/ClientFieldConfig.json";
 import jobConfig from "./Job/JobFieldConfig.json";
@@ -186,3 +187,28 @@ export async function processBody(
 
 export const toOptionsFromFieldConfig = (items:fieldConfig[]) =>
 	items.map((x) => ({name:x.displayName, value:x.field}));
+
+/**
+ * Converts an ISO 8601 datetime string to ServiceM8 API format.
+ * ServiceM8 expects datetimes in "YYYY-MM-DD HH:mm:ss" format without timezone.
+ * The datetime is interpreted as the account's local timezone.
+ *
+ * This function preserves the local time components from the input without
+ * converting to any other timezone - it simply strips the timezone info.
+ * For example, "2025-11-27T09:00:00-05:00" becomes "2025-11-27 09:00:00".
+ *
+ * @param isoDateTime - ISO 8601 datetime string (e.g., "2025-11-27T09:00:00.000-05:00")
+ * @returns ServiceM8 formatted datetime string (e.g., "2025-11-27 09:00:00")
+ */
+export function toServiceM8DateTime(isoDateTime: string): string {
+	if (!isoDateTime) {
+		return '';
+	}
+	// Parse with Luxon, keeping the original timezone offset
+	// Then format using the local time components (no conversion)
+	const dt = DateTime.fromISO(isoDateTime, { setZone: true });
+	if (!dt.isValid) {
+		return '';
+	}
+	return dt.toFormat('yyyy-MM-dd HH:mm:ss');
+}

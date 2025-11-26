@@ -14,7 +14,7 @@ import { jobBookingDescription } from './JobBooking/JobBookingDescription';
 import { emailDescription } from './Email/EmailDescription';
 import { smsDescription } from './Sms/SmsDescription';
 import { inboxDescription } from './Inbox/InboxDescription';
-import { getAllData, getEndpoint,getFields,getUrlParams, processBody, processFilters, serviceM8ApiRequest, toOptionsFromFieldConfig } from './GenericFunctions';
+import { getAllData, getEndpoint,getFields,getUrlParams, processBody, processFilters, serviceM8ApiRequest, toOptionsFromFieldConfig, toServiceM8DateTime } from './GenericFunctions';
 import { fieldConfig, jobQueue, jobTemplate, InboxMessageFields, staffMember, allocationWindow } from './types';
 import { genericDescription } from './GenericDescription';
 import { searchDescription } from './Search/SearchDescription';
@@ -437,12 +437,12 @@ export class ServiceM8 implements INodeType {
 							throw new NodeOperationError(this.getNode(), 'Allocation Date is required for flexible time bookings', { itemIndex });
 						}
 
-						body.allocation_date = allocationDate;
+						body.allocation_date = toServiceM8DateTime(allocationDate);
 						if(allocationWindowUUID){
 							body.allocation_window_uuid = allocationWindowUUID;
 						}
 						if(expiryTimestamp){
-							body.expiry_timestamp = expiryTimestamp;
+							body.expiry_timestamp = toServiceM8DateTime(expiryTimestamp);
 						}
 					} else {
 						// Job Activity (fixed time)
@@ -457,8 +457,8 @@ export class ServiceM8 implements INodeType {
 							throw new NodeOperationError(this.getNode(), 'End Time is required for fixed time bookings', { itemIndex });
 						}
 
-						body.start_date = startDate;
-						body.end_date = endDate;
+						body.start_date = toServiceM8DateTime(startDate);
+						body.end_date = toServiceM8DateTime(endDate);
 						body.activity_was_scheduled = 1;
 					}
 
