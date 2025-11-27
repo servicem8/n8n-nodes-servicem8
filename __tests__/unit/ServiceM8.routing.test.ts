@@ -244,6 +244,133 @@ describe('ServiceM8.execute routing', () => {
 		});
 	});
 
+	describe('jobCheckin operations should NOT trigger generic handlers', () => {
+		it('jobCheckin.get should NOT call generic getAllData handler', async () => {
+			const { getAllData, serviceM8ApiRequest } = await import(
+				'../../nodes/ServiceM8/GenericFunctions'
+			);
+
+			const mockContext = createMockExecuteFunctions({
+				resource: 'jobCheckin',
+				operation: 'get',
+				nodeParams: {
+					uuid: 'test-checkin-uuid',
+				},
+			});
+
+			await node.execute.call(mockContext);
+
+			expect(getAllData).not.toHaveBeenCalled();
+			expect(serviceM8ApiRequest).toHaveBeenCalledWith(
+				'GET',
+				expect.stringContaining('jobactivity/test-checkin-uuid'),
+			);
+		});
+
+		it('jobCheckin.getMany should filter by activity_was_recorded', async () => {
+			const { getAllData } = await import(
+				'../../nodes/ServiceM8/GenericFunctions'
+			);
+
+			const mockContext = createMockExecuteFunctions({
+				resource: 'jobCheckin',
+				operation: 'getMany',
+				nodeParams: {
+					filterJobUUID: '',
+					filterStaffUUID: '',
+					includeInactive: false,
+				},
+			});
+
+			await node.execute.call(mockContext);
+
+			expect(getAllData).toHaveBeenCalledWith(
+				expect.stringContaining('jobactivity.json'),
+				expect.objectContaining({
+					$filter: expect.stringContaining("activity_was_recorded eq '1'"),
+				}),
+			);
+		});
+
+		it('jobCheckin.create should NOT call generic create handler', async () => {
+			const { serviceM8ApiRequest, processBody } = await import(
+				'../../nodes/ServiceM8/GenericFunctions'
+			);
+
+			const mockContext = createMockExecuteFunctions({
+				resource: 'jobCheckin',
+				operation: 'create',
+				nodeParams: {
+					jobUUID: 'job-uuid-123',
+					staffUUID: 'staff-uuid-456',
+					startDate: '2025-01-01T09:00:00',
+					endDate: '2025-01-01T10:00:00',
+				},
+			});
+
+			await node.execute.call(mockContext);
+
+			expect(processBody).not.toHaveBeenCalled();
+			expect(serviceM8ApiRequest).toHaveBeenCalledWith(
+				'POST',
+				expect.stringContaining('jobactivity.json'),
+				expect.any(Object),
+				expect.objectContaining({
+					job_uuid: 'job-uuid-123',
+					staff_uuid: 'staff-uuid-456',
+					activity_was_recorded: 1,
+				}),
+			);
+		});
+
+		it('jobCheckin.update should NOT call generic update handler', async () => {
+			const { serviceM8ApiRequest, processBody } = await import(
+				'../../nodes/ServiceM8/GenericFunctions'
+			);
+
+			const mockContext = createMockExecuteFunctions({
+				resource: 'jobCheckin',
+				operation: 'update',
+				nodeParams: {
+					uuid: 'checkin-uuid-123',
+					updateFields: { start_date: '2025-01-02T09:00:00' },
+				},
+			});
+
+			await node.execute.call(mockContext);
+
+			expect(processBody).not.toHaveBeenCalled();
+			expect(serviceM8ApiRequest).toHaveBeenCalledWith(
+				'POST',
+				expect.stringContaining('jobactivity/checkin-uuid-123'),
+				expect.any(Object),
+				expect.any(Object),
+			);
+		});
+
+		it('jobCheckin.delete should NOT call generic delete handler', async () => {
+			const { serviceM8ApiRequest } = await import(
+				'../../nodes/ServiceM8/GenericFunctions'
+			);
+
+			const mockContext = createMockExecuteFunctions({
+				resource: 'jobCheckin',
+				operation: 'delete',
+				nodeParams: {
+					uuid: 'checkin-uuid-123',
+				},
+			});
+
+			await node.execute.call(mockContext);
+
+			expect(serviceM8ApiRequest).toHaveBeenCalledWith(
+				'DELETE',
+				expect.stringContaining('jobactivity/checkin-uuid-123'),
+			);
+			expect(serviceM8ApiRequest).toHaveBeenCalledTimes(1);
+		});
+	});
+
 	describe('generic handlers should work for standard resources', () => {
 		it('client.get should use generic getAllData handler', async () => {
 			const { getAllData, getEndpoint, getUrlParams } = await import(
