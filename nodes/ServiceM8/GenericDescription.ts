@@ -27,6 +27,7 @@ export const genericDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				operation: ['getMany'],
+				resource: ['job', 'client'],
 			},
 		},
 		options:[
@@ -94,6 +95,7 @@ export const genericDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				operation: ['update'],
+				resource: ['job', 'client'],
 			},
 		},
 		options:[

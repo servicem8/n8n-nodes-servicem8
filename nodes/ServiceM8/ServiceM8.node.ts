@@ -141,9 +141,8 @@ export class ServiceM8 implements INodeType {
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 
-		let item: INodeExecutionData;
-		let resource = this.getNodeParameter('resource', 0, '') as string;
-		let operation = this.getNodeParameter('operation', 0, '') as string;
+		const resource = this.getNodeParameter('resource', 0, '') as string;
+		const operation = this.getNodeParameter('operation', 0, '') as string;
 		let responseData;
 		const returnItems: INodeExecutionData[] = [];
 		const pushToReturnItems = (data: unknown, index: number) => {
@@ -176,11 +175,6 @@ export class ServiceM8 implements INodeType {
 		// (This could be a different value for each item in case it contains an expression)
 		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
 			try {
-				item = items[itemIndex];
-
-				item.json.resource = resource;
-				item.json.operation = operation;
-
 				let qs: IDataObject = {};
 
 				let endpoint = await getEndpoint.call(this,resource,operation);
