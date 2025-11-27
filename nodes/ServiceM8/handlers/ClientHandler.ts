@@ -24,7 +24,7 @@ export class ClientHandler extends BaseHandler {
 			case 'get':
 				return this.getWithContacts(ctx);
 			case 'getMany':
-				return this.standardGetMany(ctx);
+				return this.getManyWithContacts(ctx);
 			case 'update':
 				return this.standardUpdate(ctx);
 			case 'delete':
@@ -38,6 +38,54 @@ export class ClientHandler extends BaseHandler {
 					{ itemIndex: ctx.itemIndex },
 				);
 		}
+	}
+
+	/**
+	 * Get multiple clients with optional contacts included
+	 * Contacts can only be included when Limit is between 1 and 20
+	 */
+	private async getManyWithContacts(ctx: HandlerContext): Promise<unknown> {
+		const limit = ctx.executeFunctions.getNodeParameter(
+			'limit',
+			ctx.itemIndex,
+			0,
+		) as number;
+
+		const includeContacts = ctx.executeFunctions.getNodeParameter(
+			'includeContacts',
+			ctx.itemIndex,
+			false,
+		) as boolean;
+
+		// Validate limit when Include Contacts is enabled
+		if (includeContacts && (limit < 1 || limit > 20)) {
+			throw new NodeOperationError(
+				ctx.executeFunctions.getNode(),
+				'Include Contacts requires Limit to be between 1 and 20',
+				{ itemIndex: ctx.itemIndex },
+			);
+		}
+
+		const clients = await this.standardGetMany(ctx) as IDataObject[];
+
+		if (!includeContacts) {
+			return clients;
+		}
+
+		// Fetch contacts for each client
+		const clientsWithContacts = await Promise.all(
+			clients.map(async (client) => {
+				const clientUuid = client.uuid as string;
+				const contacts = await getAllData.call(
+					ctx.executeFunctions,
+					'https://api.servicem8.com/api_1.0/companycontact.json',
+					{ $filter: `company_uuid eq '${clientUuid}' and active eq '1'` },
+				);
+				return { ...client, contacts };
+			}),
+		);
+
+		return clientsWithContacts;
 	}
 
 	/**

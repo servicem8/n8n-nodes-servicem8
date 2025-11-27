@@ -24,7 +24,7 @@ export class JobHandler extends BaseHandler {
 			case 'get':
 				return this.getWithContacts(ctx);
 			case 'getMany':
-				return this.standardGetMany(ctx);
+				return this.getManyWithContacts(ctx);
 			case 'create':
 				return this.standardCreate(ctx);
 			case 'update':
@@ -115,6 +115,54 @@ export class JobHandler extends BaseHandler {
 		);
 
 		return responseData.body;
+	}
+
+	/**
+	 * Get multiple jobs with optional contacts included
+	 * Contacts can only be included when Limit is between 1 and 20
+	 */
+	private async getManyWithContacts(ctx: HandlerContext): Promise<unknown> {
+		const limit = ctx.executeFunctions.getNodeParameter(
+			'limit',
+			ctx.itemIndex,
+			0,
+		) as number;
+
+		const includeContacts = ctx.executeFunctions.getNodeParameter(
+			'includeContacts',
+			ctx.itemIndex,
+			false,
+		) as boolean;
+
+		// Validate limit when Include Contacts is enabled
+		if (includeContacts && (limit < 1 || limit > 20)) {
+			throw new NodeOperationError(
+				ctx.executeFunctions.getNode(),
+				'Include Contacts requires Limit to be between 1 and 20',
+				{ itemIndex: ctx.itemIndex },
+			);
+		}
+
+		const jobs = await this.standardGetMany(ctx) as IDataObject[];
+
+		if (!includeContacts) {
+			return jobs;
+		}
+
+		// Fetch contacts for each job
+		const jobsWithContacts = await Promise.all(
+			jobs.map(async (job) => {
+				const jobUuid = job.uuid as string;
+				const contacts = await getAllData.call(
+					ctx.executeFunctions,
+					'https://api.servicem8.com/api_1.0/jobcontact.json',
+					{ $filter: `job_uuid eq '${jobUuid}' and active eq '1'` },
+				);
+				return { ...job, contacts };
+			}),
+		);
+
+		return jobsWithContacts;
 	}
 
 	/**

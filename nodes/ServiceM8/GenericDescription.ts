@@ -3,11 +3,40 @@ import { JobContactFields } from './Job/JobObjects';
 import { ClientContactFields } from './Client/ClientObjects';
 export const genericDescription: INodeProperties[] = [
 {
+		displayName: 'Limit',
+		name: 'limit',
+		type: 'number',
+		default: 0,
+		description: 'Maximum number of records to return. Set to 0 for no limit.',
+		typeOptions: {
+			minValue: 0,
+		},
+		displayOptions: {
+			show: {
+				operation: ['getMany'],
+				resource: ['job', 'client'],
+			},
+		},
+	},
+	{
 		displayName: 'Include Inactive Records',
 		name: 'includeInactive',
 		type: 'boolean',
 		default: false,
 		description: 'Whether to include inactive (deleted) records in the results',
+		displayOptions: {
+			show: {
+				operation: ['getMany'],
+				resource: ['job', 'client'],
+			},
+		},
+	},
+	{
+		displayName: 'Include Contacts',
+		name: 'includeContacts',
+		type: 'boolean',
+		default: false,
+		description: 'Whether to include contacts for each record. Only available when Limit is between 1 and 20.',
 		displayOptions: {
 			show: {
 				operation: ['getMany'],
