@@ -37,6 +37,12 @@ export abstract class BaseHandler implements ResourceHandler {
 		const endpoint = await this.buildEndpoint(ctx, 'getMany');
 		const qs: IDataObject = {};
 
+		const limit = ctx.executeFunctions.getNodeParameter(
+			'limit',
+			ctx.itemIndex,
+			0,
+		) as number;
+
 		if (this.crudConfig.supportsFiltering) {
 			const filters = ctx.executeFunctions.getNodeParameter(
 				'filters',
@@ -70,7 +76,7 @@ export abstract class BaseHandler implements ResourceHandler {
 			}
 		}
 
-		return getAllData.call(ctx.executeFunctions, endpoint, qs);
+		return getAllData.call(ctx.executeFunctions, endpoint, qs, limit);
 	}
 
 	/**

@@ -52,26 +52,34 @@ export async function serviceM8ApiRequest(
 export async function getAllData(
 	this: IExecuteFunctions | IWebhookFunctions | IHookFunctions | ILoadOptionsFunctions,
 	endpoint:string,
-	query:IDataObject = {}, 
+	query:IDataObject = {},
 	limit = 0): Promise<IDataObject[]> {
 
 		query.cursor = '-1';
+		if (limit > 0) {
+			query.$top = limit;
+		}
 		let returnData:IDataObject[] = [];
 		let responseData;
 
 		do {
-			responseData = await serviceM8ApiRequest.call(this,'GET', endpoint,query);
-	
-			returnData = returnData.concat(responseData.body);
-			if(responseData?.headers?.['x-next-cursor']){
-				query.cursor = responseData?.headers['x-next-cursor'];
-			}
-			else{
-				query.cursor = '0';
-			}
-			
+			responseData = await serviceM8ApiRequest.call(this,'GET', endpoint, query);
 
-		} while ((limit === 0 || returnData.length < limit) && query.cursor !== '0');
+			returnData = returnData.concat(responseData.body);
+			const lastCursor = query.cursor as string;
+			const nextCursor = responseData?.headers?.['x-next-cursor'];
+
+			if(nextCursor && nextCursor != lastCursor){
+				query.cursor = nextCursor;
+			} else {
+				query.cursor = null;
+			}
+
+		} while (query.cursor && (limit === 0 || returnData.length < limit));
+
+		if (returnData.length > limit && limit > 0) {
+			returnData = returnData.slice(0, limit);
+		}
 
 		return returnData;
 }
