@@ -157,7 +157,7 @@ export class JobHandler extends BaseHandler {
 	}
 
 	/**
-	 * Update job contacts (upsert by type)
+	 * Update a single job contact (upsert by type, or direct update by UUID)
 	 */
 	private async updateContacts(ctx: HandlerContext): Promise<unknown> {
 		const jobUuid = ctx.executeFunctions.getNodeParameter(
@@ -166,74 +166,73 @@ export class JobHandler extends BaseHandler {
 			'',
 		) as string;
 
-		// Process each contact type
-		const contactTypes = [
-			{ param: 'jobContact', type: 'Job' },
-			{ param: 'billingContact', type: 'Billing' },
-			{ param: 'propertyManagerContact', type: 'Property Manager' },
-		];
+		const contactType = ctx.executeFunctions.getNodeParameter(
+			'contactType',
+			ctx.itemIndex,
+			'',
+		) as string;
 
-		for (const { param, type } of contactTypes) {
-			const contactData = ctx.executeFunctions.getNodeParameter(
-				param,
-				ctx.itemIndex,
-				{},
-			) as IDataObject;
+		const contactFields = ctx.executeFunctions.getNodeParameter(
+			'contactFields',
+			ctx.itemIndex,
+			{},
+		) as IDataObject;
 
-			await this.upsertContact(ctx, jobUuid.trim(), type, contactData);
-		}
-
-		return { uuid: jobUuid.trim() };
-	}
-
-	/**
-	 * Create or update a job contact by type (sparse update supported)
-	 */
-	private async upsertContact(
-		ctx: HandlerContext,
-		jobUuid: string,
-		type: string,
-		data: IDataObject,
-	): Promise<void> {
 		// Filter out empty/undefined values for sparse update support
 		const filteredData: IDataObject = {};
-		for (const [key, value] of Object.entries(data)) {
+		for (const [key, value] of Object.entries(contactFields)) {
 			if (value !== undefined && value !== null && value !== '') {
 				filteredData[key] = value;
 			}
 		}
 
-		// If no actual data provided, skip
-		if (Object.keys(filteredData).length === 0) {
-			return;
-		}
+		if (contactType === 'uuid') {
+			// Direct update by UUID (not an upsert - let API error if not found)
+			const contactUuid = ctx.executeFunctions.getNodeParameter(
+				'contactUuid',
+				ctx.itemIndex,
+				'',
+			) as string;
 
-		// Find existing contact of this type
-		const existing = await getAllData.call(
-			ctx.executeFunctions,
-			'https://api.servicem8.com/api_1.0/jobcontact.json',
-			{ $filter: `job_uuid eq '${jobUuid}' and type eq '${type}' and active eq '1'` },
-		);
-
-		if (existing.length > 0) {
-			// Update existing - only sends provided fields (sparse update)
-			const contactUuid = (existing[0] as IDataObject).uuid as string;
 			await serviceM8ApiRequest.call(
 				ctx.executeFunctions,
 				'POST',
-				`https://api.servicem8.com/api_1.0/jobcontact/${contactUuid}.json`,
+				`https://api.servicem8.com/api_1.0/jobcontact/${contactUuid.trim()}.json`,
 				{},
 				filteredData,
 			);
+
+			return { uuid: contactUuid.trim() };
 		} else {
-			// Create new - requires job_uuid and type
-			await serviceM8ApiRequest.call(
+			// Upsert by type
+			const existing = await getAllData.call(
 				ctx.executeFunctions,
-				'POST',
 				'https://api.servicem8.com/api_1.0/jobcontact.json',
-				{},
-				{ ...filteredData, job_uuid: jobUuid, type },
+				{ $filter: `job_uuid eq '${jobUuid.trim()}' and type eq '${contactType}' and active eq '1'` },
 			);
+
+			if (existing.length > 0) {
+				// Update existing
+				const contactUuid = (existing[0] as IDataObject).uuid as string;
+				await serviceM8ApiRequest.call(
+					ctx.executeFunctions,
+					'POST',
+					`https://api.servicem8.com/api_1.0/jobcontact/${contactUuid}.json`,
+					{},
+					filteredData,
+				);
+				return { uuid: contactUuid };
+			} else {
+				// Create new
+				const response = await serviceM8ApiRequest.call(
+					ctx.executeFunctions,
+					'POST',
+					'https://api.servicem8.com/api_1.0/jobcontact.json',
+					{},
+					{ ...filteredData, job_uuid: jobUuid.trim(), type: contactType },
+				);
+				return extractCreatedUuid(response);
+			}
 		}
 	}
 }

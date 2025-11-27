@@ -126,13 +126,74 @@ export const genericDescription: INodeProperties[] = [
 			}
 		]
 	},
+	// Job Contact Type selector
 	{
-		displayName: 'Job Contact',
-		name: 'jobContact',
+		displayName: 'Contact Type',
+		name: 'contactType',
+		type: 'options',
+		required: true,
+		default: 'Job',
+		options: [
+			{ name: 'Job', value: 'Job' },
+			{ name: 'Billing', value: 'Billing' },
+			{ name: 'Property Manager', value: 'Property Manager' },
+			{ name: 'Specify UUID', value: 'uuid' },
+		],
+		description: 'The type of contact to update. Select "Specify UUID" to update a specific contact by its UUID.',
+		displayOptions: {
+			show: {
+				resource: ['job'],
+				operation: ['updateContacts'],
+			},
+		},
+	},
+	// Client Contact Type selector
+	{
+		displayName: 'Contact Type',
+		name: 'contactType',
+		type: 'options',
+		required: true,
+		default: 'JOB',
+		options: [
+			{ name: 'Job', value: 'JOB' },
+			{ name: 'Billing', value: 'BILLING' },
+			{ name: 'Property Manager', value: 'Property Manager' },
+			{ name: 'Property Owner', value: 'Property Owner' },
+			{ name: 'Tenant', value: 'Tenant' },
+			{ name: 'Specify UUID', value: 'uuid' },
+		],
+		description: 'The type of contact to update. Select "Specify UUID" to update a specific contact by its UUID.',
+		displayOptions: {
+			show: {
+				resource: ['client'],
+				operation: ['updateContacts'],
+			},
+		},
+	},
+	// Contact UUID field (shown when "Specify UUID" is selected)
+	{
+		displayName: 'Contact UUID',
+		name: 'contactUuid',
+		type: 'string',
+		required: true,
+		default: '',
+		description: 'The UUID of the specific contact to update',
+		displayOptions: {
+			show: {
+				resource: ['job', 'client'],
+				operation: ['updateContacts'],
+				contactType: ['uuid'],
+			},
+		},
+	},
+	// Job Contact Fields
+	{
+		displayName: 'Contact Fields',
+		name: 'contactFields',
 		type: 'collection',
 		placeholder: 'Add Field',
 		default: {},
-		description: 'Contact details for the primary job contact. Only provided fields will be updated.',
+		description: 'Contact details to update. Only provided fields will be modified.',
 		options: JobContactFields,
 		displayOptions: {
 			show: {
@@ -141,103 +202,14 @@ export const genericDescription: INodeProperties[] = [
 			},
 		},
 	},
+	// Client Contact Fields
 	{
-		displayName: 'Billing Contact',
-		name: 'billingContact',
+		displayName: 'Contact Fields',
+		name: 'contactFields',
 		type: 'collection',
 		placeholder: 'Add Field',
 		default: {},
-		description: 'Contact details for billing. Only provided fields will be updated.',
-		options: JobContactFields,
-		displayOptions: {
-			show: {
-				resource: ['job'],
-				operation: ['updateContacts'],
-			},
-		},
-	},
-	{
-		displayName: 'Property Manager Contact',
-		name: 'propertyManagerContact',
-		type: 'collection',
-		placeholder: 'Add Field',
-		default: {},
-		description: 'Contact details for the property manager. Only provided fields will be updated.',
-		options: JobContactFields,
-		displayOptions: {
-			show: {
-				resource: ['job'],
-				operation: ['updateContacts'],
-			},
-		},
-	},
-	{
-		displayName: 'Job Contact',
-		name: 'clientContact',
-		type: 'collection',
-		placeholder: 'Add Field',
-		default: {},
-		description: 'Contact details for the primary job contact. Only provided fields will be updated.',
-		options: ClientContactFields,
-		displayOptions: {
-			show: {
-				resource: ['client'],
-				operation: ['updateContacts'],
-			},
-		},
-	},
-	{
-		displayName: 'Billing Contact',
-		name: 'billingContact',
-		type: 'collection',
-		placeholder: 'Add Field',
-		default: {},
-		description: 'Contact details for billing. Only provided fields will be updated.',
-		options: ClientContactFields,
-		displayOptions: {
-			show: {
-				resource: ['client'],
-				operation: ['updateContacts'],
-			},
-		},
-	},
-	{
-		displayName: 'Property Manager Contact',
-		name: 'propertyManagerContact',
-		type: 'collection',
-		placeholder: 'Add Field',
-		default: {},
-		description: 'Contact details for the property manager. Only provided fields will be updated.',
-		options: ClientContactFields,
-		displayOptions: {
-			show: {
-				resource: ['client'],
-				operation: ['updateContacts'],
-			},
-		},
-	},
-	{
-		displayName: 'Property Owner Contact',
-		name: 'propertyOwnerContact',
-		type: 'collection',
-		placeholder: 'Add Field',
-		default: {},
-		description: 'Contact details for the property owner. Only provided fields will be updated.',
-		options: ClientContactFields,
-		displayOptions: {
-			show: {
-				resource: ['client'],
-				operation: ['updateContacts'],
-			},
-		},
-	},
-	{
-		displayName: 'Tenant Contact',
-		name: 'tenantContact',
-		type: 'collection',
-		placeholder: 'Add Field',
-		default: {},
-		description: 'Contact details for the tenant. Only provided fields will be updated.',
+		description: 'Contact details to update. Only provided fields will be modified.',
 		options: ClientContactFields,
 		displayOptions: {
 			show: {

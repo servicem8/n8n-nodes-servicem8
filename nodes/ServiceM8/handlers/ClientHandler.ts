@@ -1,6 +1,7 @@
 import type { IDataObject } from 'n8n-workflow';
 import { NodeOperationError } from 'n8n-workflow';
 import type { HandlerContext, CrudConfig } from './types';
+import { extractCreatedUuid } from './types';
 import { BaseHandler } from './BaseHandler';
 import { serviceM8ApiRequest, getAllData } from '../GenericFunctions';
 
@@ -79,7 +80,7 @@ export class ClientHandler extends BaseHandler {
 	}
 
 	/**
-	 * Update client contacts (upsert by type)
+	 * Update a single client contact (upsert by type, or direct update by UUID)
 	 */
 	private async updateContacts(ctx: HandlerContext): Promise<unknown> {
 		const clientUuid = ctx.executeFunctions.getNodeParameter(
@@ -88,76 +89,73 @@ export class ClientHandler extends BaseHandler {
 			'',
 		) as string;
 
-		// Process each contact type
-		const contactTypes = [
-			{ param: 'clientContact', type: 'JOB' },
-			{ param: 'billingContact', type: 'BILLING' },
-			{ param: 'propertyManagerContact', type: 'Property Manager' },
-			{ param: 'propertyOwnerContact', type: 'Property Owner' },
-			{ param: 'tenantContact', type: 'Tenant' },
-		];
+		const contactType = ctx.executeFunctions.getNodeParameter(
+			'contactType',
+			ctx.itemIndex,
+			'',
+		) as string;
 
-		for (const { param, type } of contactTypes) {
-			const contactData = ctx.executeFunctions.getNodeParameter(
-				param,
-				ctx.itemIndex,
-				{},
-			) as IDataObject;
+		const contactFields = ctx.executeFunctions.getNodeParameter(
+			'contactFields',
+			ctx.itemIndex,
+			{},
+		) as IDataObject;
 
-			await this.upsertContact(ctx, clientUuid.trim(), type, contactData);
-		}
-
-		return { uuid: clientUuid.trim() };
-	}
-
-	/**
-	 * Create or update a company contact by type (sparse update supported)
-	 */
-	private async upsertContact(
-		ctx: HandlerContext,
-		companyUuid: string,
-		type: string,
-		data: IDataObject,
-	): Promise<void> {
 		// Filter out empty/undefined values for sparse update support
 		const filteredData: IDataObject = {};
-		for (const [key, value] of Object.entries(data)) {
+		for (const [key, value] of Object.entries(contactFields)) {
 			if (value !== undefined && value !== null && value !== '') {
 				filteredData[key] = value;
 			}
 		}
 
-		// If no actual data provided, skip
-		if (Object.keys(filteredData).length === 0) {
-			return;
-		}
+		if (contactType === 'uuid') {
+			// Direct update by UUID (not an upsert - let API error if not found)
+			const contactUuid = ctx.executeFunctions.getNodeParameter(
+				'contactUuid',
+				ctx.itemIndex,
+				'',
+			) as string;
 
-		// Find existing contact of this type
-		const existing = await getAllData.call(
-			ctx.executeFunctions,
-			'https://api.servicem8.com/api_1.0/companycontact.json',
-			{ $filter: `company_uuid eq '${companyUuid}' and type eq '${type}' and active eq '1'` },
-		);
-
-		if (existing.length > 0) {
-			// Update existing - only sends provided fields (sparse update)
-			const contactUuid = (existing[0] as IDataObject).uuid as string;
 			await serviceM8ApiRequest.call(
 				ctx.executeFunctions,
 				'POST',
-				`https://api.servicem8.com/api_1.0/companycontact/${contactUuid}.json`,
+				`https://api.servicem8.com/api_1.0/companycontact/${contactUuid.trim()}.json`,
 				{},
 				filteredData,
 			);
+
+			return { uuid: contactUuid.trim() };
 		} else {
-			// Create new - requires company_uuid and type
-			await serviceM8ApiRequest.call(
+			// Upsert by type
+			const existing = await getAllData.call(
 				ctx.executeFunctions,
-				'POST',
 				'https://api.servicem8.com/api_1.0/companycontact.json',
-				{},
-				{ ...filteredData, company_uuid: companyUuid, type },
+				{ $filter: `company_uuid eq '${clientUuid.trim()}' and type eq '${contactType}' and active eq '1'` },
 			);
+
+			if (existing.length > 0) {
+				// Update existing
+				const contactUuid = (existing[0] as IDataObject).uuid as string;
+				await serviceM8ApiRequest.call(
+					ctx.executeFunctions,
+					'POST',
+					`https://api.servicem8.com/api_1.0/companycontact/${contactUuid}.json`,
+					{},
+					filteredData,
+				);
+				return { uuid: contactUuid };
+			} else {
+				// Create new
+				const response = await serviceM8ApiRequest.call(
+					ctx.executeFunctions,
+					'POST',
+					'https://api.servicem8.com/api_1.0/companycontact.json',
+					{},
+					{ ...filteredData, company_uuid: clientUuid.trim(), type: contactType },
+				);
+				return extractCreatedUuid(response);
+			}
 		}
 	}
 }

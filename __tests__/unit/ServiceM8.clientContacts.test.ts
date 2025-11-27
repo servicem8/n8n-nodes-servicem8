@@ -45,8 +45,8 @@ describe('ServiceM8 Client Contacts', () => {
 			mockGetAllData
 				.mockResolvedValueOnce([{ uuid: 'client-uuid-123', name: 'Test Client' }]) // First call: client
 				.mockResolvedValueOnce([
-					{ uuid: 'contact-1', type: 'Main', first: 'John', last: 'Doe' },
-					{ uuid: 'contact-2', type: 'Billing', first: 'Jane', last: 'Smith' },
+					{ uuid: 'contact-1', type: 'JOB', first: 'John', last: 'Doe' },
+					{ uuid: 'contact-2', type: 'BILLING', first: 'Jane', last: 'Smith' },
 				]); // Second call: contacts
 
 			const mockContext = createMockExecuteFunctions({
@@ -140,7 +140,7 @@ describe('ServiceM8 Client Contacts', () => {
 	});
 
 	describe('client.updateContacts', () => {
-		it('creates a new contact when none exists', async () => {
+		it('creates a new contact when none exists (upsert by type)', async () => {
 			mockGetAllData.mockResolvedValue([]);
 
 			const mockContext = createMockExecuteFunctions({
@@ -148,15 +148,12 @@ describe('ServiceM8 Client Contacts', () => {
 				operation: 'updateContacts',
 				nodeParams: {
 					uuid: 'client-uuid-123',
-					clientContact: {
+					contactType: 'JOB',
+					contactFields: {
 						first: 'John',
 						last: 'Doe',
 						email: 'john@example.com',
 					},
-					billingContact: {},
-					propertyManagerContact: {},
-					propertyOwnerContact: {},
-					tenantContact: {},
 				},
 			});
 
@@ -177,7 +174,7 @@ describe('ServiceM8 Client Contacts', () => {
 			);
 		});
 
-		it('updates an existing contact when one exists', async () => {
+		it('updates an existing contact when one exists (upsert by type)', async () => {
 			// Return existing contact
 			mockGetAllData.mockResolvedValue([
 				{ uuid: 'contact-uuid-456', type: 'JOB', first: 'Old', last: 'Name' },
@@ -188,14 +185,11 @@ describe('ServiceM8 Client Contacts', () => {
 				operation: 'updateContacts',
 				nodeParams: {
 					uuid: 'client-uuid-123',
-					clientContact: {
+					contactType: 'JOB',
+					contactFields: {
 						first: 'New',
 						last: 'Name',
 					},
-					billingContact: {},
-					propertyManagerContact: {},
-					propertyOwnerContact: {},
-					tenantContact: {},
 				},
 			});
 
@@ -211,13 +205,6 @@ describe('ServiceM8 Client Contacts', () => {
 					last: 'Name',
 				}),
 			);
-
-			// Should NOT include company_uuid and type in update (sparse update)
-			const updateCall = mockServiceM8ApiRequest.mock.calls.find(
-				(call) => call[1].includes('contact-uuid-456'),
-			);
-			expect(updateCall?.[3]).not.toHaveProperty('company_uuid');
-			expect(updateCall?.[3]).not.toHaveProperty('type');
 		});
 
 		it('supports sparse updates - only sends provided fields', async () => {
@@ -238,15 +225,12 @@ describe('ServiceM8 Client Contacts', () => {
 				operation: 'updateContacts',
 				nodeParams: {
 					uuid: 'client-uuid-123',
-					clientContact: {
+					contactType: 'JOB',
+					contactFields: {
 						phone: '555-9999', // Only updating phone
 						first: '', // Empty - should be filtered out
 						last: '', // Empty - should be filtered out
 					},
-					billingContact: {},
-					propertyManagerContact: {},
-					propertyOwnerContact: {},
-					tenantContact: {},
 				},
 			});
 
@@ -259,41 +243,31 @@ describe('ServiceM8 Client Contacts', () => {
 			expect(updateCall?.[3]).toEqual({ phone: '555-9999' });
 		});
 
-		it('handles multiple contact types in one update', async () => {
-			// Return no existing contacts
-			mockGetAllData.mockResolvedValue([]);
-
+		it('updates contact directly by UUID when contactType is uuid', async () => {
 			const mockContext = createMockExecuteFunctions({
 				resource: 'client',
 				operation: 'updateContacts',
 				nodeParams: {
 					uuid: 'client-uuid-123',
-					clientContact: {
-						first: 'Job',
-						last: 'Contact',
+					contactType: 'uuid',
+					contactUuid: 'specific-contact-uuid',
+					contactFields: {
+						first: 'Direct',
+						last: 'Update',
 					},
-					billingContact: {
-						first: 'Billing',
-						last: 'Contact',
-					},
-					propertyManagerContact: {},
-					propertyOwnerContact: {},
-					tenantContact: {},
 				},
 			});
 
 			await node.execute.call(mockContext);
 
-			// Should create both contacts
-			const createCalls = mockServiceM8ApiRequest.mock.calls.filter(
-				(call) => call[1] === 'https://api.servicem8.com/api_1.0/companycontact.json',
+			// Should update directly by UUID without querying for existing
+			expect(mockGetAllData).not.toHaveBeenCalled();
+			expect(mockServiceM8ApiRequest).toHaveBeenCalledWith(
+				'POST',
+				'https://api.servicem8.com/api_1.0/companycontact/specific-contact-uuid.json',
+				{},
+				{ first: 'Direct', last: 'Update' },
 			);
-			expect(createCalls).toHaveLength(2);
-
-			// Verify each type
-			const types = createCalls.map((call) => call[3].type);
-			expect(types).toContain('JOB');
-			expect(types).toContain('BILLING');
 		});
 	});
 });

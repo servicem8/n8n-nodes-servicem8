@@ -95,7 +95,7 @@ describe('ServiceM8 Job Contacts', () => {
 	});
 
 	describe('job.updateContacts', () => {
-		it('creates a new contact when none exists', async () => {
+		it('creates a new contact when none exists (upsert by type)', async () => {
 			mockGetAllData.mockResolvedValue([]);
 
 			const mockContext = createMockExecuteFunctions({
@@ -103,13 +103,12 @@ describe('ServiceM8 Job Contacts', () => {
 				operation: 'updateContacts',
 				nodeParams: {
 					uuid: 'job-uuid-123',
-					jobContact: {
+					contactType: 'Job',
+					contactFields: {
 						first: 'John',
 						last: 'Doe',
 						email: 'john@example.com',
 					},
-					billingContact: {},
-					propertyManagerContact: {},
 				},
 			});
 
@@ -130,7 +129,7 @@ describe('ServiceM8 Job Contacts', () => {
 			);
 		});
 
-		it('updates an existing contact when one exists', async () => {
+		it('updates an existing contact when one exists (upsert by type)', async () => {
 			// Return existing contact
 			mockGetAllData.mockResolvedValue([
 				{ uuid: 'contact-uuid-456', type: 'Job', first: 'Old', last: 'Name' },
@@ -141,12 +140,11 @@ describe('ServiceM8 Job Contacts', () => {
 				operation: 'updateContacts',
 				nodeParams: {
 					uuid: 'job-uuid-123',
-					jobContact: {
+					contactType: 'Job',
+					contactFields: {
 						first: 'New',
 						last: 'Name',
 					},
-					billingContact: {},
-					propertyManagerContact: {},
 				},
 			});
 
@@ -162,13 +160,6 @@ describe('ServiceM8 Job Contacts', () => {
 					last: 'Name',
 				}),
 			);
-
-			// Should NOT include job_uuid and type in update (sparse update)
-			const updateCall = mockServiceM8ApiRequest.mock.calls.find(
-				(call) => call[1].includes('contact-uuid-456'),
-			);
-			expect(updateCall?.[3]).not.toHaveProperty('job_uuid');
-			expect(updateCall?.[3]).not.toHaveProperty('type');
 		});
 
 		it('supports sparse updates - only sends provided fields', async () => {
@@ -189,13 +180,12 @@ describe('ServiceM8 Job Contacts', () => {
 				operation: 'updateContacts',
 				nodeParams: {
 					uuid: 'job-uuid-123',
-					jobContact: {
+					contactType: 'Job',
+					contactFields: {
 						phone: '555-9999', // Only updating phone
 						first: '', // Empty - should be filtered out
 						last: '', // Empty - should be filtered out
 					},
-					billingContact: {},
-					propertyManagerContact: {},
 				},
 			});
 
@@ -208,64 +198,31 @@ describe('ServiceM8 Job Contacts', () => {
 			expect(updateCall?.[3]).toEqual({ phone: '555-9999' });
 		});
 
-		it('skips contact upsert when no fields provided', async () => {
+		it('updates contact directly by UUID when contactType is uuid', async () => {
 			const mockContext = createMockExecuteFunctions({
 				resource: 'job',
 				operation: 'updateContacts',
 				nodeParams: {
 					uuid: 'job-uuid-123',
-					jobContact: {},
-					billingContact: {},
-					propertyManagerContact: {},
-				},
-			});
-
-			await node.execute.call(mockContext);
-
-			// Should not query for existing contacts since no data provided
-			expect(mockGetAllData).not.toHaveBeenCalledWith(
-				'https://api.servicem8.com/api_1.0/jobcontact.json',
-				expect.any(Object),
-			);
-		});
-
-		it('handles multiple contact types in one update', async () => {
-			// Return no existing contacts
-			mockGetAllData.mockResolvedValue([]);
-
-			const mockContext = createMockExecuteFunctions({
-				resource: 'job',
-				operation: 'updateContacts',
-				nodeParams: {
-					uuid: 'job-uuid-123',
-					jobContact: {
-						first: 'Job',
-						last: 'Contact',
-					},
-					billingContact: {
-						first: 'Billing',
-						last: 'Contact',
-					},
-					propertyManagerContact: {
-						first: 'PM',
-						last: 'Contact',
+					contactType: 'uuid',
+					contactUuid: 'specific-contact-uuid',
+					contactFields: {
+						first: 'Direct',
+						last: 'Update',
 					},
 				},
 			});
 
 			await node.execute.call(mockContext);
 
-			// Should create all three contacts
-			const createCalls = mockServiceM8ApiRequest.mock.calls.filter(
-				(call) => call[1] === 'https://api.servicem8.com/api_1.0/jobcontact.json',
+			// Should update directly by UUID without querying for existing
+			expect(mockGetAllData).not.toHaveBeenCalled();
+			expect(mockServiceM8ApiRequest).toHaveBeenCalledWith(
+				'POST',
+				'https://api.servicem8.com/api_1.0/jobcontact/specific-contact-uuid.json',
+				{},
+				{ first: 'Direct', last: 'Update' },
 			);
-			expect(createCalls).toHaveLength(3);
-
-			// Verify each type
-			const types = createCalls.map((call) => call[3].type);
-			expect(types).toContain('Job');
-			expect(types).toContain('Billing');
-			expect(types).toContain('Property Manager');
 		});
 	});
 });
