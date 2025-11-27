@@ -9,16 +9,6 @@ export const jobCheckinDescription: INodeProperties[] = [
 		default: 'getMany',
 		options: [
 			{
-				name: 'Create',
-				value: 'create',
-				action: 'Create job checkin',
-			},
-			{
-				name: 'Delete',
-				value: 'delete',
-				action: 'Delete job checkin',
-			},
-			{
 				name: 'Get',
 				value: 'get',
 				action: 'Get job checkin',
@@ -28,11 +18,6 @@ export const jobCheckinDescription: INodeProperties[] = [
 				value: 'getMany',
 				action: 'Get many job checkins',
 			},
-			{
-				name: 'Update',
-				value: 'update',
-				action: 'Update job checkin',
-			},
 		],
 		displayOptions: {
 			show: {
@@ -40,7 +25,7 @@ export const jobCheckinDescription: INodeProperties[] = [
 			},
 		},
 	},
-	// UUID field for get, update, delete
+	// UUID field for get
 	{
 		displayName: 'Checkin UUID',
 		name: 'uuid',
@@ -51,70 +36,7 @@ export const jobCheckinDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['jobCheckin'],
-				operation: ['get', 'update', 'delete'],
-			},
-		},
-	},
-	// Job UUID for create
-	{
-		displayName: 'Job UUID',
-		name: 'jobUUID',
-		type: 'string',
-		default: '',
-		required: true,
-		description: 'UUID of the job to create the checkin for',
-		displayOptions: {
-			show: {
-				resource: ['jobCheckin'],
-				operation: ['create'],
-			},
-		},
-	},
-	// Staff Member for create
-	{
-		displayName: 'Staff Member',
-		name: 'staffUUID',
-		type: 'options',
-		default: '',
-		required: true,
-		description: 'Choose from the list, or specify Staff UUID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-		typeOptions: {
-			loadOptionsMethod: 'getStaffMembers',
-		},
-		displayOptions: {
-			show: {
-				resource: ['jobCheckin'],
-				operation: ['create'],
-			},
-		},
-	},
-	// Start Time for create
-	{
-		displayName: 'Start Time',
-		name: 'startDate',
-		type: 'dateTime',
-		default: '',
-		required: true,
-		description: 'The start date and time of the checkin',
-		displayOptions: {
-			show: {
-				resource: ['jobCheckin'],
-				operation: ['create'],
-			},
-		},
-	},
-	// End Time for create
-	{
-		displayName: 'End Time',
-		name: 'endDate',
-		type: 'dateTime',
-		default: '',
-		required: true,
-		description: 'The end date and time of the checkin',
-		displayOptions: {
-			show: {
-				resource: ['jobCheckin'],
-				operation: ['create'],
+				operation: ['get'],
 			},
 		},
 	},
@@ -162,45 +84,5 @@ export const jobCheckinDescription: INodeProperties[] = [
 				operation: ['getMany'],
 			},
 		},
-	},
-	// UPDATE fields
-	{
-		displayName: 'Update Fields',
-		name: 'updateFields',
-		type: 'collection',
-		placeholder: 'Add Field',
-		default: {},
-		displayOptions: {
-			show: {
-				resource: ['jobCheckin'],
-				operation: ['update'],
-			},
-		},
-		options: [
-			{
-				displayName: 'End Time',
-				name: 'end_date',
-				type: 'dateTime',
-				default: '',
-				description: 'The end date and time of the checkin',
-			},
-			{
-				displayName: 'Staff Member',
-				name: 'staff_uuid',
-				type: 'options',
-				default: '',
-				description: 'Choose from the list, or specify Staff UUID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-				typeOptions: {
-					loadOptionsMethod: 'getStaffMembers',
-				},
-			},
-			{
-				displayName: 'Start Time',
-				name: 'start_date',
-				type: 'dateTime',
-				default: '',
-				description: 'The start date and time of the checkin',
-			},
-		],
 	},
 ];

@@ -219,7 +219,7 @@ export class ServiceM8 implements INodeType {
 					responseData = await getAllData.call(this, endpoint);
 					pushToReturnItems(responseData, itemIndex);
 				}
-				if(operation === 'update' && resource !== 'jobBooking' && resource !== 'jobCheckin'){
+				if(operation === 'update' && resource !== 'jobBooking'){
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
 					let body = await processBody.call(this,resource,fields.field as IDataObject[]);
 					if (!Object.keys(body as IDataObject).length) {
@@ -228,7 +228,7 @@ export class ServiceM8 implements INodeType {
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
 					pushToReturnItems(responseData.body, itemIndex);
 				}
-				if(operation === 'create' && resource !== 'jobBooking' && resource !== 'jobCheckin'){
+				if(operation === 'create' && resource !== 'jobBooking'){
 					let fields = this.getNodeParameter('fields', itemIndex, {}) as IDataObject;
 					let body = fields;
 					responseData = await serviceM8ApiRequest.call(this,'POST',endpoint,qs,body);
@@ -608,46 +608,6 @@ export class ServiceM8 implements INodeType {
 					pushToReturnItems(responseData.body, itemIndex);
 				}
 				/**
-				 * Create Job Checkin
-				 * Creates a job activity with activity_was_recorded=1
-				 * @see https://developer.servicem8.com/reference/createjobactivities
-				 */
-				if(resource === 'jobCheckin' && operation === 'create'){
-					const jobUUID = this.getNodeParameter('jobUUID', itemIndex, '') as string;
-					const staffUUID = this.getNodeParameter('staffUUID', itemIndex, '') as string;
-					const startDate = this.getNodeParameter('startDate', itemIndex, '') as string;
-					const endDate = this.getNodeParameter('endDate', itemIndex, '') as string;
-
-					if(!jobUUID){
-						throw new NodeOperationError(this.getNode(), 'Job UUID is required to create a checkin', { itemIndex });
-					}
-					if(!staffUUID){
-						throw new NodeOperationError(this.getNode(), 'Staff Member is required to create a checkin', { itemIndex });
-					}
-					if(!startDate){
-						throw new NodeOperationError(this.getNode(), 'Start Time is required to create a checkin', { itemIndex });
-					}
-					if(!endDate){
-						throw new NodeOperationError(this.getNode(), 'End Time is required to create a checkin', { itemIndex });
-					}
-
-					endpoint = 'https://api.servicem8.com/api_1.0/jobactivity.json';
-					const body: IDataObject = {
-						job_uuid: jobUUID.trim(),
-						staff_uuid: staffUUID,
-						start_date: toServiceM8DateTime(startDate),
-						end_date: toServiceM8DateTime(endDate),
-						activity_was_recorded: 1,
-					};
-
-					responseData = await serviceM8ApiRequest.call(this, 'POST', endpoint, qs, body);
-					const result = {
-						...responseData.body,
-						uuid: responseData.headers?.['x-record-uuid'],
-					};
-					pushToReturnItems(result, itemIndex);
-				}
-				/**
 				 * Get Job Checkin
 				 * Retrieves a single job checkin by UUID
 				 */
@@ -694,54 +654,7 @@ export class ServiceM8 implements INodeType {
 					responseData = await getAllData.call(this, endpoint, qs);
 					pushToReturnItems(responseData, itemIndex);
 				}
-				/**
-				 * Update Job Checkin
-				 * Updates a job checkin
-				 */
-				if(resource === 'jobCheckin' && operation === 'update'){
-					const uuid = this.getNodeParameter('uuid', itemIndex, '') as string;
-					const updateFields = this.getNodeParameter('updateFields', itemIndex, {}) as IDataObject;
-
-					if(!uuid){
-						throw new NodeOperationError(this.getNode(), 'Checkin UUID is required', { itemIndex });
-					}
-
-					endpoint = `https://api.servicem8.com/api_1.0/jobactivity/${uuid.trim()}.json`;
-					const body: IDataObject = {};
-
-					if(updateFields.start_date){
-						body.start_date = toServiceM8DateTime(updateFields.start_date as string);
-					}
-					if(updateFields.end_date){
-						body.end_date = toServiceM8DateTime(updateFields.end_date as string);
-					}
-					if(updateFields.staff_uuid){
-						body.staff_uuid = updateFields.staff_uuid;
-					}
-
-					if(!Object.keys(body).length){
-						throw new NodeOperationError(this.getNode(), 'No fields to update were provided', { itemIndex });
-					}
-
-					responseData = await serviceM8ApiRequest.call(this, 'POST', endpoint, qs, body);
-					pushToReturnItems(responseData.body, itemIndex);
-				}
-				/**
-				 * Delete Job Checkin
-				 * Deletes (soft delete) a job checkin
-				 */
-				if(resource === 'jobCheckin' && operation === 'delete'){
-					const uuid = this.getNodeParameter('uuid', itemIndex, '') as string;
-
-					if(!uuid){
-						throw new NodeOperationError(this.getNode(), 'Checkin UUID is required', { itemIndex });
-					}
-
-					endpoint = `https://api.servicem8.com/api_1.0/jobactivity/${uuid.trim()}.json`;
-					responseData = await serviceM8ApiRequest.call(this, 'DELETE', endpoint);
-					pushToReturnItems(responseData.body, itemIndex);
-				}
-				if(operation === 'delete' && resource !== 'jobBooking' && resource !== 'jobCheckin'){
+				if(operation === 'delete' && resource !== 'jobBooking'){
 					responseData = await serviceM8ApiRequest.call(this,'DELETE',endpoint);
 					pushToReturnItems(responseData.body, itemIndex);
 				}

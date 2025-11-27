@@ -243,63 +243,6 @@ describe('ServiceM8.execute API calls', () => {
 		});
 	});
 
-	describe('jobCheckin.create API calls', () => {
-		it('always sends activity_was_recorded=1 to distinguish from scheduled bookings', async () => {
-			const mockContext = createMockExecuteFunctions({
-				resource: 'jobCheckin',
-				operation: 'create',
-				nodeParams: {
-					jobUUID: 'job-uuid-123',
-					staffUUID: 'staff-uuid-456',
-					startDate: '2025-11-27T09:00:00-05:00',
-					endDate: '2025-11-27T11:00:00-05:00',
-				},
-			});
-
-			await node.execute.call(mockContext);
-
-			expect(mockServiceM8ApiRequest).toHaveBeenCalledWith(
-				'POST',
-				'https://api.servicem8.com/api_1.0/jobactivity.json',
-				expect.any(Object),
-				expect.objectContaining({
-					activity_was_recorded: 1,
-				}),
-			);
-			// Verify activity_was_scheduled is NOT set (that's for bookings)
-			const callArgs = mockServiceM8ApiRequest.mock.calls[0][3];
-			expect(callArgs.activity_was_scheduled).toBeUndefined();
-		});
-
-		it('creates checkin with correct job and staff UUIDs', async () => {
-			const mockContext = createMockExecuteFunctions({
-				resource: 'jobCheckin',
-				operation: 'create',
-				nodeParams: {
-					jobUUID: 'job-uuid-abc',
-					staffUUID: 'staff-uuid-xyz',
-					startDate: '2025-11-27T08:00:00-05:00',
-					endDate: '2025-11-27T10:00:00-05:00',
-				},
-			});
-
-			await node.execute.call(mockContext);
-
-			expect(mockServiceM8ApiRequest).toHaveBeenCalledWith(
-				'POST',
-				'https://api.servicem8.com/api_1.0/jobactivity.json',
-				expect.any(Object),
-				expect.objectContaining({
-					job_uuid: 'job-uuid-abc',
-					staff_uuid: 'staff-uuid-xyz',
-					start_date: '2025-11-27 08:00:00',
-					end_date: '2025-11-27 10:00:00',
-					activity_was_recorded: 1,
-				}),
-			);
-		});
-	});
-
 	describe('jobCheckin.getMany API calls', () => {
 		it('filters by activity_was_recorded=1 to get only checkins', async () => {
 			const mockContext = createMockExecuteFunctions({
