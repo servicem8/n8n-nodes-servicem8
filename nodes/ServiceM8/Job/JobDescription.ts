@@ -1,5 +1,5 @@
 import { INodeProperties } from 'n8n-workflow';
-import { JobAddNoteObject, JobCreateFromTemplateObject, JobCreateObject, JobSendToQueueObject } from './JobObjects';
+import { JobAddNoteObject, JobContactFields, JobCreateFromTemplateObject, JobCreateObject, JobSendToQueueObject } from './JobObjects';
 export const jobDescription: INodeProperties[] = [
     {
 		displayName: 'Operation',
@@ -64,6 +64,19 @@ export const jobDescription: INodeProperties[] = [
 			show: {
 				resource: ['job'],
 				operation: ['get','update','delete','sendJobToQueue'],
+			},
+		},
+	},
+	{
+		displayName: 'Include Contacts',
+		name: 'includeContacts',
+		type: 'boolean',
+		default: true,
+		description: 'Whether to include job contacts (Job Contact, Billing Contact, Property Manager) in the response',
+		displayOptions: {
+			show: {
+				resource: ['job'],
+				operation: ['get'],
 			},
 		},
 	},
@@ -192,7 +205,50 @@ export const jobDescription: INodeProperties[] = [
 					operation: ['sendJobToQueue'],
 				},
 			},
-		}
-
-	
+		},
+		{
+			displayName: 'Job Contact',
+			name: 'jobContact',
+			type: 'collection',
+			placeholder: 'Add Field',
+			default: {},
+			description: 'Contact details for the primary job contact. Only provided fields will be updated.',
+			options: JobContactFields,
+			displayOptions: {
+				show: {
+					resource: ['job'],
+					operation: ['update'],
+				},
+			},
+		},
+		{
+			displayName: 'Billing Contact',
+			name: 'billingContact',
+			type: 'collection',
+			placeholder: 'Add Field',
+			default: {},
+			description: 'Contact details for billing. Only provided fields will be updated.',
+			options: JobContactFields,
+			displayOptions: {
+				show: {
+					resource: ['job'],
+					operation: ['update'],
+				},
+			},
+		},
+		{
+			displayName: 'Property Manager Contact',
+			name: 'propertyManagerContact',
+			type: 'collection',
+			placeholder: 'Add Field',
+			default: {},
+			description: 'Contact details for the property manager. Only provided fields will be updated.',
+			options: JobContactFields,
+			displayOptions: {
+				show: {
+					resource: ['job'],
+					operation: ['update'],
+				},
+			},
+		},
 ]

@@ -1,5 +1,42 @@
 import { INodeProperties } from "n8n-workflow";
 
+/**
+ * Contact fields shared across Job Contact, Billing Contact, and Property Manager Contact
+ */
+export const JobContactFields: INodeProperties[] = [
+	{
+		name: 'first',
+		displayName: 'First Name',
+		type: 'string',
+		default: '',
+	},
+	{
+		name: 'last',
+		displayName: 'Last Name',
+		type: 'string',
+		default: '',
+	},
+	{
+		name: 'email',
+		displayName: 'Email',
+		type: 'string',
+		placeholder: 'name@email.com',
+		default: '',
+	},
+	{
+		name: 'mobile',
+		displayName: 'Mobile',
+		type: 'string',
+		default: '',
+	},
+	{
+		name: 'phone',
+		displayName: 'Phone',
+		type: 'string',
+		default: '',
+	},
+];
+
 export const JobCreateFromTemplateObject: INodeProperties[] = [
     {
         "name": "job_description",
