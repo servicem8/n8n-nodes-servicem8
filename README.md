@@ -21,7 +21,7 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 ## Operations
 
 ### Client (Customer)
-- **Get** - Get customer details
+- **Get** - Get client details
 - **Get Many** - Get multiple clients
 
 ### Job

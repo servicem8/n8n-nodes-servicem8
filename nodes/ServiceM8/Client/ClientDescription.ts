@@ -12,7 +12,7 @@ export const clientDescription: INodeProperties[] = [
 			{
 				name: 'Get',
 				value: 'get',
-				action: 'Get customer details',
+				action: 'Get client details',
 			},
 			{
 				name: 'Get Many',
