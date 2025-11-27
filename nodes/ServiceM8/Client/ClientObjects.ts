@@ -1,5 +1,42 @@
 import { INodeProperties } from "n8n-workflow";
 
+/**
+ * Contact fields for Company Contacts (used for client contact updates)
+ */
+export const ClientContactFields: INodeProperties[] = [
+	{
+		name: 'first',
+		displayName: 'First Name',
+		type: 'string',
+		default: '',
+	},
+	{
+		name: 'last',
+		displayName: 'Last Name',
+		type: 'string',
+		default: '',
+	},
+	{
+		name: 'email',
+		displayName: 'Email',
+		type: 'string',
+		placeholder: 'name@email.com',
+		default: '',
+	},
+	{
+		name: 'mobile',
+		displayName: 'Mobile',
+		type: 'string',
+		default: '',
+	},
+	{
+		name: 'phone',
+		displayName: 'Phone',
+		type: 'string',
+		default: '',
+	},
+];
+
 export const ClientCreateObject: INodeProperties[] = [
     {
         "name": "name",

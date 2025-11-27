@@ -2,13 +2,18 @@ import { INodeProperties } from 'n8n-workflow';
 import { ClientCreateObject } from './ClientObjects';
 
 export const clientDescription: INodeProperties[] = [
-    {
+	{
 		displayName: 'Operation',
 		name: 'operation',
 		type: 'options',
 		noDataExpression: true,
 		default: 'getMany',
 		options: [
+			{
+				name: 'Delete',
+				value: 'delete',
+				action: 'Delete client',
+			},
 			{
 				name: 'Get',
 				value: 'get',
@@ -19,6 +24,16 @@ export const clientDescription: INodeProperties[] = [
 				value: 'getMany',
 				action: 'Get multiple clients',
 			},
+			{
+				name: 'Update',
+				value: 'update',
+				action: 'Update client details',
+			},
+			{
+				name: 'Update Client Contacts',
+				value: 'updateContacts',
+				action: 'Update client contact details',
+			},
 		],
 		displayOptions: {
 			show: {
@@ -27,10 +42,24 @@ export const clientDescription: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'UUID',
+		displayName: 'Client UUID',
 		name: 'uuid',
 		type: 'string',
-		default: ' ',
+		required: true,
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['client'],
+				operation: ['get', 'update', 'delete', 'updateContacts'],
+			},
+		},
+	},
+	{
+		displayName: 'Include Contacts',
+		name: 'includeContacts',
+		type: 'boolean',
+		default: true,
+		description: 'Whether to include client contacts in the response',
 		displayOptions: {
 			show: {
 				resource: ['client'],
@@ -43,7 +72,7 @@ export const clientDescription: INodeProperties[] = [
 		name: 'fields',
 		type: 'collection',
 		default: {
-			"name":""
+			"name": ""
 		},
 		options: ClientCreateObject,
 		displayOptions: {
@@ -52,8 +81,6 @@ export const clientDescription: INodeProperties[] = [
 				operation: ['create'],
 			},
 		},
-	}
-	
-	
+	},
 ]
 

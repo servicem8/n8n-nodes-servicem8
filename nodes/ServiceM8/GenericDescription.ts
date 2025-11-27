@@ -1,5 +1,6 @@
 import { INodeProperties } from 'n8n-workflow';
 import { JobContactFields } from './Job/JobObjects';
+import { ClientContactFields } from './Client/ClientObjects';
 export const genericDescription: INodeProperties[] = [
 {
 		displayName: 'Include Inactive Records',
@@ -166,6 +167,81 @@ export const genericDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['job'],
+				operation: ['updateContacts'],
+			},
+		},
+	},
+	{
+		displayName: 'Job Contact',
+		name: 'clientContact',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		description: 'Contact details for the primary job contact. Only provided fields will be updated.',
+		options: ClientContactFields,
+		displayOptions: {
+			show: {
+				resource: ['client'],
+				operation: ['updateContacts'],
+			},
+		},
+	},
+	{
+		displayName: 'Billing Contact',
+		name: 'billingContact',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		description: 'Contact details for billing. Only provided fields will be updated.',
+		options: ClientContactFields,
+		displayOptions: {
+			show: {
+				resource: ['client'],
+				operation: ['updateContacts'],
+			},
+		},
+	},
+	{
+		displayName: 'Property Manager Contact',
+		name: 'propertyManagerContact',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		description: 'Contact details for the property manager. Only provided fields will be updated.',
+		options: ClientContactFields,
+		displayOptions: {
+			show: {
+				resource: ['client'],
+				operation: ['updateContacts'],
+			},
+		},
+	},
+	{
+		displayName: 'Property Owner Contact',
+		name: 'propertyOwnerContact',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		description: 'Contact details for the property owner. Only provided fields will be updated.',
+		options: ClientContactFields,
+		displayOptions: {
+			show: {
+				resource: ['client'],
+				operation: ['updateContacts'],
+			},
+		},
+	},
+	{
+		displayName: 'Tenant Contact',
+		name: 'tenantContact',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		description: 'Contact details for the tenant. Only provided fields will be updated.',
+		options: ClientContactFields,
+		displayOptions: {
+			show: {
+				resource: ['client'],
 				operation: ['updateContacts'],
 			},
 		},
