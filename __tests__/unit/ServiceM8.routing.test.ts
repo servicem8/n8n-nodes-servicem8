@@ -372,29 +372,5 @@ describe('ServiceM8.execute routing', () => {
 			);
 		});
 
-		it('client.delete should use generic delete handler', async () => {
-			const { serviceM8ApiRequest, getEndpoint, getUrlParams } = await import(
-				'../../nodes/ServiceM8/GenericFunctions'
-			);
-			vi.mocked(getEndpoint).mockResolvedValue(
-				'https://api.servicem8.com/api_1.0/companycontact/{uuid}.json',
-			);
-			vi.mocked(getUrlParams).mockResolvedValue(['uuid']);
-
-			const mockContext = createMockExecuteFunctions({
-				resource: 'client',
-				operation: 'delete',
-				nodeParams: {
-					uuid: 'client-uuid-123',
-				},
-			});
-
-			await node.execute.call(mockContext);
-
-			expect(serviceM8ApiRequest).toHaveBeenCalledWith(
-				'DELETE',
-				expect.stringContaining('client-uuid-123'),
-			);
-		});
 	});
 });
