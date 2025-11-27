@@ -94,20 +94,15 @@ describe('ServiceM8 Job Contacts', () => {
 		});
 	});
 
-	describe('job.update with contacts', () => {
+	describe('job.updateContacts', () => {
 		it('creates a new contact when none exists', async () => {
-			// First call: job update - no getAllData needed for this
-			// Second call: check for existing Job contact - returns empty
 			mockGetAllData.mockResolvedValue([]);
 
 			const mockContext = createMockExecuteFunctions({
 				resource: 'job',
-				operation: 'update',
+				operation: 'updateContacts',
 				nodeParams: {
 					uuid: 'job-uuid-123',
-					fields: {
-						field: [{ field: 'status', value: 'Work Order' }],
-					},
 					jobContact: {
 						first: 'John',
 						last: 'Doe',
@@ -143,12 +138,9 @@ describe('ServiceM8 Job Contacts', () => {
 
 			const mockContext = createMockExecuteFunctions({
 				resource: 'job',
-				operation: 'update',
+				operation: 'updateContacts',
 				nodeParams: {
 					uuid: 'job-uuid-123',
-					fields: {
-						field: [{ field: 'status', value: 'Work Order' }],
-					},
 					jobContact: {
 						first: 'New',
 						last: 'Name',
@@ -194,12 +186,9 @@ describe('ServiceM8 Job Contacts', () => {
 
 			const mockContext = createMockExecuteFunctions({
 				resource: 'job',
-				operation: 'update',
+				operation: 'updateContacts',
 				nodeParams: {
 					uuid: 'job-uuid-123',
-					fields: {
-						field: [{ field: 'status', value: 'Work Order' }],
-					},
 					jobContact: {
 						phone: '555-9999', // Only updating phone
 						first: '', // Empty - should be filtered out
@@ -222,12 +211,9 @@ describe('ServiceM8 Job Contacts', () => {
 		it('skips contact upsert when no fields provided', async () => {
 			const mockContext = createMockExecuteFunctions({
 				resource: 'job',
-				operation: 'update',
+				operation: 'updateContacts',
 				nodeParams: {
 					uuid: 'job-uuid-123',
-					fields: {
-						field: [{ field: 'status', value: 'Work Order' }],
-					},
 					jobContact: {},
 					billingContact: {},
 					propertyManagerContact: {},
@@ -249,12 +235,9 @@ describe('ServiceM8 Job Contacts', () => {
 
 			const mockContext = createMockExecuteFunctions({
 				resource: 'job',
-				operation: 'update',
+				operation: 'updateContacts',
 				nodeParams: {
 					uuid: 'job-uuid-123',
-					fields: {
-						field: [{ field: 'status', value: 'Work Order' }],
-					},
 					jobContact: {
 						first: 'Job',
 						last: 'Contact',

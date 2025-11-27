@@ -1,4 +1,5 @@
 import { INodeProperties } from 'n8n-workflow';
+import { JobContactFields } from './Job/JobObjects';
 export const genericDescription: INodeProperties[] = [
 {
 		displayName: 'Include Inactive Records',
@@ -36,14 +37,14 @@ export const genericDescription: INodeProperties[] = [
 				name: 'filter',
 				values:[
 					{
-						displayName: 'Field Name or ID',
+						displayName: 'Field Name',
 						name: 'field',
 						type: 'options',
 						typeOptions: {
 							loadOptionsMethod: 'getFilterFields',
 						},
 						default: '',
-						description: 'Field name to filter. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+						description: 'Field name to filter',
 					},
 					{
 						displayName: 'Operator',
@@ -82,10 +83,10 @@ export const genericDescription: INodeProperties[] = [
 		]
 	},
 	{
-		displayName: 'Fields',
+		displayName: 'Fields to Update',
 		name: 'fields',
 		type: 'fixedCollection',
-		placeholder: 'Add field to update',
+		placeholder: 'Add Field',
 		default: {},
 			typeOptions: {
 				multipleValues: true,
@@ -104,14 +105,14 @@ export const genericDescription: INodeProperties[] = [
 				name: 'field',
 				values:[
 					{
-						displayName: 'Field Name or ID',
+						displayName: 'Field Name',
 						name: 'field',
 						type: 'options',
 						typeOptions: {
 							loadOptionsMethod: 'getFields',
 						},
 						default: '',
-						description: 'Field name to update. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+						description: 'Field name to update',
 					},
 					{
 						displayName: 'Value',
@@ -123,5 +124,50 @@ export const genericDescription: INodeProperties[] = [
 				]
 			}
 		]
+	},
+	{
+		displayName: 'Job Contact',
+		name: 'jobContact',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		description: 'Contact details for the primary job contact. Only provided fields will be updated.',
+		options: JobContactFields,
+		displayOptions: {
+			show: {
+				resource: ['job'],
+				operation: ['updateContacts'],
+			},
+		},
+	},
+	{
+		displayName: 'Billing Contact',
+		name: 'billingContact',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		description: 'Contact details for billing. Only provided fields will be updated.',
+		options: JobContactFields,
+		displayOptions: {
+			show: {
+				resource: ['job'],
+				operation: ['updateContacts'],
+			},
+		},
+	},
+	{
+		displayName: 'Property Manager Contact',
+		name: 'propertyManagerContact',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		description: 'Contact details for the property manager. Only provided fields will be updated.',
+		options: JobContactFields,
+		displayOptions: {
+			show: {
+				resource: ['job'],
+				operation: ['updateContacts'],
+			},
+		},
 	},
 ]

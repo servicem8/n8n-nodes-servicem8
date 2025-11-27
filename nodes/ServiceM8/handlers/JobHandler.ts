@@ -28,7 +28,9 @@ export class JobHandler extends BaseHandler {
 			case 'create':
 				return this.standardCreate(ctx);
 			case 'update':
-				return this.updateWithContacts(ctx);
+				return this.standardUpdate(ctx);
+			case 'updateContacts':
+				return this.updateContacts(ctx);
 			case 'delete':
 				return this.standardDelete(ctx);
 			case 'createFromTemplate':
@@ -155,12 +157,9 @@ export class JobHandler extends BaseHandler {
 	}
 
 	/**
-	 * Update a job and optionally upsert contacts
+	 * Update job contacts (upsert by type)
 	 */
-	private async updateWithContacts(ctx: HandlerContext): Promise<unknown> {
-		// First do the standard job update
-		const jobResult = await this.standardUpdate(ctx);
-
+	private async updateContacts(ctx: HandlerContext): Promise<unknown> {
 		const jobUuid = ctx.executeFunctions.getNodeParameter(
 			'uuid',
 			ctx.itemIndex,
@@ -184,7 +183,7 @@ export class JobHandler extends BaseHandler {
 			await this.upsertContact(ctx, jobUuid.trim(), type, contactData);
 		}
 
-		return jobResult;
+		return { uuid: jobUuid.trim() };
 	}
 
 	/**
