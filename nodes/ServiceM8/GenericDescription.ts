@@ -139,7 +139,7 @@ export const genericDescription: INodeProperties[] = [
 			{ name: 'Property Manager', value: 'Property Manager' },
 			{ name: 'Specify UUID', value: 'uuid' },
 		],
-		description: 'The type of contact to update. Select "Specify UUID" to update a specific contact by its UUID.',
+		description: 'The type of contact to update. If no contact of this type exists, a new one will be created.',
 		displayOptions: {
 			show: {
 				resource: ['job'],
@@ -162,7 +162,7 @@ export const genericDescription: INodeProperties[] = [
 			{ name: 'Tenant', value: 'Tenant' },
 			{ name: 'Specify UUID', value: 'uuid' },
 		],
-		description: 'The type of contact to update. Select "Specify UUID" to update a specific contact by its UUID.',
+		description: 'The type of contact to update. If no contact of this type exists, a new one will be created.',
 		displayOptions: {
 			show: {
 				resource: ['client'],
