@@ -3,7 +3,7 @@ import { NodeOperationError } from 'n8n-workflow';
 import { DateTime } from 'luxon';
 import type { HandlerContext, ResourceHandler } from './types';
 import { extractCreatedUuid } from './types';
-import { serviceM8ApiRequest, getAllData, toServiceM8DateTime } from '../GenericFunctions';
+import { serviceM8ApiRequest, getAllData, toServiceM8DateTime, SERVICEM8_DATETIME_FORMAT } from '../GenericFunctions';
 
 /**
  * Handler for Job Booking resource operations.
@@ -298,16 +298,42 @@ export class JobBookingHandler implements ResourceHandler {
 			}
 		} else {
 			endpoint = `https://api.servicem8.com/api_1.0/jobactivity/${uuid.trim()}.json`;
-			// Process datetime fields for fixed bookings
-			if (updateFields.start_date) {
-				body.start_date = toServiceM8DateTime(updateFields.start_date as string);
-				// If duration is provided along with start_date, calculate end_date
+
+			// For fixed bookings, if start_date or duration is being updated, we need to
+			// ensure both start_date and end_date are sent (API requires end_date)
+			if (updateFields.start_date || updateFields.duration_minutes) {
+				// Fetch current record to get existing values
+				const currentRecord = await serviceM8ApiRequest.call(
+					ctx.executeFunctions,
+					'GET',
+					endpoint,
+				);
+
+				// Determine start time: Can be an ISO datetime, Luxon DateTime, or ServiceM8 datetime string -- standardise to ServiceM8 format, then convert to Luxon DateTime for calculations
+				const startDateTime =  DateTime.fromFormat(toServiceM8DateTime(updateFields.start_date ?? currentRecord.body.start_date), SERVICEM8_DATETIME_FORMAT);
+
+				// Determine duration: use new value or calculate from existing start/end
+				let durationMinutes: number;
 				if (updateFields.duration_minutes) {
-					const startDateTime = DateTime.fromISO(updateFields.start_date as string);
-					const durationMinutes = updateFields.duration_minutes as number;
-					const endDateTime = startDateTime.plus({ minutes: durationMinutes });
-					body.end_date = toServiceM8DateTime(endDateTime.toISO() as string);
+					durationMinutes = updateFields.duration_minutes as number;
+				} else {
+					// Calculate existing duration from current record (ServiceM8 format)
+					const existingStart = DateTime.fromFormat(toServiceM8DateTime(currentRecord.body.start_date as string), SERVICEM8_DATETIME_FORMAT);
+					const existingEnd = DateTime.fromFormat(toServiceM8DateTime(currentRecord.body.end_date as string), SERVICEM8_DATETIME_FORMAT);
+					if (!existingStart.isValid || !existingEnd.isValid) {
+						throw new NodeOperationError(
+							ctx.executeFunctions.getNode(),
+							'Cannot determine existing duration_minutes; please specify duration to update record.',
+							{ itemIndex: ctx.itemIndex },
+						);
+					}
+					durationMinutes = existingEnd.diff(existingStart, 'minutes').minutes;
 				}
+
+				const endDateTime = startDateTime.plus({ minutes: durationMinutes });
+
+				body.start_date = toServiceM8DateTime(startDateTime);
+				body.end_date = toServiceM8DateTime(endDateTime);
 			}
 			if (updateFields.staff_uuid) {
 				body.staff_uuid = updateFields.staff_uuid;

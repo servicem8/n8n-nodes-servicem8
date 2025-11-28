@@ -206,9 +206,9 @@ export const toOptionsFromFieldConfig = (items:fieldConfig[]) =>
 	items.map((x) => ({name:x.displayName, value:x.field}));
 
 /** ServiceM8 datetime format: "YYYY-MM-DD HH:mm:ss" */
-const SERVICEM8_DATETIME_FORMAT = 'yyyy-MM-dd HH:mm:ss';
+export const SERVICEM8_DATETIME_FORMAT = 'yyyy-MM-dd HH:mm:ss';
 /** Regex to match ServiceM8 datetime format */
-const SERVICEM8_DATETIME_REGEX = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+export const SERVICEM8_DATETIME_REGEX = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
 
 /**
  * Converts various datetime formats to ServiceM8 API format.

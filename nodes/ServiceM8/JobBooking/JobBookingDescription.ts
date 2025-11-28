@@ -278,7 +278,7 @@ export const jobBookingDescription: INodeProperties[] = [
                 name: 'duration_minutes',
                 type: 'number',
                 default: 60,
-                description: 'The duration of the activity in minutes. Only used when Start Time is also provided.',
+                description: 'The duration of the activity in minutes. Updates the end time based on the start time.',
                 typeOptions: {
                     minValue: 1,
                 },
