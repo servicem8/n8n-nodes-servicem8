@@ -11,12 +11,12 @@ export const jobCheckinDescription: INodeProperties[] = [
 			{
 				name: 'Get',
 				value: 'get',
-				action: 'Get job checkin',
+				action: 'Get a job checkin',
 			},
 			{
 				name: 'Get Many',
 				value: 'getMany',
-				action: 'Get many job checkins',
+				action: 'Get multiple job checkins',
 			},
 		],
 		displayOptions: {

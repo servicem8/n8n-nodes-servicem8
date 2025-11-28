@@ -12,17 +12,17 @@ export const clientDescription: INodeProperties[] = [
 			{
 				name: 'Create',
 				value: 'create',
-				action: 'Create a new client',
+				action: 'Create a client',
 			},
 			{
 				name: 'Delete',
 				value: 'delete',
-				action: 'Delete client',
+				action: 'Delete a client',
 			},
 			{
 				name: 'Get',
 				value: 'get',
-				action: 'Get client details',
+				action: 'Get a client',
 			},
 			{
 				name: 'Get Many',
@@ -32,12 +32,12 @@ export const clientDescription: INodeProperties[] = [
 			{
 				name: 'Update',
 				value: 'update',
-				action: 'Update client details',
+				action: 'Update a client',
 			},
 			{
 				name: 'Update Client Contacts',
 				value: 'updateContacts',
-				action: 'Update client contact details',
+				action: 'Update client contacts',
 			},
 		],
 		displayOptions: {

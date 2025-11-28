@@ -11,27 +11,27 @@ export const jobBookingDescription: INodeProperties[] = [
             {
                 name: 'Create',
                 value: 'create',
-                action: 'Create job booking',
+                action: 'Create a job booking',
             },
             {
                 name: 'Delete',
                 value: 'delete',
-                action: 'Delete job booking',
+                action: 'Delete a job booking',
             },
             {
                 name: 'Get',
                 value: 'get',
-                action: 'Get job booking',
+                action: 'Get a job booking',
             },
             {
                 name: 'Get Many',
                 value: 'getMany',
-                action: 'Get many job bookings',
+                action: 'Get multiple job bookings',
             },
             {
                 name: 'Update',
                 value: 'update',
-                action: 'Update job booking',
+                action: 'Update a job booking',
             },
         ],
         displayOptions: {

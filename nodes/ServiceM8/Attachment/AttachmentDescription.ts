@@ -9,10 +9,10 @@ export const attachmentDescription: INodeProperties[] = [
 		default: 'getMany',
 		options: [
 			{
-				name: 'Create',
+				name: 'Upload',
 				value: 'create',
-				action: 'Create a new attachment',
-				description: 'Create an attachment record and upload a file',
+				action: 'Upload an attachment',
+				description: 'Upload a file and create an attachment record',
 			},
 			{
 				name: 'Delete',

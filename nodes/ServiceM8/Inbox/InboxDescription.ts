@@ -12,17 +12,17 @@ export const inboxDescription: INodeProperties[] = [
             {
                 name: 'Convert To Job',
                 value: 'convertToJob',
-                action: 'Convert inbox message to job',
+                action: 'Convert an inbox message to a job',
             },
             {
-                name: 'Create Inbox Message',
+                name: 'Create',
                 value: 'createInboxMessage',
-                action: 'Create inbox message',
+                action: 'Create an inbox message',
             },
             {
                 name: 'Get',
                 value: 'get',
-                action: 'Get inbox message details',
+                action: 'Get an inbox message',
             },
             {
                 name: 'Get Many',
