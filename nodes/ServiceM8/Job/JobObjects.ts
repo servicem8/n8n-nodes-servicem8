@@ -71,7 +71,7 @@ export const JobSendToQueueObject: INodeProperties[] = [
     
   {
         "name": "queue_uuid",
-        "displayName": "Job Queue ID Or Name",
+        "displayName": "Job Queue",
         "type": "options",
         "default": "",
         typeOptions:{

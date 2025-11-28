@@ -2,7 +2,7 @@ import type { IDataObject, INodeExecutionData, IBinaryKeyData } from 'n8n-workfl
 import { NodeOperationError, BINARY_ENCODING } from 'n8n-workflow';
 import type { HandlerContext, CrudConfig } from './types';
 import { BaseHandler } from './BaseHandler';
-import { serviceM8ApiRequest, getAllData } from '../GenericFunctions';
+import { serviceM8ApiRequest, getAllData, processFilters } from '../GenericFunctions';
 import type { Readable } from 'node:stream';
 import FormData from 'form-data';
 
@@ -147,11 +147,12 @@ export class AttachmentHandler extends BaseHandler {
 			0,
 		) as number;
 
-		const includeInactive = ctx.executeFunctions.getNodeParameter(
-			'includeInactive',
+		const advancedOptions = ctx.executeFunctions.getNodeParameter(
+			'advancedOptions',
 			ctx.itemIndex,
-			false,
-		) as boolean;
+			{},
+		) as IDataObject;
+		const includeInactive = advancedOptions.includeInactive as boolean ?? false;
 
 		const relatedObjectType = ctx.executeFunctions.getNodeParameter(
 			'relatedObjectType',
@@ -165,6 +166,18 @@ export class AttachmentHandler extends BaseHandler {
 			'',
 		) as string;
 
+		// Get additional filters from the filters collection
+		const filters = ctx.executeFunctions.getNodeParameter(
+			'filters',
+			ctx.itemIndex,
+			{},
+		) as IDataObject;
+		const filtersString = await processFilters.call(
+			ctx.executeFunctions,
+			this.resource,
+			filters?.filter as IDataObject[],
+		);
+
 		const filterParts: string[] = [];
 
 		if (!includeInactive) {
@@ -173,6 +186,11 @@ export class AttachmentHandler extends BaseHandler {
 
 		filterParts.push(`related_object eq '${relatedObjectType}'`);
 		filterParts.push(`related_object_uuid eq '${relatedObjectUuid.trim()}'`);
+
+		// Add additional filters if provided
+		if (filtersString) {
+			filterParts.push(filtersString);
+		}
 
 		if (filterParts.length > 0) {
 			qs['$filter'] = filterParts.join(' and ');

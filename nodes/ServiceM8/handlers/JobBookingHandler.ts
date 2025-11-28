@@ -207,11 +207,12 @@ export class JobBookingHandler implements ResourceHandler {
 			ctx.itemIndex,
 			'',
 		) as string;
-		const includeInactive = ctx.executeFunctions.getNodeParameter(
-			'includeInactive',
+		const advancedOptions = ctx.executeFunctions.getNodeParameter(
+			'advancedOptions',
 			ctx.itemIndex,
-			false,
-		) as boolean;
+			{},
+		) as IDataObject;
+		const includeInactive = advancedOptions.includeInactive as boolean ?? false;
 
 		const filterParts: string[] = [];
 		let endpoint: string;

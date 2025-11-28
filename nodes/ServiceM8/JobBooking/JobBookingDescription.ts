@@ -108,20 +108,6 @@ export const jobBookingDescription: INodeProperties[] = [
             },
         },
     },
-    // Include inactive for getMany
-    {
-        displayName: 'Include Inactive Records',
-        name: 'includeInactive',
-        type: 'boolean',
-        default: false,
-        description: 'Whether to include inactive (deleted) records in the results',
-        displayOptions: {
-            show: {
-                resource: ['jobBooking'],
-                operation: ['getMany'],
-            },
-        },
-    },
     // Staff Member for create only
     {
         displayName: 'Staff Member',
@@ -307,6 +293,29 @@ export const jobBookingDescription: INodeProperties[] = [
                 type: 'dateTime',
                 default: '',
                 description: 'The scheduled start date and time of the activity',
+            },
+        ],
+    },
+    // Advanced Options for getMany
+    {
+        displayName: 'Advanced Options',
+        name: 'advancedOptions',
+        type: 'collection',
+        placeholder: 'Add Option',
+        default: {},
+        displayOptions: {
+            show: {
+                resource: ['jobBooking'],
+                operation: ['getMany'],
+            },
+        },
+        options: [
+            {
+                displayName: 'Include Inactive Records',
+                name: 'includeInactive',
+                type: 'boolean',
+                default: false,
+                description: 'Whether to include inactive (deleted) records in the results',
             },
         ],
     },

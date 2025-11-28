@@ -14,20 +14,7 @@ export const genericDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				operation: ['getMany'],
-				resource: ['job', 'client'],
-			},
-		},
-	},
-	{
-		displayName: 'Include Inactive Records',
-		name: 'includeInactive',
-		type: 'boolean',
-		default: false,
-		description: 'Whether to include inactive (deleted) records in the results',
-		displayOptions: {
-			show: {
-				operation: ['getMany'],
-				resource: ['job', 'client'],
+				resource: ['attachment', 'job', 'client'],
 			},
 		},
 	},
@@ -58,7 +45,7 @@ export const genericDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				operation: ['getMany'],
-				resource: ['job', 'client'],
+				resource: ['attachment', 'job', 'client'],
 			},
 		},
 		options:[
@@ -246,5 +233,28 @@ export const genericDescription: INodeProperties[] = [
 				operation: ['updateContacts'],
 			},
 		},
+	},
+	// Advanced Options for getMany operations
+	{
+		displayName: 'Advanced Options',
+		name: 'advancedOptions',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
+		displayOptions: {
+			show: {
+				operation: ['getMany'],
+				resource: ['attachment', 'job', 'client'],
+			},
+		},
+		options: [
+			{
+				displayName: 'Include Inactive Records',
+				name: 'includeInactive',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to include inactive (deleted) records in the results',
+			},
+		],
 	},
 ]

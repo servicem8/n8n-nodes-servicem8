@@ -61,11 +61,12 @@ export abstract class BaseHandler implements ResourceHandler {
 			}
 
 			if (this.crudConfig.supportsActiveFilter) {
-				const includeInactive = ctx.executeFunctions.getNodeParameter(
-					'includeInactive',
+				const advancedOptions = ctx.executeFunctions.getNodeParameter(
+					'advancedOptions',
 					ctx.itemIndex,
-					false,
-				) as boolean;
+					{},
+				) as IDataObject;
+				const includeInactive = advancedOptions.includeInactive as boolean ?? false;
 				if (!includeInactive) {
 					filterParts.push("active eq '1'");
 				}

@@ -61,11 +61,12 @@ export class JobCheckinHandler implements ResourceHandler {
 			ctx.itemIndex,
 			'',
 		) as string;
-		const includeInactive = ctx.executeFunctions.getNodeParameter(
-			'includeInactive',
+		const advancedOptions = ctx.executeFunctions.getNodeParameter(
+			'advancedOptions',
 			ctx.itemIndex,
-			false,
-		) as boolean;
+			{},
+		) as IDataObject;
+		const includeInactive = advancedOptions.includeInactive as boolean ?? false;
 
 		const endpoint = 'https://api.servicem8.com/api_1.0/jobactivity.json';
 

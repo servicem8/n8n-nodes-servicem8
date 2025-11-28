@@ -44,6 +44,54 @@
     },
     "fields":[
         {
+            "field": "active",
+            "required": false,
+            "filter": true,
+            "readonly": false,
+            "type": "integer",
+            "displayName": "Active"
+        },
+        {
+            "field": "badges",
+            "required": false,
+            "filter": true,
+            "readonly": false,
+            "type": "string",
+            "displayName": "Badges"
+        },
+        {
+            "field": "billing_address",
+            "required": false,
+            "filter": true,
+            "readonly": false,
+            "type": "string",
+            "displayName": "Billing Address"
+        },
+        {
+            "field": "category_uuid",
+            "required": false,
+            "filter": true,
+            "readonly": false,
+            "type": "uuid",
+            "displayName": "Category UUID"
+        },
+        {
+            "field": "company_uuid",
+            "required": false,
+            "filter": true,
+            "readonly": false,
+            "type": "uuid",
+            "displayName": "Company UUID"
+        },
+        {
+            "field": "completion_date",
+            "required": false,
+            "filter": true,
+            "readonly": true,
+            "type": "string",
+            "displayName": "Completion Date"
+        },
+        {
             "field": "created_by_staff_uuid",
             "required": false,
             "filter": true,
@@ -60,44 +108,20 @@
             "displayName": "Date"
         },
         {
-            "field": "company_uuid",
+            "field": "edit_date",
             "required": false,
             "filter": true,
-            "readonly": false,
-            "type": "uuid",
-            "displayName": "Company UUID"
-        },
-        {
-            "field": "billing_address",
-            "required": false,
-            "filter": true,
-            "readonly": false,
+            "readonly": true,
             "type": "string",
-            "displayName": "Billing Address"
+            "displayName": "Edit Date"
         },
         {
-            "field": "status",
-            "required": true,
-            "filter": true,
-            "readonly": false,
-            "type": "string",
-            "displayName": "Status"
-        },
-        {
-            "field": "category_uuid",
+            "field": "generated_job_id",
             "required": false,
             "filter": true,
-            "readonly": false,
-            "type": "uuid",
-            "displayName": "Category UUID"
-        },
-        {
-            "field": "purchase_order_number",
-            "required": false,
-            "filter": true,
-            "readonly": false,
+            "readonly": true,
             "type": "string",
-            "displayName": "Purchase Order Number"
+            "displayName": "Job Number"
         },
         {
             "field": "invoice_sent",
@@ -106,86 +130,6 @@
             "readonly": true,
             "type": "integer",
             "displayName": "Invoice Sent"
-        },
-        {
-            "field": "queue_uuid",
-            "required": false,
-            "filter": true,
-            "readonly": false,
-            "type": "uuid",
-            "displayName": "Queue UUID"
-        },
-        {
-            "field": "queue_expiry_date",
-            "required": false,
-            "filter": true,
-            "readonly": false,
-            "type": "string",
-            "displayName": "Queue Expiry Date"
-        },
-        {
-            "field": "queue_assigned_staff_uuid",
-            "required": false,
-            "filter": true,
-            "readonly": false,
-            "type": "uuid",
-            "displayName": "Queue Assigned Staff UUID"
-        },
-        {
-            "field": "badges",
-            "required": false,
-            "filter": true,
-            "readonly": false,
-            "type": "string",
-            "displayName": "Badges"
-        },
-        {
-            "field": "quote_date",
-            "required": false,
-            "filter": true,
-            "readonly": true,
-            "type": "string",
-            "displayName": "Quote Date"
-        },
-        {
-            "field": "quote_sent",
-            "required": false,
-            "filter": true,
-            "readonly": true,
-            "type": "integer",
-            "displayName": "Quote Sent"
-        },
-        {
-            "field": "work_order_date",
-            "required": false,
-            "filter": true,
-            "readonly": true,
-            "type": "string",
-            "displayName": "Work Order Date"
-        },
-        {
-            "field": "uuid",
-            "required": false,
-            "filter": true,
-            "readonly": true,
-            "type": "uuid",
-            "displayName": "UUID"
-        },
-        {
-            "field": "active",
-            "required": false,
-            "filter": true,
-            "readonly": false,
-            "type": "integer",
-            "displayName": "Active"
-        },
-        {
-            "field": "edit_date",
-            "required": false,
-            "filter": true,
-            "readonly": true,
-            "type": "string",
-            "displayName": "Edit Date"
         },
         {
             "field": "job_address",
@@ -204,14 +148,6 @@
             "displayName": "Job Description"
         },
         {
-            "field": "work_done_description",
-            "required": false,
-            "filter": true,
-            "readonly": false,
-            "type": "string",
-            "displayName": "Work Done Description"
-        },
-        {
             "field": "payment_processed",
             "required": false,
             "filter": true,
@@ -228,12 +164,60 @@
             "displayName": "Payment Received"
         },
         {
-            "field": "completion_date",
+            "field": "purchase_order_number",
+            "required": false,
+            "filter": true,
+            "readonly": false,
+            "type": "string",
+            "displayName": "Purchase Order Number"
+        },
+        {
+            "field": "queue_assigned_staff_uuid",
+            "required": false,
+            "filter": true,
+            "readonly": false,
+            "type": "uuid",
+            "displayName": "Queue Assigned Staff UUID"
+        },
+        {
+            "field": "queue_expiry_date",
+            "required": false,
+            "filter": true,
+            "readonly": false,
+            "type": "string",
+            "displayName": "Queue Expiry Date"
+        },
+        {
+            "field": "queue_uuid",
+            "required": false,
+            "filter": true,
+            "readonly": false,
+            "type": "uuid",
+            "displayName": "Queue UUID"
+        },
+        {
+            "field": "quote_date",
             "required": false,
             "filter": true,
             "readonly": true,
             "type": "string",
-            "displayName": "Completion Date"
+            "displayName": "Quote Date"
+        },
+        {
+            "field": "quote_sent",
+            "required": false,
+            "filter": true,
+            "readonly": true,
+            "type": "integer",
+            "displayName": "Quote Sent"
+        },
+        {
+            "field": "status",
+            "required": true,
+            "filter": true,
+            "readonly": false,
+            "type": "string",
+            "displayName": "Status"
         },
         {
             "field": "unsuccessful_date",
@@ -244,12 +228,28 @@
             "displayName": "Unsuccessful Date"
         },
         {
-            "field": "generated_job_id",
+            "field": "uuid",
+            "required": false,
+            "filter": true,
+            "readonly": true,
+            "type": "uuid",
+            "displayName": "UUID"
+        },
+        {
+            "field": "work_done_description",
+            "required": false,
+            "filter": true,
+            "readonly": false,
+            "type": "string",
+            "displayName": "Work Done Description"
+        },
+        {
+            "field": "work_order_date",
             "required": false,
             "filter": true,
             "readonly": true,
             "type": "string",
-            "displayName": "Job Number"
+            "displayName": "Work Order Date"
         }
     ]
 }

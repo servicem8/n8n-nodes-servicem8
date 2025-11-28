@@ -71,18 +71,27 @@ export const jobCheckinDescription: INodeProperties[] = [
 			},
 		},
 	},
-	// Include inactive for getMany
+	// Advanced Options for getMany
 	{
-		displayName: 'Include Inactive Records',
-		name: 'includeInactive',
-		type: 'boolean',
-		default: false,
-		description: 'Whether to include inactive (deleted) records in the results',
+		displayName: 'Advanced Options',
+		name: 'advancedOptions',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
 		displayOptions: {
 			show: {
 				resource: ['jobCheckin'],
 				operation: ['getMany'],
 			},
 		},
+		options: [
+			{
+				displayName: 'Include Inactive Records',
+				name: 'includeInactive',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to include inactive (deleted) records in the results',
+			},
+		],
 	},
 ];
