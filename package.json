@@ -1,6 +1,6 @@
 {
   "name": "@servicem8/n8n-nodes-servicem8",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Trigger Node + Normal node for ServiceM8",
   "keywords": [
     "n8n-community-node-package"

@@ -21,8 +21,12 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 ## Operations
 
 ### Client (Customer)
+- **Create** - Create a new client
 - **Get** - Get client details
 - **Get Many** - Get multiple clients
+- **Update** - Update client details
+- **Delete** - Delete client
+- **Update Client Contacts** - Update client contact details
 
 ### Job
 - **Create** - Create new job
@@ -33,12 +37,23 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 - **Delete** - Delete job
 - **Add Note To Job** - Add job note
 - **Send Job To Queue** - Queue job
+- **Update Job Contacts** - Update job contact details
+
+### Job Booking
+- **Create** - Create a job booking
+- **Get** - Get booking details
+- **Get Many** - Get multiple bookings
+- **Update** - Update booking details
+- **Delete** - Delete booking
 
 ### Email
 - **Send Email** - Send email
 
 ### Inbox
 - **Create Inbox Message** - Create inbox message
+- **Get** - Get inbox message details
+- **Get Many** - Get multiple inbox messages
+- **Convert To Job** - Convert inbox message to a job
 
 ### SMS
 - **Send SMS** - Send text message
@@ -46,6 +61,10 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 ### Search
 - **Global Search** - Search everything
 - **Search** - Search specific type
+
+### Job Checkin
+- **Get** - Get job checkin details
+- **Get Many** - Get multiple job checkins
 
 ### Webhook Trigger
 Available webhook events:
@@ -111,6 +130,22 @@ For detailed usage examples and field mapping information, refer to the ServiceM
 * [GitHub Issues](https://github.com/servicem8/n8n-nodes-servicem8/issues)
 
 ## Version history
+
+### 0.1.5
+**New Resources:**
+- **Job Booking** - Full CRUD support for job allocations (flexible time) and job activities (fixed time)
+- **Job Checkin** - Get and list job checkin records
+
+**New Operations:**
+- **Client**: Create, Update, Delete, Update Client Contacts
+- **Job**: Update Job Contacts
+- **Inbox**: Get, Get Many, Convert To Job
+
+**Enhancements:**
+- Client and Job Get/Get Many now support optional contact inclusion
+- Get Many operations support pagination (limit) and inactive record filtering
+- Job Create now uses a cleaner UI with required Status field and dynamic field picker
+- Refactored to handler-based architecture for better maintainability
 
 ### 0.1.4
 - Added Inbox resource with create message action
