@@ -113,7 +113,9 @@ export class ServiceM8 implements INodeType {
 			async getFields(this: ILoadOptionsFunctions) {
 				const resource = this.getNodeParameter('resource', 0) as string;
 				const fields = await getFields.call(this, resource)as fieldConfig[];
-				const fieldOptions = toOptionsFromFieldConfig.call(this,fields);
+				// Filter out readonly fields - these cannot be set on create/update
+				const writableFields = fields.filter(x => x.readonly !== true) as fieldConfig[];
+				const fieldOptions = toOptionsFromFieldConfig.call(this, writableFields);
 				return fieldOptions;
 			},
 			async getJobTemplates(this:ILoadOptionsFunctions){

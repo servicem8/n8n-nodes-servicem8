@@ -113,7 +113,7 @@ export const genericDescription: INodeProperties[] = [
 		]
 	},
 	{
-		displayName: 'Fields to Update',
+		displayName: 'Update Fields',
 		name: 'fields',
 		type: 'fixedCollection',
 		placeholder: 'Add Field',

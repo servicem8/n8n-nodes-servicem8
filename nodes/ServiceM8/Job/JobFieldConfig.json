@@ -46,177 +46,210 @@
         {
             "field": "created_by_staff_uuid",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": true,
             "type": "uuid",
-            "displayName":"Created By Staff UUID"
+            "displayName": "Created By Staff UUID"
         },
         {
             "field": "date",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": true,
             "type": "string",
-            "displayName":"Date"
+            "displayName": "Date"
         },
         {
             "field": "company_uuid",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": false,
             "type": "uuid",
-            "displayName":"Company UUID"
+            "displayName": "Company UUID"
         },
         {
             "field": "billing_address",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": false,
             "type": "string",
-            "displayName":"Billing Address"
+            "displayName": "Billing Address"
         },
         {
             "field": "status",
             "required": true,
-            "filter":true,
+            "filter": true,
+            "readonly": false,
             "type": "string",
-            "displayName":"Status"
+            "displayName": "Status"
         },
         {
             "field": "category_uuid",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": false,
             "type": "uuid",
-            "displayName":"Category UUID"
+            "displayName": "Category UUID"
         },
         {
             "field": "purchase_order_number",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": false,
             "type": "string",
-            "displayName":"Purchase Order Number"
+            "displayName": "Purchase Order Number"
         },
         {
             "field": "invoice_sent",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": true,
             "type": "integer",
-            "displayName":"Invoice Sent"
+            "displayName": "Invoice Sent"
         },
         {
             "field": "queue_uuid",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": false,
             "type": "uuid",
-            "displayName":"Queue UUID"
+            "displayName": "Queue UUID"
         },
         {
             "field": "queue_expiry_date",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": false,
             "type": "string",
-            "displayName":"Queue Expiry Date"
+            "displayName": "Queue Expiry Date"
         },
         {
             "field": "queue_assigned_staff_uuid",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": false,
             "type": "uuid",
-            "displayName":"Queue Assigned Staff UUID"
+            "displayName": "Queue Assigned Staff UUID"
         },
         {
             "field": "badges",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": false,
             "type": "string",
-            "displayName":"Badges"
+            "displayName": "Badges"
         },
         {
             "field": "quote_date",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": true,
             "type": "string",
-            "displayName":"Quote Date"
+            "displayName": "Quote Date"
         },
         {
             "field": "quote_sent",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": true,
             "type": "integer",
-            "displayName":"Quote Sent"
+            "displayName": "Quote Sent"
         },
         {
             "field": "work_order_date",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": true,
             "type": "string",
-            "displayName":"Work Order Date"
+            "displayName": "Work Order Date"
         },
         {
             "field": "uuid",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": true,
             "type": "uuid",
-            "displayName":"UUID"
+            "displayName": "UUID"
         },
         {
             "field": "active",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": false,
             "type": "integer",
-            "displayName":"Active"
+            "displayName": "Active"
         },
         {
             "field": "edit_date",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": true,
             "type": "string",
-            "displayName":"Edit Date"
+            "displayName": "Edit Date"
         },
         {
             "field": "job_address",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": false,
             "type": "string",
-            "displayName":"Job Address"
+            "displayName": "Job Address"
         },
         {
             "field": "job_description",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": false,
             "type": "string",
-            "displayName":"Job Description"
+            "displayName": "Job Description"
         },
         {
             "field": "work_done_description",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": false,
             "type": "string",
-            "displayName":"Work Done Description"
+            "displayName": "Work Done Description"
         },
         {
             "field": "payment_processed",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": true,
             "type": "integer",
-            "displayName":"Payment Processed"
+            "displayName": "Payment Processed"
         },
         {
             "field": "payment_received",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": true,
             "type": "integer",
-            "displayName":"Payment Received"
+            "displayName": "Payment Received"
         },
         {
             "field": "completion_date",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": true,
             "type": "string",
-            "displayName":"Completion Date"
+            "displayName": "Completion Date"
         },
         {
             "field": "unsuccessful_date",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": true,
             "type": "string",
-            "displayName":"Unsuccessful Date"
+            "displayName": "Unsuccessful Date"
+        },
+        {
+            "field": "generated_job_id",
+            "required": false,
+            "filter": true,
+            "readonly": true,
+            "type": "string",
+            "displayName": "Job Number"
         }
     ]
 }

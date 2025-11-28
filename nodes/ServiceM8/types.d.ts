@@ -7,6 +7,7 @@ export type fieldConfig = {
     field:string;
 	required:boolean;
     filter:boolean;
+    readonly?:boolean;
     type:string;
     displayName:string;
 }

@@ -73,7 +73,7 @@ export const clientDescription: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Fields',
+		displayName: 'Additional Fields',
 		name: 'fields',
 		type: 'collection',
 		default: {
