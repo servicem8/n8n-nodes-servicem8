@@ -190,12 +190,15 @@ export const jobBookingDescription: INodeProperties[] = [
         },
     },
     {
-        displayName: 'End Time',
-        name: 'endDate',
-        type: 'dateTime',
-        default: '',
+        displayName: 'Duration (Minutes)',
+        name: 'durationMinutes',
+        type: 'number',
+        default: 60,
         required: true,
-        description: 'The scheduled end date and time of the activity',
+        description: 'The duration of the activity in minutes',
+        typeOptions: {
+            minValue: 1,
+        },
         displayOptions: {
             show: {
                 resource: ['jobBooking'],
@@ -271,11 +274,14 @@ export const jobBookingDescription: INodeProperties[] = [
         },
         options: [
             {
-                displayName: 'End Time',
-                name: 'end_date',
-                type: 'dateTime',
-                default: '',
-                description: 'The scheduled end date and time of the activity',
+                displayName: 'Duration (Minutes)',
+                name: 'duration_minutes',
+                type: 'number',
+                default: 60,
+                description: 'The duration of the activity in minutes. Only used when Start Time is also provided.',
+                typeOptions: {
+                    minValue: 1,
+                },
             },
             {
                 displayName: 'Staff Member',

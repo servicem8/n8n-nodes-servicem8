@@ -1,5 +1,6 @@
 import type { IDataObject } from 'n8n-workflow';
 import { NodeOperationError } from 'n8n-workflow';
+import { DateTime } from 'luxon';
 import type { HandlerContext, ResourceHandler } from './types';
 import { extractCreatedUuid } from './types';
 import { serviceM8ApiRequest, getAllData, toServiceM8DateTime } from '../GenericFunctions';
@@ -119,11 +120,11 @@ export class JobBookingHandler implements ResourceHandler {
 				ctx.itemIndex,
 				'',
 			) as string;
-			const endDate = ctx.executeFunctions.getNodeParameter(
-				'endDate',
+			const durationMinutes = ctx.executeFunctions.getNodeParameter(
+				'durationMinutes',
 				ctx.itemIndex,
-				'',
-			) as string;
+				60,
+			) as number;
 
 			if (!startDate) {
 				throw new NodeOperationError(
@@ -132,16 +133,20 @@ export class JobBookingHandler implements ResourceHandler {
 					{ itemIndex: ctx.itemIndex },
 				);
 			}
-			if (!endDate) {
+			if (!durationMinutes || durationMinutes < 1) {
 				throw new NodeOperationError(
 					ctx.executeFunctions.getNode(),
-					'End Time is required for fixed time bookings',
+					'Duration must be at least 1 minute',
 					{ itemIndex: ctx.itemIndex },
 				);
 			}
 
+			// Calculate end_date from start_date + duration
+			const startDateTime = DateTime.fromISO(startDate);
+			const endDateTime = startDateTime.plus({ minutes: durationMinutes });
+
 			body.start_date = toServiceM8DateTime(startDate);
-			body.end_date = toServiceM8DateTime(endDate);
+			body.end_date = toServiceM8DateTime(endDateTime);
 			body.activity_was_scheduled = 1;
 		}
 
@@ -296,9 +301,13 @@ export class JobBookingHandler implements ResourceHandler {
 			// Process datetime fields for fixed bookings
 			if (updateFields.start_date) {
 				body.start_date = toServiceM8DateTime(updateFields.start_date as string);
-			}
-			if (updateFields.end_date) {
-				body.end_date = toServiceM8DateTime(updateFields.end_date as string);
+				// If duration is provided along with start_date, calculate end_date
+				if (updateFields.duration_minutes) {
+					const startDateTime = DateTime.fromISO(updateFields.start_date as string);
+					const durationMinutes = updateFields.duration_minutes as number;
+					const endDateTime = startDateTime.plus({ minutes: durationMinutes });
+					body.end_date = toServiceM8DateTime(endDateTime.toISO() as string);
+				}
 			}
 			if (updateFields.staff_uuid) {
 				body.staff_uuid = updateFields.staff_uuid;
