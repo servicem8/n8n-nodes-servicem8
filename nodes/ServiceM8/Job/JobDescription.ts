@@ -1,5 +1,5 @@
 import { INodeProperties } from 'n8n-workflow';
-import { JobAddNoteObject, JobCreateFromTemplateObject, JobCreateObject, JobSendToQueueObject } from './JobObjects';
+import { JobAddNoteObject, JobCreateFromTemplateObject, JobSendToQueueObject } from './JobObjects';
 export const jobDescription: INodeProperties[] = [
     {
 		displayName: 'Operation',
@@ -103,66 +103,67 @@ export const jobDescription: INodeProperties[] = [
 		},
 	},
 	{
-			displayName: 'Fields',
-			name: 'fields',
-			type: 'collection',
-			default: {
-				"created_by_staff_uuid": "",
-				"date": "",
-				"company_uuid": "",
-				"billing_address": "",
-				"status": "Quote",
-				"lng": "",
-				"lat": "",
-				"payment_date": "",
-				"payment_actioned_by_uuid": "",
-				"payment_method": "",
-				"payment_amount": "",
-				"category_uuid": "",
-				"payment_note": "",
-				"geo_is_valid": 0,
-				"purchase_order_number": "",
-				"invoice_sent": 0,
-				"invoice_sent_stamp": "",
-				"geo_country": "",
-				"geo_postcode": "",
-				"geo_state": "",
-				"geo_city": "",
-				"geo_street": "",
-				"geo_number": "",
-				"queue_uuid": "",
-				"queue_expiry_date": "",
-				"queue_assigned_staff_uuid": "",
-				"badges": "",
-				"quote_date": "",
-				"quote_sent": 0,
-				"quote_sent_stamp": "",
-				"work_order_date": "",
-				"active": 0,
-				"edit_date": "",
-				"job_address": "",
-				"job_description": "",
-				"work_done_description": "",
-				"generated_job_id": "",
-				"total_invoice_amount": "",
-				"payment_processed": 0,
-				"payment_processed_stamp": "",
-				"payment_received": 0,
-				"payment_received_stamp": "",
-				"completion_date": "",
-				"completion_actioned_by_uuid": "",
-				"unsuccessful_date": "",
-				"job_is_scheduled_until_stamp": ""
-
-			},
-			options: JobCreateObject,
-			displayOptions: {
-				show: {
-					resource: ['job'],
-					operation: ['create'],
-				},
+		displayName: 'Status',
+		name: 'status',
+		type: 'options',
+		required: true,
+		default: 'Quote',
+		options: [
+			{ name: 'Quote', value: 'Quote' },
+			{ name: 'Work Order', value: 'Work Order' },
+			{ name: 'Completed', value: 'Completed' },
+			{ name: 'Unsuccessful', value: 'Unsuccessful' },
+		],
+		description: 'Initial status for the new job',
+		displayOptions: {
+			show: {
+				resource: ['job'],
+				operation: ['create'],
 			},
 		},
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'fields',
+		type: 'fixedCollection',
+		placeholder: 'Add Field',
+		default: {},
+		typeOptions: {
+			multipleValues: true,
+			sortable: true,
+		},
+		displayOptions: {
+			show: {
+				resource: ['job'],
+				operation: ['create'],
+			},
+		},
+		options: [
+			{
+				displayName: 'Field',
+				name: 'field',
+				values: [
+					{
+						displayName: 'Field Name',
+						name: 'field',
+						type: 'options',
+						typeOptions: {
+							loadOptionsMethod: 'getFields',
+						},
+						default: '',
+						description: 'Field to set',
+					},
+					{
+						displayName: 'Value',
+						name: 'value',
+						type: 'string',
+						default: '',
+						description: 'Value to set the field to',
+					},
+				],
+			},
+		],
+	},
 		{
 			displayName: 'Fields',
 			name: 'fields',

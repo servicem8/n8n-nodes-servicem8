@@ -25,6 +25,8 @@ export class ClientHandler extends BaseHandler {
 				return this.getWithContacts(ctx);
 			case 'getMany':
 				return this.getManyWithContacts(ctx);
+			case 'create':
+				return this.standardCreate(ctx);
 			case 'update':
 				return this.standardUpdate(ctx);
 			case 'delete':

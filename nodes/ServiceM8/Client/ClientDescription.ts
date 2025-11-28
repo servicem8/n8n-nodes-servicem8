@@ -10,6 +10,11 @@ export const clientDescription: INodeProperties[] = [
 		default: 'getMany',
 		options: [
 			{
+				name: 'Create',
+				value: 'create',
+				action: 'Create a new client',
+			},
+			{
 				name: 'Delete',
 				value: 'delete',
 				action: 'Delete client',

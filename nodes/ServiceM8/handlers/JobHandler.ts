@@ -3,7 +3,7 @@ import { NodeOperationError } from 'n8n-workflow';
 import type { HandlerContext, CrudConfig } from './types';
 import { extractCreatedUuid } from './types';
 import { BaseHandler } from './BaseHandler';
-import { serviceM8ApiRequest, getAllData } from '../GenericFunctions';
+import { serviceM8ApiRequest, getAllData, processBody } from '../GenericFunctions';
 
 /**
  * Handler for Job resource operations.
@@ -26,7 +26,7 @@ export class JobHandler extends BaseHandler {
 			case 'getMany':
 				return this.getManyWithContacts(ctx);
 			case 'create':
-				return this.standardCreate(ctx);
+				return this.createJob(ctx);
 			case 'update':
 				return this.standardUpdate(ctx);
 			case 'updateContacts':
@@ -46,6 +46,45 @@ export class JobHandler extends BaseHandler {
 					{ itemIndex: ctx.itemIndex },
 				);
 		}
+	}
+
+	private async createJob(ctx: HandlerContext): Promise<unknown> {
+		const endpoint = await this.buildEndpoint(ctx, 'create');
+
+		// Get the required status field
+		const status = ctx.executeFunctions.getNodeParameter(
+			'status',
+			ctx.itemIndex,
+			'Quote',
+		) as string;
+
+		// Get optional additional fields (same format as update)
+		const fields = ctx.executeFunctions.getNodeParameter(
+			'fields',
+			ctx.itemIndex,
+			{},
+		) as IDataObject;
+
+		const additionalFields = await processBody.call(
+			ctx.executeFunctions,
+			this.resource,
+			fields.field as IDataObject[],
+		);
+
+		const body: IDataObject = {
+			status,
+			...additionalFields,
+		};
+
+		const responseData = await serviceM8ApiRequest.call(
+			ctx.executeFunctions,
+			'POST',
+			endpoint,
+			{},
+			body,
+		);
+
+		return extractCreatedUuid(responseData);
 	}
 
 	private async createFromTemplate(ctx: HandlerContext): Promise<unknown> {
