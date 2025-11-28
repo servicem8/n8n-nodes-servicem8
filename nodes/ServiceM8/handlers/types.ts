@@ -35,6 +35,23 @@ export interface CrudConfig {
 }
 
 /**
+ * Check if value is an INodeExecutionData (has json property and optionally binary)
+ */
+function isNodeExecutionData(value: unknown): value is INodeExecutionData {
+	if (typeof value !== 'object' || value === null) {
+		return false;
+	}
+	const obj = value as Record<string, unknown>;
+	// Must have json property that's an object, and optionally binary
+	return (
+		'json' in obj &&
+		typeof obj.json === 'object' &&
+		obj.json !== null &&
+		!Array.isArray(obj.json)
+	);
+}
+
+/**
  * Helper to push results to return items array
  */
 export function pushToReturnItems(
@@ -47,6 +64,12 @@ export function pushToReturnItems(
 	}
 
 	const pushSingle = (value: unknown) => {
+		// If it's already a properly formatted INodeExecutionData (with binary), use it directly
+		if (isNodeExecutionData(value) && 'binary' in value) {
+			returnItems.push(value);
+			return;
+		}
+
 		const json =
 			typeof value === 'object' && value !== null && !Array.isArray(value)
 				? (value as IDataObject)

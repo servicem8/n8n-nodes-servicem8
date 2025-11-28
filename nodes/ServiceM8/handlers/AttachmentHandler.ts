@@ -328,14 +328,14 @@ export class AttachmentHandler extends BaseHandler {
 		const items = ctx.executeFunctions.getInputData();
 		const item = items[ctx.itemIndex];
 
-		// Create new item with binary data
+		// Create new item with binary data - empty json, just the binary
 		const newItem: INodeExecutionData = {
-			json: metadata as IDataObject,
+			json: {},
 			binary: {},
 			pairedItem: { item: ctx.itemIndex },
 		};
 
-		// Preserve existing binary data
+		// Preserve existing binary data from input
 		if (item.binary) {
 			Object.assign(newItem.binary as IBinaryKeyData, item.binary);
 		}
