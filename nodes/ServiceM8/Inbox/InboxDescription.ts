@@ -37,7 +37,7 @@ export const inboxDescription: INodeProperties[] = [
         },
     },
     {
-        displayName: 'UUID',
+        displayName: 'Inbox Message UUID',
         name: 'uuid',
         type: 'string',
         default: '',
@@ -100,7 +100,7 @@ export const inboxDescription: INodeProperties[] = [
         },
     },
     {
-        displayName: 'Job Template Name or ID',
+        displayName: 'Job Template',
         name: 'jobTemplateUUID',
         type: 'options',
         description: 'Choose a job template to use when creating the job, or leave empty to create without a template. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',

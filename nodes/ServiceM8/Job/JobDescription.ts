@@ -87,7 +87,7 @@ export const jobDescription: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Job Template Name or ID',
+		displayName: 'Job Template',
 		name: 'jobTemplateUUID',
 		type: 'options',
 		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
