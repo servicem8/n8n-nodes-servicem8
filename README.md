@@ -20,7 +20,13 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 ## Operations
 
-### Client (Customer)
+### Attachment
+- **Upload** - Upload a file and create an attachment record
+- **Get** - Get attachment metadata with optional file download
+- **Get Many** - Get multiple attachments for a job or client
+- **Delete** - Soft delete an attachment
+
+### Client
 - **Create** - Create a new client
 - **Get** - Get client details
 - **Get Many** - Get multiple clients
@@ -46,25 +52,25 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 - **Update** - Update booking details
 - **Delete** - Delete booking
 
-### Email
-- **Send Email** - Send email
+### Job Checkin
+- **Get** - Get job checkin details
+- **Get Many** - Get multiple job checkins
 
 ### Inbox
-- **Create Inbox Message** - Create inbox message
+- **Create** - Create inbox message
 - **Get** - Get inbox message details
 - **Get Many** - Get multiple inbox messages
 - **Convert To Job** - Convert inbox message to a job
 
+### Email
+- **Send** - Send email
+
 ### SMS
-- **Send SMS** - Send text message
+- **Send** - Send text message
 
 ### Search
 - **Global Search** - Search everything
-- **Search** - Search specific type
-
-### Job Checkin
-- **Get** - Get job checkin details
-- **Get Many** - Get multiple job checkins
+- **Object Search** - Search specific type
 
 ### Webhook Trigger
 Available webhook events:
@@ -133,7 +139,12 @@ For detailed usage examples and field mapping information, refer to the ServiceM
 
 ### 0.1.5
 **New Resources:**
-- **Job Booking** - Full CRUD support for job allocations (flexible time) and job activities (fixed time)
+- **Attachment** - Full support for file attachments
+  - Upload files to jobs or clients with automatic metadata handling
+  - Get attachment metadata with optional binary file download
+  - Get multiple attachments with filtering support
+  - Delete attachments
+- **Job Booking** - Full support for job allocations (flexible time) and job activities (fixed time)
 - **Job Checkin** - Get and list job checkin records
 
 **New Operations:**
@@ -143,8 +154,13 @@ For detailed usage examples and field mapping information, refer to the ServiceM
 
 **Enhancements:**
 - Client and Job Get/Get Many now support optional contact inclusion
-- Get Many operations support pagination (limit) and inactive record filtering
+- Get Many operations support pagination (limit) and advanced filtering
+- Attachment Get Many supports filtering by attachment name, file type, source, tags, and more
+- "Include Inactive Records" moved to Advanced Options section for cleaner UI
 - Job Create now uses a cleaner UI with required Status field and dynamic field picker
+- Readonly fields (uuid, edit_date, created_by_staff_uuid, etc.) are now excluded from create/update field pickers but remain available for filtering
+- Job Template dropdowns now filter to show only active templates with valid names
+- Improved UI consistency across all resources (standardised field labels and action names)
 - Refactored to handler-based architecture for better maintainability
 
 ### 0.1.4
