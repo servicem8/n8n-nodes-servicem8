@@ -10,7 +10,7 @@ const BASE_URL = 'https://api.servicem8.com/api_1.0';
 
 /**
  * Handler for Attachment resource operations.
- * Supports get, getMany, create (with file upload), download, and delete.
+ * Supports get (with optional file download), getMany, create (with file upload), and delete.
  */
 export class AttachmentHandler extends BaseHandler {
 	readonly resource = 'attachment';
@@ -30,8 +30,6 @@ export class AttachmentHandler extends BaseHandler {
 				return this.getManyAttachments(ctx);
 			case 'create':
 				return this.createAttachment(ctx);
-			case 'download':
-				return this.downloadAttachment(ctx);
 			case 'delete':
 				return this.deleteAttachment(ctx);
 			default:
@@ -44,7 +42,7 @@ export class AttachmentHandler extends BaseHandler {
 	}
 
 	/**
-	 * Get a single attachment's metadata by UUID
+	 * Get a single attachment by UUID, with optional file download
 	 */
 	private async getAttachment(ctx: HandlerContext): Promise<unknown> {
 		const uuid = ctx.executeFunctions.getNodeParameter(
@@ -53,12 +51,91 @@ export class AttachmentHandler extends BaseHandler {
 			'',
 		) as string;
 
-		const endpoint = `${BASE_URL}/attachment/${uuid.trim()}.json`;
-		return getAllData.call(ctx.executeFunctions, endpoint);
+		const downloadFile = ctx.executeFunctions.getNodeParameter(
+			'downloadFile',
+			ctx.itemIndex,
+			true,
+		) as boolean;
+
+		// Get attachment metadata
+		const metadataEndpoint = `${BASE_URL}/attachment/${uuid.trim()}.json`;
+		const metadataResponse = await getAllData.call(
+			ctx.executeFunctions,
+			metadataEndpoint,
+		);
+		const metadata = Array.isArray(metadataResponse) ? metadataResponse[0] : metadataResponse;
+
+		// If not downloading file, just return metadata
+		if (!downloadFile) {
+			return metadata;
+		}
+
+		// Download the file as well
+		const binaryPropertyName = ctx.executeFunctions.getNodeParameter(
+			'binaryPropertyName',
+			ctx.itemIndex,
+			'data',
+		) as string;
+
+		const fileName = (metadata?.attachment_name as string) || 'file';
+		const fileType = (metadata?.file_type as string) || '';
+		const fullFileName = fileType && !fileName.endsWith(fileType)
+			? fileName + fileType
+			: fileName;
+
+		// Download the binary file - the endpoint 302s to S3
+		const fileEndpoint = `${BASE_URL}/attachment/${uuid.trim()}.file`;
+
+		const response = await ctx.executeFunctions.helpers.httpRequestWithAuthentication.call(
+			ctx.executeFunctions,
+			'serviceM8CredentialsApi',
+			{
+				method: 'GET',
+				url: fileEndpoint,
+				encoding: 'arraybuffer',
+				returnFullResponse: true,
+				json: false,
+			},
+		);
+
+		const binaryBuffer = Buffer.from(response.body as ArrayBuffer);
+
+		// Determine mime type from response headers or file extension
+		let mimeType = response.headers?.['content-type'] as string;
+		if (!mimeType || mimeType === 'application/octet-stream') {
+			mimeType = this.getMimeTypeFromExtension(fileType);
+		}
+
+		// Create binary data
+		const binaryData = await ctx.executeFunctions.helpers.prepareBinaryData(
+			binaryBuffer,
+			fullFileName,
+			mimeType,
+		);
+
+		// Get existing item data
+		const items = ctx.executeFunctions.getInputData();
+		const item = items[ctx.itemIndex];
+
+		// Create new item with attachment metadata as JSON and binary file data
+		const newItem: INodeExecutionData = {
+			json: metadata as IDataObject,
+			binary: {},
+			pairedItem: { item: ctx.itemIndex },
+		};
+
+		// Preserve existing binary data from input
+		if (item.binary) {
+			Object.assign(newItem.binary as IBinaryKeyData, item.binary);
+		}
+
+		newItem.binary![binaryPropertyName] = binaryData;
+
+		return newItem;
 	}
 
 	/**
-	 * Get multiple attachments with optional filtering
+	 * Get multiple attachments for a job or client
 	 */
 	private async getManyAttachments(ctx: HandlerContext): Promise<unknown> {
 		const endpoint = `${BASE_URL}/attachment.json`;
@@ -76,11 +153,17 @@ export class AttachmentHandler extends BaseHandler {
 			false,
 		) as boolean;
 
-		const filterByRelatedObject = ctx.executeFunctions.getNodeParameter(
-			'filterByRelatedObject',
+		const relatedObjectType = ctx.executeFunctions.getNodeParameter(
+			'relatedObjectType',
 			ctx.itemIndex,
-			false,
-		) as boolean;
+			'',
+		) as string;
+
+		const relatedObjectUuid = ctx.executeFunctions.getNodeParameter(
+			'relatedObjectUuid',
+			ctx.itemIndex,
+			'',
+		) as string;
 
 		const filterParts: string[] = [];
 
@@ -88,25 +171,8 @@ export class AttachmentHandler extends BaseHandler {
 			filterParts.push("active eq '1'");
 		}
 
-		if (filterByRelatedObject) {
-			const relatedObjectType = ctx.executeFunctions.getNodeParameter(
-				'relatedObjectType',
-				ctx.itemIndex,
-				'',
-			) as string;
-			const relatedObjectUuid = ctx.executeFunctions.getNodeParameter(
-				'relatedObjectUuid',
-				ctx.itemIndex,
-				'',
-			) as string;
-
-			if (relatedObjectType) {
-				filterParts.push(`related_object eq '${relatedObjectType}'`);
-			}
-			if (relatedObjectUuid) {
-				filterParts.push(`related_object_uuid eq '${relatedObjectUuid.trim()}'`);
-			}
-		}
+		filterParts.push(`related_object eq '${relatedObjectType}'`);
+		filterParts.push(`related_object_uuid eq '${relatedObjectUuid.trim()}'`);
 
 		if (filterParts.length > 0) {
 			qs['$filter'] = filterParts.join(' and ');
@@ -260,89 +326,6 @@ export class AttachmentHandler extends BaseHandler {
 			related_object: relatedObjectType,
 			related_object_uuid: relatedObjectUuid,
 		};
-	}
-
-	/**
-	 * Download an attachment's binary file data.
-	 * The .file endpoint returns a 302 redirect to S3, so we need to follow redirects.
-	 * Returns the result as an INodeExecutionData with binary property set.
-	 */
-	private async downloadAttachment(ctx: HandlerContext): Promise<INodeExecutionData> {
-		const uuid = ctx.executeFunctions.getNodeParameter(
-			'uuid',
-			ctx.itemIndex,
-			'',
-		) as string;
-
-		const binaryPropertyName = ctx.executeFunctions.getNodeParameter(
-			'binaryPropertyName',
-			ctx.itemIndex,
-			'data',
-		) as string;
-
-		// First get the attachment metadata to know the filename and type
-		const metadataEndpoint = `${BASE_URL}/attachment/${uuid.trim()}.json`;
-		const metadataResponse = await getAllData.call(
-			ctx.executeFunctions,
-			metadataEndpoint,
-		);
-		const metadata = Array.isArray(metadataResponse) ? metadataResponse[0] : metadataResponse;
-
-		const fileName = (metadata?.attachment_name as string) || 'file';
-		const fileType = (metadata?.file_type as string) || '';
-		const fullFileName = fileType && !fileName.endsWith(fileType)
-			? fileName + fileType
-			: fileName;
-
-		// Download the binary file - the endpoint 302s to S3
-		const fileEndpoint = `${BASE_URL}/attachment/${uuid.trim()}.file`;
-
-		const response = await ctx.executeFunctions.helpers.httpRequestWithAuthentication.call(
-			ctx.executeFunctions,
-			'serviceM8CredentialsApi',
-			{
-				method: 'GET',
-				url: fileEndpoint,
-				encoding: 'arraybuffer',
-				returnFullResponse: true,
-				json: false,
-			},
-		);
-
-		const binaryBuffer = Buffer.from(response.body as ArrayBuffer);
-
-		// Determine mime type from response headers or file extension
-		let mimeType = response.headers?.['content-type'] as string;
-		if (!mimeType || mimeType === 'application/octet-stream') {
-			mimeType = this.getMimeTypeFromExtension(fileType);
-		}
-
-		// Create binary data
-		const binaryData = await ctx.executeFunctions.helpers.prepareBinaryData(
-			binaryBuffer,
-			fullFileName,
-			mimeType,
-		);
-
-		// Get existing item data
-		const items = ctx.executeFunctions.getInputData();
-		const item = items[ctx.itemIndex];
-
-		// Create new item with binary data - empty json, just the binary
-		const newItem: INodeExecutionData = {
-			json: {},
-			binary: {},
-			pairedItem: { item: ctx.itemIndex },
-		};
-
-		// Preserve existing binary data from input
-		if (item.binary) {
-			Object.assign(newItem.binary as IBinaryKeyData, item.binary);
-		}
-
-		newItem.binary![binaryPropertyName] = binaryData;
-
-		return newItem;
 	}
 
 	/**

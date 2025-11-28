@@ -21,16 +21,10 @@ export const attachmentDescription: INodeProperties[] = [
 				description: 'Soft delete an attachment (sets active to 0)',
 			},
 			{
-				name: 'Download',
-				value: 'download',
-				action: 'Download attachment file',
-				description: 'Download the binary file data of an attachment',
-			},
-			{
 				name: 'Get',
 				value: 'get',
-				action: 'Get attachment details',
-				description: 'Get metadata for a single attachment',
+				action: 'Get an attachment',
+				description: 'Get an attachment with optional file download',
 			},
 			{
 				name: 'Get Many',
@@ -55,11 +49,41 @@ export const attachmentDescription: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['attachment'],
-				operation: ['get', 'download', 'delete'],
+				operation: ['get', 'delete'],
 			},
 		},
 	},
-	// Related Object Type for create and getMany filtering
+	// Download file toggle for get operation
+	{
+		displayName: 'Download File',
+		name: 'downloadFile',
+		type: 'boolean',
+		default: true,
+		description: 'Whether to download the file binary data along with the metadata',
+		displayOptions: {
+			show: {
+				resource: ['attachment'],
+				operation: ['get'],
+			},
+		},
+	},
+	// Output binary field for download
+	{
+		displayName: 'Output Binary Field',
+		name: 'binaryPropertyName',
+		type: 'string',
+		default: 'data',
+		required: true,
+		description: 'The name of the output binary field to put the downloaded file in',
+		displayOptions: {
+			show: {
+				resource: ['attachment'],
+				operation: ['get'],
+				downloadFile: [true],
+			},
+		},
+	},
+	// Related Object Type for create
 	{
 		displayName: 'Related Object Type',
 		name: 'relatedObjectType',
@@ -110,21 +134,6 @@ export const attachmentDescription: INodeProperties[] = [
 			show: {
 				resource: ['attachment'],
 				operation: ['create'],
-			},
-		},
-	},
-	// Output binary field for download
-	{
-		displayName: 'Output Binary Field',
-		name: 'binaryPropertyName',
-		type: 'string',
-		default: 'data',
-		required: true,
-		description: 'The name of the output binary field to put the downloaded file in',
-		displayOptions: {
-			show: {
-				resource: ['attachment'],
-				operation: ['download'],
 			},
 		},
 	},
@@ -202,22 +211,10 @@ export const attachmentDescription: INodeProperties[] = [
 	},
 	// Filter options for getMany
 	{
-		displayName: 'Filter by Related Object',
-		name: 'filterByRelatedObject',
-		type: 'boolean',
-		default: false,
-		description: 'Whether to filter attachments by a specific job or client',
-		displayOptions: {
-			show: {
-				resource: ['attachment'],
-				operation: ['getMany'],
-			},
-		},
-	},
-	{
 		displayName: 'Related Object Type',
 		name: 'relatedObjectType',
 		type: 'options',
+		required: true,
 		default: 'job',
 		options: [
 			{
@@ -229,12 +226,11 @@ export const attachmentDescription: INodeProperties[] = [
 				value: 'company',
 			},
 		],
-		description: 'The type of object to filter attachments by',
+		description: 'The type of object to get attachments for',
 		displayOptions: {
 			show: {
 				resource: ['attachment'],
 				operation: ['getMany'],
-				filterByRelatedObject: [true],
 			},
 		},
 	},
@@ -242,13 +238,13 @@ export const attachmentDescription: INodeProperties[] = [
 		displayName: 'Related Object UUID',
 		name: 'relatedObjectUuid',
 		type: 'string',
+		required: true,
 		default: '',
-		description: 'The UUID of the job or client to filter attachments by',
+		description: 'The UUID of the job or client to get attachments for',
 		displayOptions: {
 			show: {
 				resource: ['attachment'],
 				operation: ['getMany'],
-				filterByRelatedObject: [true],
 			},
 		},
 	},
