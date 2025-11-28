@@ -1,5 +1,6 @@
 import { NodeOperationError } from 'n8n-workflow';
 import type { HandlerContext, ResourceHandler } from './types';
+import { AttachmentHandler } from './AttachmentHandler';
 import { ClientHandler } from './ClientHandler';
 import { JobHandler } from './JobHandler';
 import { JobBookingHandler } from './JobBookingHandler';
@@ -13,6 +14,7 @@ import { SearchHandler } from './SearchHandler';
 const handlers: Map<string, ResourceHandler> = new Map();
 
 const handlerInstances: ResourceHandler[] = [
+	new AttachmentHandler(),
 	new ClientHandler(),
 	new JobHandler(),
 	new JobBookingHandler(),

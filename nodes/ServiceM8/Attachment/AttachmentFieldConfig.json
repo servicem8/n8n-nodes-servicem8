@@ -1,0 +1,138 @@
+{
+    "name": "Attachment",
+    "getMany": {
+        "url": "https://api.servicem8.com/api_1.0/attachment.json",
+        "urlParams": []
+    },
+    "get": {
+        "url": "https://api.servicem8.com/api_1.0/attachment/{uuid}.json",
+        "urlParams": ["uuid"]
+    },
+    "getFile": {
+        "url": "https://api.servicem8.com/api_1.0/attachment/{uuid}.file",
+        "urlParams": ["uuid"]
+    },
+    "create": {
+        "url": "https://api.servicem8.com/api_1.0/attachment.json",
+        "urlParams": []
+    },
+    "uploadFile": {
+        "url": "https://api.servicem8.com/api_1.0/attachment/{uuid}.file",
+        "urlParams": ["uuid"]
+    },
+    "update": {
+        "url": "https://api.servicem8.com/api_1.0/attachment/{uuid}.json",
+        "urlParams": ["uuid"]
+    },
+    "delete": {
+        "url": "https://api.servicem8.com/api_1.0/attachment/{uuid}.json",
+        "urlParams": ["uuid"]
+    },
+    "fields": [
+        {
+            "field": "uuid",
+            "required": false,
+            "filter": true,
+            "type": "uuid",
+            "displayName": "UUID"
+        },
+        {
+            "field": "active",
+            "required": false,
+            "filter": true,
+            "type": "integer",
+            "displayName": "Active"
+        },
+        {
+            "field": "edit_date",
+            "required": false,
+            "filter": true,
+            "type": "string",
+            "displayName": "Edit Date"
+        },
+        {
+            "field": "related_object",
+            "required": true,
+            "filter": true,
+            "type": "string",
+            "displayName": "Related Object"
+        },
+        {
+            "field": "related_object_uuid",
+            "required": true,
+            "filter": true,
+            "type": "uuid",
+            "displayName": "Related Object UUID"
+        },
+        {
+            "field": "attachment_name",
+            "required": true,
+            "filter": true,
+            "type": "string",
+            "displayName": "Attachment Name"
+        },
+        {
+            "field": "file_type",
+            "required": false,
+            "filter": true,
+            "type": "string",
+            "displayName": "File Type"
+        },
+        {
+            "field": "created_by_staff_uuid",
+            "required": false,
+            "filter": true,
+            "type": "uuid",
+            "displayName": "Created By Staff UUID"
+        },
+        {
+            "field": "timestamp",
+            "required": false,
+            "filter": true,
+            "type": "string",
+            "displayName": "Timestamp"
+        },
+        {
+            "field": "attachment_source",
+            "required": false,
+            "filter": true,
+            "type": "string",
+            "displayName": "Attachment Source"
+        },
+        {
+            "field": "tags",
+            "required": false,
+            "filter": true,
+            "type": "string",
+            "displayName": "Tags"
+        },
+        {
+            "field": "lng",
+            "required": false,
+            "filter": false,
+            "type": "float",
+            "displayName": "Longitude"
+        },
+        {
+            "field": "lat",
+            "required": false,
+            "filter": false,
+            "type": "float",
+            "displayName": "Latitude"
+        },
+        {
+            "field": "is_favourite",
+            "required": false,
+            "filter": true,
+            "type": "string",
+            "displayName": "Is Favourite"
+        },
+        {
+            "field": "metadata",
+            "required": false,
+            "filter": false,
+            "type": "string",
+            "displayName": "Metadata"
+        }
+    ]
+}

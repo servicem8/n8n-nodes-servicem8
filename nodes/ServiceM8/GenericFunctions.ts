@@ -9,6 +9,7 @@ import type {
 } from 'n8n-workflow';
 import { DateTime } from 'luxon';
 
+import attachmentConfig from "./Attachment/AttachmentFieldConfig.json";
 import clientConfig from "./Client/ClientFieldConfig.json";
 import jobConfig from "./Job/JobFieldConfig.json";
 import searchConfig from "./Search/SearchFieldConfig.json";
@@ -90,6 +91,9 @@ export async function getEndpoint(
 	operation: string):Promise<string>{
 		let operationConfig;
 		switch(resource){
+			case 'attachment':
+				operationConfig = attachmentConfig[operation as keyof typeof attachmentConfig];
+				return operationConfig['url' as keyof typeof operationConfig];
 			case 'job':
 				operationConfig = jobConfig[operation as keyof typeof jobConfig];
 				return operationConfig['url' as keyof typeof operationConfig];
@@ -111,6 +115,9 @@ export async function getUrlParams(
 	operation: string):Promise<string[]>{
 		let operationConfig;
 		switch(resource){
+			case 'attachment':
+				operationConfig = attachmentConfig[operation as keyof typeof attachmentConfig];
+				return operationConfig['urlParams' as keyof typeof operationConfig];
 			case 'job':
 				operationConfig = jobConfig[operation as keyof typeof jobConfig];
 				return operationConfig['urlParams' as keyof typeof operationConfig];
@@ -131,6 +138,8 @@ export async function getFields(
 	resource: string,
 	):Promise<IDataObject[]>{
 		switch(resource){
+			case 'attachment':
+				return attachmentConfig['fields' as keyof typeof attachmentConfig] as IDataObject[];
 			case 'job':
 				return jobConfig['fields' as keyof typeof jobConfig] as IDataObject[];
 			case 'client':

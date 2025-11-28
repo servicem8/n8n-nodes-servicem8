@@ -7,6 +7,7 @@ import type {
 } from 'n8n-workflow';
 import { NodeConnectionType, NodeOperationError, NodeApiError } from 'n8n-workflow';
 
+import { attachmentDescription } from './Attachment/AttachmentDescription';
 import { clientDescription } from './Client/ClientDescription';
 import { jobDescription } from './Job/JobDescription';
 import { jobBookingDescription } from './JobBooking/JobBookingDescription';
@@ -50,6 +51,10 @@ export class ServiceM8 implements INodeType {
 				noDataExpression: true,
 				options: [
 					{
+						name: 'Attachment',
+						value: 'attachment',
+					},
+					{
 						name: 'Client',
 						value: 'client',
 					},
@@ -84,6 +89,7 @@ export class ServiceM8 implements INodeType {
 				],
 				default: 'client',
 			},
+			...attachmentDescription,
 			...clientDescription,
 			...jobDescription,
 			...jobBookingDescription,

@@ -43,8 +43,12 @@
       "dist/nodes/ServiceM8/ServiceM8Trigger.node.js"
     ]
   },
+  "dependencies": {
+    "form-data": "^4.0.0"
+  },
   "devDependencies": {
     "@types/luxon": "^3.7.1",
+    "@types/node": "^20.0.0",
     "@typescript-eslint/parser": "~8.32.0",
     "@vitest/coverage-v8": "^2.1.0",
     "eslint": "^8.57.0",

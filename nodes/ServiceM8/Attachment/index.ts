@@ -1,0 +1,1 @@
+export { attachmentDescription } from './AttachmentDescription';
