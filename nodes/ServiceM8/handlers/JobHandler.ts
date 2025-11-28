@@ -51,30 +51,41 @@ export class JobHandler extends BaseHandler {
 	private async createJob(ctx: HandlerContext): Promise<unknown> {
 		const endpoint = await this.buildEndpoint(ctx, 'create');
 
-		// Get the required status field
-		const status = ctx.executeFunctions.getNodeParameter(
-			'status',
-			ctx.itemIndex,
-			'Quote',
-		) as string;
-
-		// Get optional additional fields (same format as update)
 		const fields = ctx.executeFunctions.getNodeParameter(
 			'fields',
 			ctx.itemIndex,
 			{},
 		) as IDataObject;
 
-		const additionalFields = await processBody.call(
-			ctx.executeFunctions,
-			this.resource,
-			fields.field as IDataObject[],
-		);
+		let body: IDataObject;
 
-		const body: IDataObject = {
-			status,
-			...additionalFields,
-		};
+		// Backwards compatibility: detect v1 format (flat collection with status inside fields)
+		// vs v2 format (status is top-level param, fields.field is array of {field, value})
+		const isLegacyFormat = fields.status !== undefined ||
+			(Object.keys(fields).length > 0 && !fields.field);
+
+		if (isLegacyFormat) {
+			// Legacy v1 format: fields is a flat object like { status: "Quote", job_address: "123 Main" }
+			body = { ...fields };
+		} else {
+			// New v2 format: status is top-level, fields.field is array of {field, value}
+			const status = ctx.executeFunctions.getNodeParameter(
+				'status',
+				ctx.itemIndex,
+				'Quote',
+			) as string;
+
+			const additionalFields = await processBody.call(
+				ctx.executeFunctions,
+				this.resource,
+				fields.field as IDataObject[],
+			);
+
+			body = {
+				status,
+				...additionalFields,
+			};
+		}
 
 		const responseData = await serviceM8ApiRequest.call(
 			ctx.executeFunctions,
