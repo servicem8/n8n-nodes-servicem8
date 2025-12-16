@@ -87,10 +87,9 @@ export const inboxDescription: INodeProperties[] = [
         name: 'limit',
         type: 'number',
         default: 50,
-        description: 'Max number of results to return (1-500)',
+        description: 'Max number of results to return',
         typeOptions: {
             minValue: 1,
-            maxValue: 500,
         },
         displayOptions: {
             show: {
@@ -100,7 +99,7 @@ export const inboxDescription: INodeProperties[] = [
         },
     },
     {
-        displayName: 'Job Template',
+        displayName: 'Job Template Name or ID',
         name: 'jobTemplateUUID',
         type: 'options',
         description: 'Choose a job template to use when creating the job, or leave empty to create without a template. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',

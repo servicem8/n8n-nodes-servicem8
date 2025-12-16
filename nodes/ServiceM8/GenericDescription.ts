@@ -6,10 +6,10 @@ export const genericDescription: INodeProperties[] = [
 		displayName: 'Limit',
 		name: 'limit',
 		type: 'number',
-		default: 0,
-		description: 'Maximum number of records to return. Set to 0 for no limit.',
+		default: 50,
+		description: 'Max number of results to return',
 		typeOptions: {
-			minValue: 0,
+			minValue: 1,
 		},
 		displayOptions: {
 			show: {
@@ -54,14 +54,14 @@ export const genericDescription: INodeProperties[] = [
 				name: 'filter',
 				values:[
 					{
-						displayName: 'Field Name',
+						displayName: 'Field Name or ID',
 						name: 'field',
 						type: 'options',
 						typeOptions: {
 							loadOptionsMethod: 'getFilterFields',
 						},
 						default: '',
-						description: 'Field name to filter',
+						description: 'Field name to filter. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 					},
 					{
 						displayName: 'Operator',
@@ -122,14 +122,14 @@ export const genericDescription: INodeProperties[] = [
 				name: 'field',
 				values:[
 					{
-						displayName: 'Field Name',
+						displayName: 'Field Name or ID',
 						name: 'field',
 						type: 'options',
 						typeOptions: {
 							loadOptionsMethod: 'getFields',
 						},
 						default: '',
-						description: 'Field name to update',
+						description: 'Field name to update. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 					},
 					{
 						displayName: 'Value',
@@ -171,12 +171,12 @@ export const genericDescription: INodeProperties[] = [
 		required: true,
 		default: 'JOB',
 		options: [
-			{ name: 'Job', value: 'JOB' },
 			{ name: 'Billing', value: 'BILLING' },
+			{ name: 'Job', value: 'JOB' },
 			{ name: 'Property Manager', value: 'Property Manager' },
 			{ name: 'Property Owner', value: 'Property Owner' },
-			{ name: 'Tenant', value: 'Tenant' },
 			{ name: 'Specify UUID', value: 'uuid' },
+			{ name: 'Tenant', value: 'Tenant' },
 		],
 		description: 'The type of contact to update. If no contact of this type exists, a new one will be created.',
 		displayOptions: {

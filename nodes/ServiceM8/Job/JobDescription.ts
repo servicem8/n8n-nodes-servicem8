@@ -87,7 +87,7 @@ export const jobDescription: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Job Template',
+		displayName: 'Job Template Name or ID',
 		name: 'jobTemplateUUID',
 		type: 'options',
 		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
@@ -144,14 +144,14 @@ export const jobDescription: INodeProperties[] = [
 				name: 'field',
 				values: [
 					{
-						displayName: 'Field Name',
+						displayName: 'Field Name or ID',
 						name: 'field',
 						type: 'options',
 						typeOptions: {
 							loadOptionsMethod: 'getFields',
 						},
 						default: '',
-						description: 'Field to set',
+						description: 'Field to set. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 					},
 					{
 						displayName: 'Value',

@@ -5,33 +5,33 @@ import { INodeProperties } from "n8n-workflow";
  */
 export const JobContactFields: INodeProperties[] = [
 	{
-		name: 'first',
 		displayName: 'First Name',
+		name: 'first',
 		type: 'string',
 		default: '',
 	},
 	{
-		name: 'last',
 		displayName: 'Last Name',
+		name: 'last',
 		type: 'string',
 		default: '',
 	},
 	{
-		name: 'email',
 		displayName: 'Email',
+		name: 'email',
 		type: 'string',
 		placeholder: 'name@email.com',
 		default: '',
 	},
 	{
-		name: 'mobile',
 		displayName: 'Mobile',
+		name: 'mobile',
 		type: 'string',
 		default: '',
 	},
 	{
-		name: 'phone',
 		displayName: 'Phone',
+		name: 'phone',
 		type: 'string',
 		default: '',
 	},

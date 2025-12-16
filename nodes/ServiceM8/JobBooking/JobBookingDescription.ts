@@ -110,12 +110,12 @@ export const jobBookingDescription: INodeProperties[] = [
     },
     // Staff Member for create only
     {
-        displayName: 'Staff Member',
+        displayName: 'Staff Member Name or ID',
         name: 'staffUUID',
         type: 'options',
         default: '',
         required: true,
-        description: 'Choose from the list, or specify Staff UUID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+        description: 'Choose from the list, or specify Staff UUID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
         typeOptions: {
             loadOptionsMethod: 'getStaffMembers',
         },
@@ -143,11 +143,11 @@ export const jobBookingDescription: INodeProperties[] = [
         },
     },
     {
-        displayName: 'Allocation Window',
+        displayName: 'Allocation Window Name or ID',
         name: 'allocationWindowUUID',
         type: 'options',
         default: '',
-        description: 'Choose from the list, or specify Allocation Window UUID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+        description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
         typeOptions: {
             loadOptionsMethod: 'getAllocationWindows',
         },
@@ -230,11 +230,11 @@ export const jobBookingDescription: INodeProperties[] = [
                 description: 'The minimum start date for a job allocation to be completed by a staff member',
             },
             {
-                displayName: 'Allocation Window',
+                displayName: 'Allocation Window Name or ID',
                 name: 'allocation_window_uuid',
                 type: 'options',
                 default: '',
-                description: 'Choose from the list, or specify Allocation Window UUID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+                description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
                 typeOptions: {
                     loadOptionsMethod: 'getAllocationWindows',
                 },
@@ -247,11 +247,11 @@ export const jobBookingDescription: INodeProperties[] = [
                 description: 'The timestamp when the job allocation expires',
             },
             {
-                displayName: 'Staff Member',
+                displayName: 'Staff Member Name or ID',
                 name: 'staff_uuid',
                 type: 'options',
                 default: '',
-                description: 'Choose from the list, or specify Staff UUID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+                description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
                 typeOptions: {
                     loadOptionsMethod: 'getStaffMembers',
                 },
@@ -284,11 +284,11 @@ export const jobBookingDescription: INodeProperties[] = [
                 },
             },
             {
-                displayName: 'Staff Member',
+                displayName: 'Staff Member Name or ID',
                 name: 'staff_uuid',
                 type: 'options',
                 default: '',
-                description: 'Choose from the list, or specify Staff UUID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+                description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
                 typeOptions: {
                     loadOptionsMethod: 'getStaffMembers',
                 },

@@ -56,11 +56,11 @@ export const jobCheckinDescription: INodeProperties[] = [
 	},
 	// Staff UUID filter for getMany (optional)
 	{
-		displayName: 'Staff Member',
+		displayName: 'Staff Member Name or ID',
 		name: 'filterStaffUUID',
 		type: 'options',
 		default: '',
-		description: 'Filter checkins by Staff Member. Leave empty to get all checkins. Choose from the list, or specify Staff UUID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+		description: 'Filter checkins by Staff Member. Leave empty to get all checkins. Choose from the list, or specify Staff UUID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 		typeOptions: {
 			loadOptionsMethod: 'getStaffMembers',
 		},
