@@ -115,7 +115,7 @@ export const jobBookingDescription: INodeProperties[] = [
         type: 'options',
         default: '',
         required: true,
-        description: 'Choose from the list, or specify Staff UUID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+        description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
         typeOptions: {
             loadOptionsMethod: 'getStaffMembers',
         },
