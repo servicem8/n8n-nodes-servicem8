@@ -7,7 +7,9 @@ import type {
 	IHttpRequestMethods,
 	IHttpRequestOptions,
 } from 'n8n-workflow';
+import { DateTime } from 'luxon';
 
+import attachmentConfig from "./Attachment/AttachmentFieldConfig.json";
 import clientConfig from "./Client/ClientFieldConfig.json";
 import jobConfig from "./Job/JobFieldConfig.json";
 import searchConfig from "./Search/SearchFieldConfig.json";
@@ -51,26 +53,34 @@ export async function serviceM8ApiRequest(
 export async function getAllData(
 	this: IExecuteFunctions | IWebhookFunctions | IHookFunctions | ILoadOptionsFunctions,
 	endpoint:string,
-	query:IDataObject = {}, 
+	query:IDataObject = {},
 	limit = 0): Promise<IDataObject[]> {
 
 		query.cursor = '-1';
+		if (limit > 0) {
+			query.$top = limit;
+		}
 		let returnData:IDataObject[] = [];
 		let responseData;
 
 		do {
-			responseData = await serviceM8ApiRequest.call(this,'GET', endpoint,query);
-	
-			returnData = returnData.concat(responseData.body);
-			if(responseData?.headers?.['x-next-cursor']){
-				query.cursor = responseData?.headers['x-next-cursor'];
-			}
-			else{
-				query.cursor = '0';
-			}
-			
+			responseData = await serviceM8ApiRequest.call(this,'GET', endpoint, query);
 
-		} while ((limit === 0 || returnData.length < limit) && query.cursor !== '0');
+			returnData = returnData.concat(responseData.body);
+			const lastCursor = query.cursor as string;
+			const nextCursor = responseData?.headers?.['x-next-cursor'];
+
+			if(nextCursor && nextCursor != lastCursor){
+				query.cursor = nextCursor;
+			} else {
+				query.cursor = null;
+			}
+
+		} while (query.cursor && (limit === 0 || returnData.length < limit));
+
+		if (returnData.length > limit && limit > 0) {
+			returnData = returnData.slice(0, limit);
+		}
 
 		return returnData;
 }
@@ -81,6 +91,9 @@ export async function getEndpoint(
 	operation: string):Promise<string>{
 		let operationConfig;
 		switch(resource){
+			case 'attachment':
+				operationConfig = attachmentConfig[operation as keyof typeof attachmentConfig];
+				return operationConfig['url' as keyof typeof operationConfig];
 			case 'job':
 				operationConfig = jobConfig[operation as keyof typeof jobConfig];
 				return operationConfig['url' as keyof typeof operationConfig];
@@ -102,6 +115,9 @@ export async function getUrlParams(
 	operation: string):Promise<string[]>{
 		let operationConfig;
 		switch(resource){
+			case 'attachment':
+				operationConfig = attachmentConfig[operation as keyof typeof attachmentConfig];
+				return operationConfig['urlParams' as keyof typeof operationConfig];
 			case 'job':
 				operationConfig = jobConfig[operation as keyof typeof jobConfig];
 				return operationConfig['urlParams' as keyof typeof operationConfig];
@@ -122,6 +138,8 @@ export async function getFields(
 	resource: string,
 	):Promise<IDataObject[]>{
 		switch(resource){
+			case 'attachment':
+				return attachmentConfig['fields' as keyof typeof attachmentConfig] as IDataObject[];
 			case 'job':
 				return jobConfig['fields' as keyof typeof jobConfig] as IDataObject[];
 			case 'client':
@@ -186,3 +204,75 @@ export async function processBody(
 
 export const toOptionsFromFieldConfig = (items:fieldConfig[]) =>
 	items.map((x) => ({name:x.displayName, value:x.field}));
+
+/** ServiceM8 datetime format: "YYYY-MM-DD HH:mm:ss" */
+export const SERVICEM8_DATETIME_FORMAT = 'yyyy-MM-dd HH:mm:ss';
+/** Regex to match ServiceM8 datetime format */
+export const SERVICEM8_DATETIME_REGEX = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+
+/**
+ * Converts various datetime formats to ServiceM8 API format.
+ * ServiceM8 expects datetimes in "YYYY-MM-DD HH:mm:ss" format without timezone.
+ * The datetime is interpreted as the account's local timezone.
+ *
+ * This function preserves the local time components from the input without
+ * converting to any other timezone - it simply strips the timezone info.
+ * For example, "2025-11-27T09:00:00-05:00" becomes "2025-11-27 09:00:00".
+ *
+ * Supported input types:
+ * - Luxon DateTime objects
+ * - JavaScript Date objects
+ * - ISO 8601 strings (e.g., "2025-11-27T09:00:00.000-05:00")
+ * - ServiceM8 format strings (passed through unchanged)
+ * - Empty/null/undefined values (returns empty string)
+ *
+ * @param dateTimeValue - The datetime value to convert
+ * @returns ServiceM8 formatted datetime string (e.g., "2025-11-27 09:00:00")
+ * @throws Error if the input is an unsupported type or invalid format
+ */
+export function toServiceM8DateTime(dateTimeValue: unknown): string {
+	// Handle empty values
+	if (dateTimeValue === null || dateTimeValue === undefined || dateTimeValue === '') {
+		return '';
+	}
+
+	// Handle Luxon DateTime objects
+	if (DateTime.isDateTime(dateTimeValue)) {
+		if (!dateTimeValue.isValid) {
+			throw new Error(`Invalid Luxon DateTime: ${dateTimeValue.invalidReason}`);
+		}
+		return dateTimeValue.toFormat(SERVICEM8_DATETIME_FORMAT);
+	}
+
+	// Handle JavaScript Date objects
+	if (dateTimeValue instanceof Date) {
+		if (isNaN(dateTimeValue.getTime())) {
+			throw new Error('Invalid JavaScript Date object');
+		}
+		const dt = DateTime.fromJSDate(dateTimeValue);
+		return dt.toFormat(SERVICEM8_DATETIME_FORMAT);
+	}
+
+	// Handle strings
+	if (typeof dateTimeValue === 'string') {
+		// Already in ServiceM8 format - pass through unchanged
+		if (SERVICEM8_DATETIME_REGEX.test(dateTimeValue)) {
+			return dateTimeValue;
+		}
+
+		// Try to parse as ISO 8601
+		const dt = DateTime.fromISO(dateTimeValue, { setZone: true });
+		if (dt.isValid) {
+			return dt.toFormat(SERVICEM8_DATETIME_FORMAT);
+		}
+
+		// Invalid string format
+		throw new Error(`Invalid datetime string format: "${dateTimeValue}". Expected ISO 8601 format (e.g., "2025-11-27T09:00:00") or ServiceM8 format (e.g., "2025-11-27 09:00:00").`);
+	}
+
+	// Unsupported type
+	const typeDescription = typeof dateTimeValue === 'object'
+		? `object (${dateTimeValue?.constructor?.name || 'unknown'})`
+		: typeof dateTimeValue;
+	throw new Error(`Unsupported datetime type: ${typeDescription}. Expected string, Date, or Luxon DateTime.`);
+}

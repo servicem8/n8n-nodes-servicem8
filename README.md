@@ -20,9 +20,19 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 ## Operations
 
-### Client (Customer)
-- **Get** - Get customer details
+### Attachment
+- **Upload** - Upload a file and create an attachment record
+- **Get** - Get attachment metadata with optional file download
+- **Get Many** - Get multiple attachments for a job or client
+- **Delete** - Soft delete an attachment
+
+### Client
+- **Create** - Create a new client
+- **Get** - Get client details
 - **Get Many** - Get multiple clients
+- **Update** - Update client details
+- **Delete** - Delete client
+- **Update Client Contacts** - Update client contact details
 
 ### Job
 - **Create** - Create new job
@@ -33,19 +43,34 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 - **Delete** - Delete job
 - **Add Note To Job** - Add job note
 - **Send Job To Queue** - Queue job
+- **Update Job Contacts** - Update job contact details
 
-### Email
-- **Send Email** - Send email
+### Job Booking
+- **Create** - Create a job booking
+- **Get** - Get booking details
+- **Get Many** - Get multiple bookings
+- **Update** - Update booking details
+- **Delete** - Delete booking
+
+### Job Checkin
+- **Get** - Get job checkin details
+- **Get Many** - Get multiple job checkins
 
 ### Inbox
-- **Create Inbox Message** - Create inbox message
+- **Create** - Create inbox message
+- **Get** - Get inbox message details
+- **Get Many** - Get multiple inbox messages
+- **Convert To Job** - Convert inbox message to a job
+
+### Email
+- **Send** - Send email
 
 ### SMS
-- **Send SMS** - Send text message
+- **Send** - Send text message
 
 ### Search
 - **Global Search** - Search everything
-- **Search** - Search specific type
+- **Object Search** - Search specific type
 
 ### Webhook Trigger
 Available webhook events:
@@ -111,6 +136,32 @@ For detailed usage examples and field mapping information, refer to the ServiceM
 * [GitHub Issues](https://github.com/servicem8/n8n-nodes-servicem8/issues)
 
 ## Version history
+
+### 0.1.5
+**New Resources:**
+- **Attachment** - Full support for file attachments
+  - Upload files to jobs or clients with automatic metadata handling
+  - Get attachment metadata with optional binary file download
+  - Get multiple attachments with filtering support
+  - Delete attachments
+- **Job Booking** - Full support for job allocations (flexible time) and job activities (fixed time)
+- **Job Checkin** - Get and list job checkin records
+
+**New Operations:**
+- **Client**: Create, Update, Delete, Update Client Contacts
+- **Job**: Update Job Contacts
+- **Inbox**: Get, Get Many, Convert To Job
+
+**Enhancements:**
+- Client and Job Get/Get Many now support optional contact inclusion
+- Get Many operations support pagination (limit) and advanced filtering
+- Attachment Get Many supports filtering by attachment name, file type, source, tags, and more
+- "Include Inactive Records" moved to Advanced Options section for cleaner UI
+- Job Create now uses a cleaner UI with required Status field and dynamic field picker
+- Readonly fields (uuid, edit_date, created_by_staff_uuid, etc.) are now excluded from create/update field pickers but remain available for filtering
+- Job Template dropdowns now filter to show only active templates with valid names
+- Improved UI consistency across all resources (standardised field labels and action names)
+- Refactored to handler-based architecture for better maintainability
 
 ### 0.1.4
 - Added Inbox resource with create message action

@@ -44,179 +44,212 @@
     },
     "fields":[
         {
-            "field": "created_by_staff_uuid",
+            "field": "active",
             "required": false,
-            "filter":true,
-            "type": "uuid",
-            "displayName":"Created By Staff UUID"
-        },
-        {
-            "field": "date",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Date"
-        },
-        {
-            "field": "company_uuid",
-            "required": false,
-            "filter":true,
-            "type": "uuid",
-            "displayName":"Company UUID"
-        },
-        {
-            "field": "billing_address",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Billing Address"
-        },
-        {
-            "field": "status",
-            "required": true,
-            "filter":true,
-            "type": "string",
-            "displayName":"Status"
-        },
-        {
-            "field": "category_uuid",
-            "required": false,
-            "filter":true,
-            "type": "uuid",
-            "displayName":"Category UUID"
-        },
-        {
-            "field": "purchase_order_number",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Purchase Order Number"
-        },
-        {
-            "field": "invoice_sent",
-            "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": false,
             "type": "integer",
-            "displayName":"Invoice Sent"
-        },
-        {
-            "field": "queue_uuid",
-            "required": false,
-            "filter":true,
-            "type": "uuid",
-            "displayName":"Queue UUID"
-        },
-        {
-            "field": "queue_expiry_date",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Queue Expiry Date"
-        },
-        {
-            "field": "queue_assigned_staff_uuid",
-            "required": false,
-            "filter":true,
-            "type": "uuid",
-            "displayName":"Queue Assigned Staff UUID"
+            "displayName": "Active"
         },
         {
             "field": "badges",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": false,
             "type": "string",
-            "displayName":"Badges"
+            "displayName": "Badges"
         },
         {
-            "field": "quote_date",
+            "field": "billing_address",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": false,
             "type": "string",
-            "displayName":"Quote Date"
+            "displayName": "Billing Address"
         },
         {
-            "field": "quote_sent",
+            "field": "category_uuid",
             "required": false,
-            "filter":true,
-            "type": "integer",
-            "displayName":"Quote Sent"
-        },
-        {
-            "field": "work_order_date",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Work Order Date"
-        },
-        {
-            "field": "uuid",
-            "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": false,
             "type": "uuid",
-            "displayName":"UUID"
+            "displayName": "Category UUID"
         },
         {
-            "field": "active",
+            "field": "company_uuid",
             "required": false,
-            "filter":true,
-            "type": "integer",
-            "displayName":"Active"
-        },
-        {
-            "field": "edit_date",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Edit Date"
-        },
-        {
-            "field": "job_address",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Job Address"
-        },
-        {
-            "field": "job_description",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Job Description"
-        },
-        {
-            "field": "work_done_description",
-            "required": false,
-            "filter":true,
-            "type": "string",
-            "displayName":"Work Done Description"
-        },
-        {
-            "field": "payment_processed",
-            "required": false,
-            "filter":true,
-            "type": "integer",
-            "displayName":"Payment Processed"
-        },
-        {
-            "field": "payment_received",
-            "required": false,
-            "filter":true,
-            "type": "integer",
-            "displayName":"Payment Received"
+            "filter": true,
+            "readonly": false,
+            "type": "uuid",
+            "displayName": "Company UUID"
         },
         {
             "field": "completion_date",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": true,
             "type": "string",
-            "displayName":"Completion Date"
+            "displayName": "Completion Date"
+        },
+        {
+            "field": "created_by_staff_uuid",
+            "required": false,
+            "filter": true,
+            "readonly": true,
+            "type": "uuid",
+            "displayName": "Created By Staff UUID"
+        },
+        {
+            "field": "date",
+            "required": false,
+            "filter": true,
+            "readonly": true,
+            "type": "string",
+            "displayName": "Date"
+        },
+        {
+            "field": "edit_date",
+            "required": false,
+            "filter": true,
+            "readonly": true,
+            "type": "string",
+            "displayName": "Edit Date"
+        },
+        {
+            "field": "generated_job_id",
+            "required": false,
+            "filter": true,
+            "readonly": true,
+            "type": "string",
+            "displayName": "Job Number"
+        },
+        {
+            "field": "invoice_sent",
+            "required": false,
+            "filter": true,
+            "readonly": true,
+            "type": "integer",
+            "displayName": "Invoice Sent"
+        },
+        {
+            "field": "job_address",
+            "required": false,
+            "filter": true,
+            "readonly": false,
+            "type": "string",
+            "displayName": "Job Address"
+        },
+        {
+            "field": "job_description",
+            "required": false,
+            "filter": true,
+            "readonly": false,
+            "type": "string",
+            "displayName": "Job Description"
+        },
+        {
+            "field": "payment_processed",
+            "required": false,
+            "filter": true,
+            "readonly": true,
+            "type": "integer",
+            "displayName": "Payment Processed"
+        },
+        {
+            "field": "payment_received",
+            "required": false,
+            "filter": true,
+            "readonly": true,
+            "type": "integer",
+            "displayName": "Payment Received"
+        },
+        {
+            "field": "purchase_order_number",
+            "required": false,
+            "filter": true,
+            "readonly": false,
+            "type": "string",
+            "displayName": "Purchase Order Number"
+        },
+        {
+            "field": "queue_assigned_staff_uuid",
+            "required": false,
+            "filter": true,
+            "readonly": false,
+            "type": "uuid",
+            "displayName": "Queue Assigned Staff UUID"
+        },
+        {
+            "field": "queue_expiry_date",
+            "required": false,
+            "filter": true,
+            "readonly": false,
+            "type": "string",
+            "displayName": "Queue Expiry Date"
+        },
+        {
+            "field": "queue_uuid",
+            "required": false,
+            "filter": true,
+            "readonly": false,
+            "type": "uuid",
+            "displayName": "Queue UUID"
+        },
+        {
+            "field": "quote_date",
+            "required": false,
+            "filter": true,
+            "readonly": true,
+            "type": "string",
+            "displayName": "Quote Date"
+        },
+        {
+            "field": "quote_sent",
+            "required": false,
+            "filter": true,
+            "readonly": true,
+            "type": "integer",
+            "displayName": "Quote Sent"
+        },
+        {
+            "field": "status",
+            "required": true,
+            "filter": true,
+            "readonly": false,
+            "type": "string",
+            "displayName": "Status"
         },
         {
             "field": "unsuccessful_date",
             "required": false,
-            "filter":true,
+            "filter": true,
+            "readonly": true,
             "type": "string",
-            "displayName":"Unsuccessful Date"
+            "displayName": "Unsuccessful Date"
+        },
+        {
+            "field": "uuid",
+            "required": false,
+            "filter": true,
+            "readonly": true,
+            "type": "uuid",
+            "displayName": "UUID"
+        },
+        {
+            "field": "work_done_description",
+            "required": false,
+            "filter": true,
+            "readonly": false,
+            "type": "string",
+            "displayName": "Work Done Description"
+        },
+        {
+            "field": "work_order_date",
+            "required": false,
+            "filter": true,
+            "readonly": true,
+            "type": "string",
+            "displayName": "Work Order Date"
         }
     ]
 }

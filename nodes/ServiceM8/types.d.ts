@@ -7,6 +7,7 @@ export type fieldConfig = {
     field:string;
 	required:boolean;
     filter:boolean;
+    readonly?:boolean;
     type:string;
     displayName:string;
 }
@@ -23,6 +24,22 @@ export type jobQueue = {
     active: boolean;
     edit_date: string;
     name: string;
+}
+
+export type staffMember = {
+    uuid: string;
+    active: number;
+    first: string;
+    last: string;
+    email: string;
+}
+
+export type allocationWindow = {
+    uuid: string;
+    active: number;
+    name: string;
+    start_time: number;
+    end_time: number;
 }
 
 export type InboxMessageFields = {

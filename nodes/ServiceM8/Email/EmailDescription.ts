@@ -10,9 +10,9 @@ export const emailDescription: INodeProperties[] = [
 		default: 'sendEmail',
 		options: [
 			{
-				name: 'Send Email',
+				name: 'Send',
 				value: 'sendEmail',
-				action: 'Send email',
+				action: 'Send an email',
 			},
 		],
 		displayOptions: {
