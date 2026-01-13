@@ -142,10 +142,13 @@ export class JobBookingHandler implements ResourceHandler {
 			}
 
 			// Calculate end_date from start_date + duration
-			const startDateTime = DateTime.fromISO(startDate);
+			const startDateTime = DateTime.fromFormat(
+				toServiceM8DateTime(startDate),
+				SERVICEM8_DATETIME_FORMAT,
+			);
 			const endDateTime = startDateTime.plus({ minutes: durationMinutes });
 
-			body.start_date = toServiceM8DateTime(startDate);
+			body.start_date = toServiceM8DateTime(startDateTime);
 			body.end_date = toServiceM8DateTime(endDateTime);
 			body.activity_was_scheduled = 1;
 		}
