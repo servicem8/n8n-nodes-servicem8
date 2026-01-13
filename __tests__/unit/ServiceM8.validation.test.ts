@@ -100,7 +100,7 @@ describe('ServiceM8.execute validation errors', () => {
 			);
 		});
 
-		it('throws when endDate is missing for fixed booking', async () => {
+		it('throws when durationMinutes is invalid for fixed booking', async () => {
 			const mockContext = createMockExecuteFunctions({
 				resource: 'jobBooking',
 				operation: 'create',
@@ -109,12 +109,12 @@ describe('ServiceM8.execute validation errors', () => {
 					jobUUID: 'job-uuid-123',
 					staffUUID: 'staff-uuid-456',
 					startDate: '2025-01-01T09:00:00',
-					endDate: '', // empty
+					durationMinutes: 0,
 				},
 			});
 
 			await expect(node.execute.call(mockContext)).rejects.toThrow(
-				'End Time is required',
+				'Duration must be at least 1 minute',
 			);
 		});
 	});

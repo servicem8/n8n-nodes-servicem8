@@ -115,7 +115,7 @@ describe('ServiceM8.execute routing', () => {
 					jobUUID: 'job-uuid-123',
 					staffUUID: 'staff-uuid-456',
 					startDate: '2025-01-01T09:00:00',
-					endDate: '2025-01-01T10:00:00',
+					durationMinutes: 60,
 				},
 			});
 
@@ -147,7 +147,7 @@ describe('ServiceM8.execute routing', () => {
 				nodeParams: {
 					bookingType: 'fixed',
 					uuid: 'booking-uuid-123',
-					updateFields: { start_date: '2025-01-02T09:00:00' },
+					updateFields: { start_date: '2025-01-02T09:00:00', duration_minutes: 60 },
 				},
 			});
 

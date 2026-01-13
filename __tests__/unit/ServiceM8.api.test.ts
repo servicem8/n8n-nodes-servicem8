@@ -72,7 +72,7 @@ describe('ServiceM8.execute API calls', () => {
 					jobUUID: 'job-uuid-123',
 					staffUUID: 'staff-uuid-456',
 					startDate: '2025-11-27T09:00:00-05:00',
-					endDate: '2025-11-27T11:00:00-05:00',
+					durationMinutes: 120,
 				},
 			});
 
@@ -170,7 +170,9 @@ describe('ServiceM8.execute API calls', () => {
 				nodeParams: {
 					bookingType: 'flexible',
 					filterJobUUID: '',
-					includeInactive: true,
+					advancedOptions: {
+						includeInactive: true,
+					},
 				},
 			});
 
@@ -224,7 +226,7 @@ describe('ServiceM8.execute API calls', () => {
 					uuid: 'activity-uuid-123',
 					updateFields: {
 						start_date: '2025-11-28T14:00:00-05:00',
-						end_date: '2025-11-28T16:00:00-05:00',
+						duration_minutes: 120,
 					},
 				},
 			});
